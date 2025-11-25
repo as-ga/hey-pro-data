@@ -43,7 +43,7 @@ export default function GigsPage() {
                         <Link
                             href={`/gigs/${gig.slug}`}
                             key={gig.id}
-                            className="block rounded-[32px] border border-[#E4E0DA] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] transition hover:shadow-[0_24px_70px_rgba(15,23,42,0.12)]"
+                            className="block p-6 transition"
                         >
                             <div className="flex flex-col gap-6 lg:flex-row">
                                 <div className="flex-1">

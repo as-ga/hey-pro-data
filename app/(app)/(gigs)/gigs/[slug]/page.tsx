@@ -16,7 +16,7 @@ export default async function GigDetailsPage({ params }: GigDetailsPageProps) {
   if (!gig) return notFound();
 
   return (
-    <main className="min-h-screen bg-white px-4 py-10">
+    <main className="bg-white px-4">
       <div className="mx-auto flex max-w-6xl justify-center">
         <GigDetails {...gig} />
       </div>
