@@ -3,7 +3,7 @@
 
 
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Camera, Calendar, Edit2 } from "lucide-react";
+import { MapPin, Camera, Edit2 } from "lucide-react";
 import { ProfileProgress } from "@/app/(app)/profile/components/profileProgress";
 
 
@@ -72,7 +72,14 @@ export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes })
 
                     </div>
                 </div>
-
+                {/* Role */}
+                <div>
+                    {Profile.roles.map((role, index) => (
+                        <div key={index} className="inline-flex">
+                            <Badge className="bg-[#FA6E80] h-[22px] text-[#ffffff] rounded-full px-4 py-2 m-1">{role}</Badge>
+                        </div>
+                    ))}
+                </div>
                 {/* shortAbout */}
                 <p className="text-base leading-relaxed ">
                     {Profile.persionalDetails.shortAbout}

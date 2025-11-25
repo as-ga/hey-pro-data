@@ -60,6 +60,8 @@ export const profileData = {
             description: "",
         },
     ],
+    roles: ["Director", "Cinematographer", "Editor", "Producer", "Screenwriter"],
+
     credits: [
         {
             id: "1",
