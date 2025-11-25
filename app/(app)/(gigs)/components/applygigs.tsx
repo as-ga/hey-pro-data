@@ -1,21 +1,38 @@
 "use client"
+import { useMemo, useState } from "react"
 import Image from "next/image"
 import { addDays, endOfMonth, endOfWeek, format, getDate, isSameMonth, startOfMonth, startOfWeek } from "date-fns"
 import { Calendar, Mail, MapPin, Paperclip } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
 import { GigsDataType } from "@/data/gigs"
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Separator } from "@/components/ui/separator"
 type ApplyGigsProps = {
     gig: GigsDataType[number]
 }
 
+type DayStatus = "N/A" | "P1" | "P2"
+
 const WEEKDAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"]
 const WEEK_START_OPTIONS = { weekStartsOn: 1 as const }
+
+const STATUS_OPTIONS: { label: DayStatus; color: string }[] = [
+    { label: "N/A", color: "bg-[#6B7280]" },
+    { label: "P1", color: "bg-[#FFB347]" },
+    { label: "P2", color: "bg-[#8BCBFF]" },
+]
+
+const STATUS_COLOR_MAP: Record<DayStatus, string> = {
+    "N/A": "bg-[#6B7280]",
+    P1: "bg-[#FFB347]",
+    P2: "bg-[#8BCBFF]",
+}
 
 const buildMonthMatrix = (year: number, month: number) => {
     const firstDay = startOfMonth(new Date(year, month, 1))
@@ -37,6 +54,44 @@ const buildMonthMatrix = (year: number, month: number) => {
 }
 
 export default function ApplyGigs({ gig }: ApplyGigsProps) {
+    const [selectedStatuses, setSelectedStatuses] = useState<Record<string, DayStatus>>({})
+    const [selectAllChecked, setSelectAllChecked] = useState(false)
+
+    const highlightedDateMeta = useMemo(() => {
+        return gig.calendarMonths.flatMap((month) =>
+            month.highlightedDays.map((day) => ({
+                key: `${month.year}-${month.month}-${day}`,
+                label: format(new Date(month.year, month.month, day), "yyyy-MM-dd"),
+            })),
+        )
+    }, [gig.calendarMonths])
+
+    const handleStatusChange = (dateKey: string, status: DayStatus) => {
+        setSelectedStatuses((prev) => ({ ...prev, [dateKey]: status }))
+    }
+
+    const handleSelectAllChange = (checked: boolean | "indeterminate") => {
+        const isChecked = checked === true
+        setSelectAllChecked(isChecked)
+        if (!isChecked) {
+            return
+        }
+        const allSelections: Record<string, DayStatus> = {}
+        highlightedDateMeta.forEach(({ key }) => {
+            allSelections[key] = "P1"
+        })
+        setSelectedStatuses(allSelections)
+        console.log("All highlighted dates marked as P1", highlightedDateMeta.map(({ label }) => ({ date: label, status: "P1" })))
+    }
+
+    const handleSubmit = () => {
+        const entries = highlightedDateMeta
+            .filter(({ key }) => selectedStatuses[key])
+            .map(({ key, label }) => ({ date: label, status: selectedStatuses[key] as DayStatus }))
+
+        console.log("Application availability submission", entries)
+    }
+
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -96,18 +151,14 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                         </div>
                     </section>
 
-                    <section className="mt-8 space-y-5 rounded-[32px] bg-white p-6 shadow-[0_20px_50px_rgba(36,35,37,0.08)]">
+                    <section className="mt-8 space-y-5 rounded-[32px] ">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
                                 <p className="text-base font-semibold text-slate-900">Click on date to select</p>
                                 <p className="text-xs text-slate-500">Plan your preferred production days</p>
                             </div>
                             <div className="flex items-center gap-3 text-xs font-semibold uppercase">
-                                {[
-                                    { label: "N/A", color: "bg-[#6B7280]" },
-                                    { label: "P1", color: "bg-[#22A5A8]" },
-                                    { label: "P2", color: "bg-[#FFB347]" },
-                                ].map((status) => (
+                                {STATUS_OPTIONS.map((status) => (
                                     <div key={status.label} className="flex items-center gap-1">
                                         <span className={`h-4 w-4 rounded-full ${status.color}`} />
                                         <span>{status.label}</span>
@@ -115,7 +166,10 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                                 ))}
                             </div>
                         </div>
-
+                        <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <Checkbox className="h-5 w-5" checked={selectAllChecked} onCheckedChange={handleSelectAllChange} />
+                            <span>Available for all highlighted dates</span>
+                        </div>
                         <div className="flex gap-4 overflow-x-auto">
                             {gig.calendarMonths.map((month) => {
                                 const monthDate = new Date(month.year, month.month, 1)
@@ -145,20 +199,58 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                                                         const prevHighlighted = currentMonth && highlighted.has(dayNumber - 1)
                                                         const nextHighlighted = currentMonth && highlighted.has(dayNumber + 1)
                                                         const baseColor = currentMonth ? "text-[#22A5A8]" : "text-slate-300"
+                                                        const dateKey = `${month.year}-${month.month}-${dayNumber}`
+                                                        const selectedStatus = selectedStatuses[dateKey]
                                                         const highlightBgClass = isHighlighted
                                                             ? [
-                                                                "absolute inset-y-0 bg-[#22A5A8]",
+                                                                "absolute inset-y-0",
+                                                                selectedStatus ? STATUS_COLOR_MAP[selectedStatus] : "bg-[#22A5A8]",
                                                                 prevHighlighted ? "-left-1" : "left-0 rounded-l-full",
                                                                 nextHighlighted ? "-right-1" : "right-0 rounded-r-full",
                                                             ].join(" ")
                                                             : ""
 
+                                                        if (!currentMonth) {
+                                                            return (
+                                                                <div key={day.toISOString()} className="relative flex h-8 items-center justify-center overflow-visible">
+                                                                    <span className="relative z-10 text-sm text-slate-300" />
+                                                                </div>
+                                                            )
+                                                        }
+
+                                                        if (!isHighlighted) {
+                                                            return (
+                                                                <div key={day.toISOString()} className="relative flex h-8 items-center justify-center overflow-visible">
+                                                                    <span className={`relative z-10 text-sm ${baseColor}`}>{dayNumber}</span>
+                                                                </div>
+                                                            )
+                                                        }
+
                                                         return (
                                                             <div key={day.toISOString()} className="relative flex h-8 items-center justify-center overflow-visible">
-                                                                {isHighlighted && <span className={highlightBgClass} />}
-                                                                <span onClick={() => (alert("test"))} className={`relative z-10 text-sm ${isHighlighted ? "font-semibold text-white" : baseColor}`}>
-                                                                    {currentMonth ? dayNumber : ""}
-                                                                </span>
+                                                                <span className={highlightBgClass} />
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <button type="button" className="relative z-10 text-sm font-semibold text-white">
+                                                                            {dayNumber}
+                                                                        </button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent className="w-2" align="start">
+                                                                        <DropdownMenuGroup>
+                                                                            {STATUS_OPTIONS.map((option, index) => (
+                                                                                <div key={option.label}>
+                                                                                    <DropdownMenuItem
+                                                                                        className={`${STATUS_COLOR_MAP[option.label]} text-white`}
+                                                                                        onSelect={() => handleStatusChange(dateKey, option.label)}
+                                                                                    >
+                                                                                        {option.label}
+                                                                                    </DropdownMenuItem>
+                                                                                    {index < STATUS_OPTIONS.length - 1 && <Separator />}
+                                                                                </div>
+                                                                            ))}
+                                                                        </DropdownMenuGroup>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
                                                             </div>
                                                         )
                                                     })}
@@ -201,7 +293,7 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
 
                         <div className="flex flex-col gap-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                             <p>By submitting you agree to share your profile details with {gig.postedBy.name} for this gig only.</p>
-                            <Button type="button" className="inline-flex items-center gap-2 rounded-2xl bg-[#FF4B82] px-6 py-4 text-base font-semibold text-white">
+                            <Button type="button" onClick={handleSubmit} className="inline-flex items-center gap-2 rounded-2xl bg-[#FF4B82] px-6 py-4 text-base font-semibold text-white">
                                 <Mail className="h-5 w-5" /> Submit Application
                             </Button>
                         </div>
@@ -211,3 +303,8 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
         </Sheet>
     )
 }
+
+
+
+
+
