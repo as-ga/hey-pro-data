@@ -7,21 +7,9 @@ import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { login } from "./action";
 import { Apple, Google } from "@/components/icons";
 import Link from "next/link";
-
-interface User {
-  firstName?: string;
-  lastName?: string;
-  username?: string;
-  profilePhoto?: string;
-  [key: string]: string | undefined;
-}
-
-interface LoginResponse {
-  user: User;
-}
+import { supabase, setStoragePreference } from "@/lib/supabase/client";
 
 interface Errors {
   email?: string;
@@ -33,7 +21,7 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [rememberPassword, setRememberPassword] = useState<boolean>(false);
+  const [keepLoggedIn, setKeepLoggedIn] = useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -59,21 +47,47 @@ const Login: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const response: LoginResponse = await login(email, password);
+      const normalizedEmail = email.toLowerCase().trim();
 
-      localStorage.setItem("user", JSON.stringify(response.user));
-      localStorage.setItem("isAuthenticated", "true");
+      // Set storage preference based on "Keep me logged in" checkbox
+      setStoragePreference(keepLoggedIn);
 
-      const user = response.user;
-      if (!user.firstName || !user.lastName) {
-        router.push("/onboarding/name");
-      } else if (!user.username) {
-        router.push("/onboarding/username");
-      } else if (!user.profilePhoto) {
-        router.push("/onboarding/profile-photo");
-      } else {
-        router.push("/dashboard");
+      // Sign in with Supabase
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password: password,
+      });
+
+      if (loginError) {
+        toast.error("Invalid email or password");
+        console.error("Login error:", loginError);
+        return;
       }
+
+      // Get session token
+      const token = data.session?.access_token;
+
+      if (!token) {
+        toast.error("Authentication failed");
+        return;
+      }
+
+      // Check if profile exists and is complete
+      const profileResponse = await fetch('/api/profile', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const profileData = await profileResponse.json();
+
+      if (profileData.success && profileData.data) {
+        // Profile exists and is complete
+        toast.success("Login successful!");
+        router.push('/home');
+      } else {
+        // No profile or incomplete profile - redirect to profile form
+        router.push('/form');
+      }
+
     } catch (error) {
       toast.error("Login failed");
       console.error("Login error:", error);
@@ -82,12 +96,34 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleGoogleAuth = () => {
-    toast.info("Coming Soon......");
+  const handleGoogleAuth = async () => {
+    try {
+      // Set storage preference to keep logged in for OAuth
+      setStoragePreference(true);
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
+        }
+      });
+
+      if (error) {
+        toast.error("Google authentication failed");
+        console.error('OAuth error:', error);
+      }
+    } catch (err) {
+      toast.error("Google login failed");
+      console.error('Google login error:', err);
+    }
   };
 
   const handleAppleAuth = () => {
-    toast.info("Coming Soon......");
+    toast.info("Apple authentication will be available soon");
   };
 
   return (
@@ -166,22 +202,30 @@ const Login: React.FC = () => {
               )}
             </div>
 
-            {/* Remember Password Checkbox */}
-            <div className="flex items-center space-x-2 md:space-x-3">
-              <Checkbox
-                id="remember"
-                checked={rememberPassword}
-                onCheckedChange={(checked) =>
-                  setRememberPassword(checked as boolean)
-                }
-                className="border-gray-400 data-[state=checked]:bg-[#FA6E80] data-[state=checked]:border-[#FA6E80]"
-              />
-              <label
-                htmlFor="remember"
-                className="text-xs md:text-sm text-gray-600 cursor-pointer select-none"
+            {/* Keep Logged In Checkbox */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <Checkbox
+                  id="keepLoggedIn"
+                  checked={keepLoggedIn}
+                  onCheckedChange={(checked) =>
+                    setKeepLoggedIn(checked as boolean)
+                  }
+                  className="border-gray-400 data-[state=checked]:bg-[#FA6E80] data-[state=checked]:border-[#FA6E80]"
+                />
+                <label
+                  htmlFor="keepLoggedIn"
+                  className="text-xs md:text-sm text-gray-600 cursor-pointer select-none"
+                >
+                  Keep me logged in
+                </label>
+              </div>
+              <Link
+                href="/forget-password"
+                className="text-xs md:text-sm text-[#4A90E2] hover:underline"
               >
-                remember the password
-              </label>
+                Forgot password?
+              </Link>
             </div>
 
             {/* Login Button */}
@@ -222,7 +266,7 @@ const Login: React.FC = () => {
             </Button>
           </div>
 
-          {/* Sign in Link */}
+          {/* Sign up Link */}
           <div className="text-center mt-5 md:mt-8">
             <span className="text-gray-600 text-xs md:text-base">
               Don&apos;t have an account?{" "}

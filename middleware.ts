@@ -1,33 +1,89 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
 
-export const config = {
-  matcher: ["/:path*", "/", "/profile", "/dashboard", "/login", "/signup"],
-};
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
 
-const authRoutes = ["/signup", "/login"];
-const protectedRoutes = ["/test"];
-
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("accessToken")?.value || null; // Get the token from cookies
-
-  // console.log("Middleware token:", token);
-
-  const url = request.nextUrl.pathname;
-
-  const isAuthRoute = authRoutes.some((route) => url.startsWith(route));
-  const isProtactedRoute = protectedRoutes.some((route) =>
-    url.startsWith(route)
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return request.cookies.get(name)?.value;
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          request.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+        },
+        remove(name: string, options: CookieOptions) {
+          request.cookies.set({
+            name,
+            value: '',
+            ...options,
+          });
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
+          response.cookies.set({
+            name,
+            value: '',
+            ...options,
+          });
+        },
+      },
+    }
   );
 
-  if (!token && !isAuthRoute && isProtactedRoute) {
+  // Get session
+  const { data: { session } } = await supabase.auth.getSession();
+  const url = request.nextUrl.pathname;
+
+  // Define auth routes (accessible only when not authenticated)
+  const authRoutes = ['/login', '/signup', '/forget-password', '/reset-password', '/otp', '/callback'];
+  
+  // Define protected routes (require authentication)
+  const protectedRoutes = ['/home', '/dashboard', '/profile', '/gig', '/job'];
+
+  const isAuthRoute = authRoutes.some((route) => url.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some((route) => url.startsWith(route));
+
+  // If user is not authenticated and trying to access protected route
+  if (!session && isProtectedRoute) {
     return NextResponse.redirect(
       new URL(`/login?redirect=${url}`, request.url)
     );
   }
 
-  if (token && isAuthRoute) {
-    return NextResponse.redirect(new URL("/profile", request.url));
+  // If user is authenticated and trying to access auth routes
+  if (session && isAuthRoute && url !== '/callback') {
+    return NextResponse.redirect(new URL('/home', request.url));
   }
 
-  return NextResponse.next();
+  return response;
 }
+
+export const config = {
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+};
