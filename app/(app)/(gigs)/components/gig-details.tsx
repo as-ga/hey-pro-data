@@ -1,0 +1,158 @@
+import Image from "next/image";
+import Link from "next/link";
+import { addDays, endOfMonth, endOfWeek, format, getDate, isSameMonth, startOfMonth, startOfWeek } from "date-fns";
+import { ArrowLeft, Calendar, FileText, Link2, MapPin, Paperclip } from "lucide-react";
+
+import { type GigsDataType } from "@/data/gigs";
+
+const WEEKDAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
+
+const WEEK_START_OPTIONS = { weekStartsOn: 1 as const };
+
+const buildMonthMatrix = (year: number, month: number) => {
+  const firstDay = startOfMonth(new Date(year, month, 1));
+  const gridStart = startOfWeek(firstDay, WEEK_START_OPTIONS);
+  const gridEnd = endOfWeek(endOfMonth(firstDay), WEEK_START_OPTIONS);
+
+  const days: Date[] = [];
+  let cursor = gridStart;
+  while (cursor <= gridEnd) {
+    days.push(cursor);
+    cursor = addDays(cursor, 1);
+  }
+
+  const rows: Date[][] = [];
+  for (let index = 0; index < days.length; index += 7) {
+    rows.push(days.slice(index, index + 7));
+  }
+  return rows;
+};
+
+export default function GigDetails(gig: GigsDataType[0]) {
+  return (
+    <section className="w-full max-w-5xl rounded-[32px] p-8">
+      <Link href="/gigs" className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900">
+        <ArrowLeft className="h-4 w-4" /> back to gig directory
+      </Link>
+
+      <div className="mt-6 flex flex-col gap-6">
+        <div className="flex flex-wrap items-center gap-4">
+          <Image src={gig.postedBy.avatar} alt={gig.postedBy.name} width={56} height={56} className="rounded-full" />
+          <div>
+            <p className="text-lg font-medium text-slate-900">{gig.postedBy.name}</p>
+            <p className="text-sm text-slate-500">Posted on {gig.postedOn}</p>
+          </div>
+          <div className="ml-auto text-sm font-medium text-[#FA6E80]">Apply before {gig.applyBefore}</div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex flex-row gap-2 justify-start items-center">
+            <div className="text-sm uppercase tracking-wide text-slate-400">Gig Rate :</div>
+            <div className="text-xl font-medium text-[#FA6E80]">{gig.budgetLabel}</div>
+          </div>
+          <span className="text-3xl font-normal text-slate-900">{gig.title}</span>
+          <p className="text-base text-slate-600">{gig.description}</p>
+          <p className="text-base text-slate-700">
+            <span className="font-medium">Qualifying criteria:</span> {gig.qualifyingCriteria}
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-3 text-sm text-slate-700">
+          <div className="flex items-start gap-3">
+            <div className="rounded-full bg-[#2AA9A7]/10 p-2 text-[#2AA9A7]">
+              <MapPin className="h-4 w-4" />
+            </div>
+            <p>{gig.location}</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="rounded-full bg-[#2AA9A7]/10 p-2 text-[#2AA9A7]">
+              <Paperclip className="h-4 w-4" />
+            </div>
+            <p>{gig.supportingFileLabel}</p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <button type="button" className="inline-flex items-center gap-2 rounded-[14px] bg-[#2AA9A7] px-6 py-3 text-sm font-medium text-white shadow-md">
+            Recommend
+          </button>
+          <button type="button" className="inline-flex items-center gap-2 rounded-[14px] bg-[#FA6E80] px-6 py-3 text-sm font-medium text-white shadow-md">
+            Apply
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-8 space-y-4">
+        <div className="flex items-center gap-2 text-lg font-normal text-slate-900">
+          <Calendar className="h-5 w-5 text-[#FA6E80]" />
+          Gigs Date
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+          {gig.calendarMonths.map((month) => {
+            const monthDate = new Date(month.year, month.month, 1);
+            const matrix = buildMonthMatrix(month.year, month.month);
+            const highlighted = new Set(month.highlightedDays);
+
+            return (
+              <div key={`${gig.id}-${month.month}-${month.year}`} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="mb-3 flex items-center justify-between text-sm font-medium text-slate-700">
+                  <span>{format(monthDate, "MMM, yyyy")}</span>
+                  <Calendar className="h-4 w-4 text-[#FA6E80]" />
+                </div>
+                <div className="grid grid-cols-7 gap-1 text-[11px] font-medium text-slate-400">
+                  {WEEKDAY_LABELS.map((label) => (
+                    <span key={`${gig.id}-${month.month}-${label}`}>{label}</span>
+                  ))}
+                </div>
+                <div className="mt-2 space-y-1">
+                  {matrix.map((week, weekIndex) => (
+                    <div key={`week-${weekIndex}`} className="grid grid-cols-7 gap-1">
+                      {week.map((day) => {
+                        const dayNumber = getDate(day);
+                        const currentMonth = isSameMonth(day, monthDate);
+                        const isHighlighted = currentMonth && highlighted.has(dayNumber);
+                        const cellBase = "flex h-8 w-8 items-center justify-center rounded-full text-sm";
+                        const cellClass = [
+                          cellBase,
+                          currentMonth ? "text-slate-700" : "text-slate-300",
+                          isHighlighted ? "bg-[#2AA9A7] text-white font-medium" : "",
+                        ].join(" ");
+                        return (
+                          <span key={day.toISOString()} className={cellClass}>
+                            {currentMonth ? dayNumber : ""}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-10 space-y-4">
+        <h2 className="text-lg font-medium text-slate-900">References</h2>
+        <div className="flex flex-col gap-3">
+          {gig.references.map((reference, index) => {
+            const Icon = reference.type === "file" ? FileText : Link2;
+            const content = (
+              <div className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
+                <Icon className="h-4 w-4 text-[#2AA9A7]" />
+                <span className="truncate">{reference.label}</span>
+              </div>
+            );
+            return reference.href ? (
+              <a key={`${reference.label}-${index}`} href={reference.href} className="block" target="_blank" rel="noreferrer">
+                {content}
+              </a>
+            ) : (
+              <div key={`${reference.label}-${index}`}>{content}</div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}

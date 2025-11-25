@@ -1,5 +1,5 @@
 import ExplorePage from "@/components/modules/pages/explore-page";
-import { projectCardData } from "@/data";
+import { projectCardData } from "@/data/gigs";
 
 export default async function HomePage() {
   // const projectCardData = await fetch(
