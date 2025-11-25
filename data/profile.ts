@@ -30,6 +30,7 @@ export const profileData = {
     },
     language: ["English", "Spanish", "French"],
     countryCode: "IN",
+    email: "johndoe@email.com",
     phoneNumber: "9876543230",
     AvailableCountriesForTravel: [
         { name: "Bolivia", dial_code: "+591", code: "BO", flag: "🇧🇴" },

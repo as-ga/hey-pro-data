@@ -9,15 +9,20 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Textarea } from "@/components/ui/textarea"
 import { GigsDataType } from "@/data/gigs"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
+import { profileData } from "@/data/profile"
 type ApplyGigsProps = {
     gig: GigsDataType[number]
 }
 
 type DayStatus = "N/A" | "P1" | "P2"
+
+type ApplicantFormState = {
+    savedRate: string
+    customRate: string
+}
 
 const WEEKDAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"]
 const WEEK_START_OPTIONS = { weekStartsOn: 1 as const }
@@ -56,6 +61,14 @@ const buildMonthMatrix = (year: number, month: number) => {
 export default function ApplyGigs({ gig }: ApplyGigsProps) {
     const [selectedStatuses, setSelectedStatuses] = useState<Record<string, DayStatus>>({})
     const [selectAllChecked, setSelectAllChecked] = useState(false)
+    const [selectedCreditIds, setSelectedCreditIds] = useState<string[]>([])
+    const buildDefaultFormState = (): ApplicantFormState => ({
+        savedRate: gig.budgetLabel ?? "",
+        customRate: "",
+    })
+    const [formValues, setFormValues] = useState<ApplicantFormState>(() => buildDefaultFormState())
+
+    const availableCredits = profileData.credits ?? []
 
     const highlightedDateMeta = useMemo(() => {
         return gig.calendarMonths.flatMap((month) =>
@@ -70,10 +83,25 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
         setSelectedStatuses((prev) => ({ ...prev, [dateKey]: status }))
     }
 
+    const toggleCreditSelection = (creditId: string) => {
+        setSelectedCreditIds((prev) =>
+            prev.includes(creditId) ? prev.filter((id) => id !== creditId) : [...prev, creditId],
+        )
+    }
+
+    const updateFormValue = (field: keyof ApplicantFormState, value: string) => {
+        setFormValues((prev) => ({ ...prev, [field]: value }))
+    }
+
+    const selectedCreditDetails = useMemo(() => {
+        return availableCredits.filter((credit) => selectedCreditIds.includes(credit.id))
+    }, [availableCredits, selectedCreditIds])
+
     const handleSelectAllChange = (checked: boolean | "indeterminate") => {
         const isChecked = checked === true
         setSelectAllChecked(isChecked)
         if (!isChecked) {
+            setSelectedStatuses({})
             return
         }
         const allSelections: Record<string, DayStatus> = {}
@@ -89,7 +117,20 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
             .filter(({ key }) => selectedStatuses[key])
             .map(({ key, label }) => ({ date: label, status: selectedStatuses[key] as DayStatus }))
 
-        console.log("Application availability submission", entries)
+        const payload = {
+            gigId: gig.id,
+            gigTitle: gig.title,
+            applicant: formValues,
+            availability: entries,
+            credits: selectedCreditDetails.map((credit) => ({
+                id: credit.id,
+                title: credit.creditTitle,
+                startDate: credit.startDate,
+                endDate: credit.endDate,
+            })),
+        }
+
+        console.log("Gig application submission", payload)
     }
 
     return (
@@ -264,33 +305,83 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                     </section>
 
                     <section className="mt-8 space-y-6 rounded-[32px] bg-white p-6 shadow-[0_20px_50px_rgba(36,35,37,0.08)]">
-                        <div className="grid gap-5 md:grid-cols-2">
-                            <div className="space-y-2">
-                                <Label htmlFor="credits" className="text-xs uppercase tracking-wide text-slate-500">Select your credits</Label>
-                                <Input id="credits" placeholder="Choose the credits that fit this gig" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="rate-profile" className="text-xs uppercase tracking-wide text-slate-500">Select rate from profile</Label>
-                                <Input id="rate-profile" placeholder="Use saved rate" />
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                            <span className="h-px flex-1 bg-slate-200" />
-                            Or
-                            <span className="h-px flex-1 bg-slate-200" />
-                        </div>
-
                         <div className="space-y-2">
-                            <Label htmlFor="custom-rate" className="text-xs uppercase tracking-wide text-slate-500">Enter rate</Label>
-                            <Textarea id="custom-rate" rows={3} placeholder="Share the rate or packages you can offer" className="resize-none rounded-2xl bg-slate-50" />
+                            <Label className="text-xs uppercase tracking-wide text-slate-500">Select your credits</Label>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="h-12 justify-between rounded-2xl border-slate-200 text-sm font-medium text-slate-700"
+                                    >
+                                        <span>
+                                            {selectedCreditIds.length > 0
+                                                ? `${selectedCreditIds.length} credit${selectedCreditIds.length > 1 ? "s" : ""} selected`
+                                                : "Choose credits for this gig"}
+                                        </span>
+                                        <span className="text-xs text-slate-400">View all</span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-[360px] max-h-72 overflow-y-auto rounded-2xl border border-slate-100 bg-white p-0" align="start">
+                                    <DropdownMenuGroup>
+                                        {availableCredits.map((credit) => {
+                                            const isSelected = selectedCreditIds.includes(credit.id)
+                                            return (
+                                                <DropdownMenuItem
+                                                    key={credit.id}
+                                                    className="flex items-start gap-3 px-4 py-3"
+                                                    onSelect={(event) => {
+                                                        event.preventDefault()
+                                                        toggleCreditSelection(credit.id)
+                                                    }}
+                                                >
+                                                    <Checkbox checked={isSelected} className="pointer-events-none mt-1 h-4 w-4" />
+                                                    <div className="space-y-1 text-left">
+                                                        <p className="text-sm font-semibold text-slate-900">{credit.creditTitle}</p>
+                                                        <p className="text-xs text-slate-500">
+                                                            {format(new Date(credit.startDate), "MMM yyyy")} – {format(new Date(credit.endDate), "MMM yyyy")}
+                                                        </p>
+                                                    </div>
+                                                </DropdownMenuItem>
+                                            )
+                                        })}
+                                    </DropdownMenuGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                            {selectedCreditDetails.length > 0 && (
+                                <div className="flex flex-wrap gap-2 pt-2">
+                                    {selectedCreditDetails.map((credit) => (
+                                        <span
+                                            key={credit.id}
+                                            className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+                                        >
+                                            {credit.creditTitle}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-
-                        <div className="space-y-3">
-                            <Label htmlFor="message" className="text-xs uppercase tracking-wide text-slate-500">Message to producer</Label>
-                            <Textarea id="message" rows={4} placeholder="Tell the producer why you are the perfect fit" className="rounded-2xl bg-slate-50" />
+                        <div className="grid gap-4  md:items-center">
+                            <div className="space-y-2">
+                                <Label htmlFor="profile-rate" className="text-xs uppercase tracking-wide text-slate-500">Select rate from profile</Label>
+                                <Input
+                                    id="profile-rate"
+                                    value={formValues.savedRate}
+                                    onChange={(event) => updateFormValue("savedRate", event.target.value)}
+                                    placeholder="Use saved rate"
+                                />
+                            </div>
+                            <span className="text-center text-xs font-semibold uppercase tracking-wide text-slate-400">or</span>
+                            <div className="space-y-2">
+                                <Label htmlFor="custom-rate" className="text-xs uppercase tracking-wide text-slate-500">Enter rate</Label>
+                                <Input
+                                    id="custom-rate"
+                                    value={formValues.customRate}
+                                    onChange={(event) => updateFormValue("customRate", event.target.value)}
+                                    placeholder="Enter custom rate"
+                                />
+                            </div>
                         </div>
-
                         <div className="flex flex-col gap-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
                             <p>By submitting you agree to share your profile details with {gig.postedBy.name} for this gig only.</p>
                             <Button type="button" onClick={handleSubmit} className="inline-flex items-center gap-2 rounded-2xl bg-[#FF4B82] px-6 py-4 text-base font-semibold text-white">
