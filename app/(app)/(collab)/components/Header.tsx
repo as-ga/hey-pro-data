@@ -3,7 +3,7 @@ import Link from "next/link"
 
 const Header = () => {
     return (
-        <div className="mt-10">
+        <div className="">
             <div className="flex flex-row items-center justify-between mb-5">
                 <span className="bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent text-3xl font-semibold">{"Collab"}</span>
                 <Link href="/collab/manage-collab" className="ml-2 text-white bg-[#31A7AC] border rounded-[10px] px-4 py-2 ">Manage Collab</Link>
