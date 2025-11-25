@@ -30,7 +30,7 @@ const buildMonthMatrix = (year: number, month: number) => {
 
 export default function GigDetails(gig: GigsDataType[0]) {
   return (
-    <section className="w-full max-w-5xl rounded-[32px] p-8">
+    <section className="w-full max-w-5xl p-8">
       <Link href="/gigs" className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900">
         <ArrowLeft className="h-4 w-4" /> back to gig directory
       </Link>
@@ -83,44 +83,54 @@ export default function GigDetails(gig: GigsDataType[0]) {
       </div>
 
       <div className="mt-8 space-y-4">
-        <div className="flex items-center gap-2 text-lg font-normal text-slate-900">
+        <div className="flex items-center gap-2 text-lg font-medium text-slate-900">
           <Calendar className="h-5 w-5 text-[#FA6E80]" />
           Gigs Date
         </div>
-        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="flex flex-row gap-4  overflow-x-auto">
           {gig.calendarMonths.map((month) => {
             const monthDate = new Date(month.year, month.month, 1);
             const matrix = buildMonthMatrix(month.year, month.month);
             const highlighted = new Set(month.highlightedDays);
 
             return (
-              <div key={`${gig.id}-${month.month}-${month.year}`} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                <div className="mb-3 flex items-center justify-between text-sm font-medium text-slate-700">
+              <div key={`${gig.id}-${month.month}-${month.year}`} className="rounded-[22px] border border-[#F2F0ED] bg-white p-4  min-w-[280px]">
+                <div className="mb-3 flex items-center justify-between text-base font-semibold text-[#FF4B82]">
                   <span>{format(monthDate, "MMM, yyyy")}</span>
-                  <Calendar className="h-4 w-4 text-[#FA6E80]" />
+                  <Calendar className="h-4 w-4 text-[#FF4B82]" />
                 </div>
-                <div className="grid grid-cols-7 gap-1 text-[11px] font-medium text-slate-400">
+                <div className="grid grid-cols-7 gap-[6px] text-[11px] font-semibold text-[#FF4B82]">
                   {WEEKDAY_LABELS.map((label) => (
-                    <span key={`${gig.id}-${month.month}-${label}`}>{label}</span>
+                    <span key={`${gig.id}-${month.month}-${label}`} className="text-center">
+                      {label}
+                    </span>
                   ))}
                 </div>
-                <div className="mt-2 space-y-1">
+                <div className="mt-3 space-y-1">
                   {matrix.map((week, weekIndex) => (
-                    <div key={`week-${weekIndex}`} className="grid grid-cols-7 gap-1">
+                    <div key={`week-${weekIndex}`} className="grid grid-cols-7 gap-[2px]">
                       {week.map((day) => {
                         const dayNumber = getDate(day);
                         const currentMonth = isSameMonth(day, monthDate);
                         const isHighlighted = currentMonth && highlighted.has(dayNumber);
-                        const cellBase = "flex h-8 w-8 items-center justify-center rounded-full text-sm";
-                        const cellClass = [
-                          cellBase,
-                          currentMonth ? "text-slate-700" : "text-slate-300",
-                          isHighlighted ? "bg-[#2AA9A7] text-white font-medium" : "",
-                        ].join(" ");
+                        const prevHighlighted = currentMonth && highlighted.has(dayNumber - 1);
+                        const nextHighlighted = currentMonth && highlighted.has(dayNumber + 1);
+                        const baseColor = currentMonth ? "text-[#22A5A8]" : "text-slate-300";
+                        const highlightBgClass = isHighlighted
+                          ? [
+                            "absolute inset-y-0 bg-[#22A5A8]",
+                            prevHighlighted ? "-left-1" : "left-0 rounded-l-full",
+                            nextHighlighted ? "-right-1" : "right-0 rounded-r-full",
+                          ].join(" ")
+                          : "";
+
                         return (
-                          <span key={day.toISOString()} className={cellClass}>
-                            {currentMonth ? dayNumber : ""}
-                          </span>
+                          <div key={day.toISOString()} className="relative flex h-8 items-center justify-center overflow-visible">
+                            {isHighlighted && <span className={highlightBgClass} />}
+                            <span className={`relative z-10 text-sm ${isHighlighted ? "font-semibold text-white" : baseColor}`}>
+                              {currentMonth ? dayNumber : ""}
+                            </span>
+                          </div>
                         );
                       })}
                     </div>
