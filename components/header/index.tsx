@@ -135,7 +135,7 @@ export default function Header() {
               <NavigationMenu>
                 <NavigationMenuList className="flex-wrap">
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger>Explore</NavigationMenuTrigger>
+                    <NavigationMenuTrigger><Link href="/explore">Explore</Link></NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <ul className="grid grid-cols-3 gap-4 w-[748px]">
                         {["Pre Production", "Post Production", "Craft Services"].map(
