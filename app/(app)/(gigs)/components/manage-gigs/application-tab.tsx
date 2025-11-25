@@ -14,6 +14,7 @@ import {
 import { gigsData } from "@/data/gigs";
 
 import { sampleApplicants } from "./sample-data";
+import { SeeAllReferralsDialog } from "./see-all-referrals";
 
 type ApplicationTabProps = {
     selectedGigIds: string[];
@@ -48,17 +49,16 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
 
     return (
         <div className="space-y-8">
+            <div className="flex flex-wrap gap-3">
+                <SeeAllReferralsDialog />
+                <Button className="bg-[#FA6E80] text-white hover:bg-[#f9586d]">
+                    Invite crew for this Gig
+                </Button>
+            </div>
             {selectedGigs.map((gig) => (
                 <section key={gig.id} className="space-y-4 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
                     <header className="space-y-3">
-                        <div className="flex flex-wrap gap-3">
-                            <Button className="bg-[#FFE9ED] text-[#FA6E80] hover:bg-[#ffd3da]">
-                                See referrals
-                            </Button>
-                            <Button className="bg-[#FA6E80] text-white hover:bg-[#f9586d]">
-                                Invite crew for this Gig
-                            </Button>
-                        </div>
+
                         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
                             <p className="text-lg font-semibold text-gray-900">{gig.title}</p>
                             <span className="flex items-center gap-1 justify-center text-gray-700">
