@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { gigsData } from "@/data/gigs";
 
-import { sampleApplicants } from "./sample-data";
+import { sampleApplicants, getAvailabilityState } from "./sample-data";
 
 type CompactTimelineEntry = {
     key: string;
@@ -46,15 +46,6 @@ const buildTimelineEntries = (windows: typeof gigsData[number]["dateWindows"]): 
     return entries.slice(0, 40);
 };
 
-const availabilityStates = ["available", "hold", "na"] as const;
-type AvailabilityState = (typeof availabilityStates)[number];
-
-const getAvailabilityState = (applicantId: string, timelineIndex: number): AvailabilityState => {
-    const code = applicantId.charCodeAt(0) + timelineIndex;
-    const stateIndex = code % availabilityStates.length;
-    return availabilityStates[stateIndex];
-};
-
 type AvailabilityTabProps = {
     selectedGigIds: string[];
 };
@@ -79,8 +70,8 @@ export function AvailabilityTab({ selectedGigIds }: AvailabilityTabProps) {
         <div className="space-y-8">
             {selectedGigs.map((gig) => {
                 const timeline = buildTimelineEntries(gig.dateWindows);
+                // console.log(timeline);
                 const monthBadges = Array.from(new Set(timeline.map((entry) => entry.monthLabel)));
-
                 return (
                     <section key={gig.id} className="space-y-4 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
                         <header className="space-y-3">
@@ -139,8 +130,9 @@ export function AvailabilityTab({ selectedGigIds }: AvailabilityTabProps) {
                                                     )}
                                                 </div>
                                             </td>
-                                            {timeline.map((entry, idx) => {
-                                                const state = getAvailabilityState(person.id, idx);
+                                            {timeline.map((entry) => {
+                                                const dayKey = `${entry.monthLabel}-${entry.dayLabel}`;
+                                                const state = getAvailabilityState(person.id, dayKey);
                                                 if (state === "na") {
                                                     return (
                                                         <td key={entry.key} className="border px-2 py-1 text-center text-xs text-gray-400">

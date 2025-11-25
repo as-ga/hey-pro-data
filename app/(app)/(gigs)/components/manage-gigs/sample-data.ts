@@ -36,6 +36,55 @@ export const sampleApplicants = [
 
 export type SampleApplicant = (typeof sampleApplicants)[number];
 
+export const availabilityStates = ["available", "hold", "na"] as const;
+export type AvailabilityState = (typeof availabilityStates)[number];
+
+export type AvailabilitySchedule = Record<string, AvailabilityState>;
+
+export const availabilityScheduleByApplicant: Record<string, AvailabilitySchedule> = {
+    "1": {
+        "Sep 2025-12": "available",
+        "Sep 2025-15": "available",
+        "Sep 2025-18": "hold",
+        "Sep 2025-21": "available",
+        "Oct 2025-2": "available",
+        "Oct 2025-5": "hold",
+        "Oct 2025-13": "available",
+        "Oct 2025-20": "na",
+        "Oct 2025-25": "available",
+    },
+    "2": {
+        "Sep 2025-12": "hold",
+        "Sep 2025-16": "available",
+        "Sep 2025-19": "available",
+        "Sep 2025-24": "na",
+        "Oct 2025-1": "available",
+        "Oct 2025-6": "available",
+        "Oct 2025-10": "hold",
+        "Oct 2025-17": "available",
+        "Oct 2025-23": "available",
+    },
+    "3": {
+        "Sep 2025-12": "na",
+        "Sep 2025-15": "available",
+        "Sep 2025-18": "hold",
+        "Sep 2025-22": "available",
+        "Oct 2025-3": "available",
+        "Oct 2025-8": "hold",
+        "Oct 2025-14": "available",
+        "Oct 2025-19": "available",
+        "Oct 2025-27": "available",
+    },
+};
+
+export const getAvailabilityState = (applicantId: string, dayKey: string): AvailabilityState => {
+    const schedule = availabilityScheduleByApplicant[applicantId];
+    if (!schedule) {
+        return "na";
+    }
+    return schedule[dayKey] ?? "na";
+};
+
 export const contactGroups = [
     {
         id: "camera",
