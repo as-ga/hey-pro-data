@@ -114,9 +114,28 @@ export default function Profile() {
                 <span className="text-[10px] sm:text-xs">Optimal dimensions: 3000x759px</span>
               </div>
               <div className="flex flex-col xs:flex-row gap-3 -mt-1 sm:-mt-2">
-                <Button variant="default" className="rounded-full bg-[#FA6E80] hover:bg-[#FA6E80] w-full xs:w-auto">
-                  Replace Image
-                </Button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        // Handle image preview here
+                        console.log(reader.result);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="hidden"
+                  id="cover-image-upload"
+                />
+                <label htmlFor="cover-image-upload">
+                  <Button variant="default" className="rounded-full bg-[#FA6E80] hover:bg-[#FA6E80] w-full xs:w-auto" asChild>
+                    <span className="cursor-pointer">Replace Image</span>
+                  </Button>
+                </label>
                 <Button variant="ghost" className="rounded-full border border-white hover:bg-transparent hover:text-white w-full xs:w-auto">
                   Remove
                 </Button>
