@@ -1,0 +1,84 @@
+import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import "./globals.css";
+import Script from "next/script";
+import Providers from "@/components/Providers";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
+});
+
+export const metadata: Metadata = {
+  title: "Hey Pro Data",
+  description: "A Creative Industry Marketplace Platform",
+  keywords:
+    "Hey Pro Data, creative marketplace, film industry jobs, media professionals, hire creatives, production gigs, freelance filmmakers, creative collaboration, entertainment industry network, project hiring platform",
+  robots: { index: true, follow: true },
+  authors: [{ name: "Hey Pro Data", url: "https://heyprodata.com" }],
+  creator: "Hey Pro Data",
+  publisher: "Hey Pro Data",
+  icons: {
+    icon: [
+      "/favicon.ico",
+      "/logo.png",
+      "/apple-icon.png",
+      "icon0.svg",
+      "icon1.png",
+      "/logo/favicon.svg",
+      "/logo/web-app-manifest-192x192.png",
+      "/logo/web-app-manifest-461x161.png",
+      "/logo/web-app-manifest-512x512.png",
+    ],
+  },
+  metadataBase: new URL("https://heyprodata.com"),
+  openGraph: {
+    title: "Hey Pro Data",
+    description: "A Creative Industry Marketplace Platform",
+    type: "website",
+    emails: "support@heyprodata.com",
+    countryName: "UAE",
+    url: "https://heyprodata.com",
+    siteName: "Hey Pro Data",
+    images: ["/favicon.ico", "logo.png"],
+    locale: "en-UAE",
+  },
+};
+
+function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const getAnalyticsId = process.env.GOOGLE_ANALYTICS_ID;
+
+  return (
+    <html lang="en">
+      <head>
+        <meta name="apple-mobile-web-app-title" content="Eazika" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+        {/* Google tag (gtag.js) */}
+        <Script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${getAnalyticsId}`}
+        />
+        <Script id="google-analytics">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${getAnalyticsId}');
+          `}
+        </Script>
+      </head>
+
+      <body className={`${poppins.variable} font-poppins bg-white text-black`}>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}
+export default RootLayout;

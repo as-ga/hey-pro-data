@@ -1,0 +1,54 @@
+/** @format */
+
+export type ProjectCardType = {
+  id: number | string;
+  name: string;
+  banner: string;
+  image: string;
+  bio: string;
+  location: string;
+  skills: string[];
+};
+
+export type ProfileDataTypes = {
+  id: string;
+  avtar: string;
+  backgroundAvtar: string;
+  persionalDetails: {
+    name: string;
+    aliasName: string;
+    location: string;
+    availability: string;
+    shortAbout: string;
+    links: {
+      label: string;
+      url: string;
+    }[];
+  };
+  language: string[];
+  countryCode: string;
+  phoneNumber: string;
+  AvailableCountriesForTravel: {
+    name: string;
+    dial_code: string;
+    code: string;
+    flag: string;
+  }[];
+  profileCompletion: number;
+  about: string;
+  skills: {
+    id: number | string;
+    skillName: string;
+    description: string;
+  }[];
+  credits: {
+    id: number | string;
+    creditTitle: string;
+    startDate: Date;
+    endDate: Date;
+    description: string;
+  }[];
+  recomendPeoples: {
+    imgUrl: string;
+  }[];
+};
