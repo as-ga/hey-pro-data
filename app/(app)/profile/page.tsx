@@ -26,7 +26,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { gradientText, HighlightCard, letters } from "@/app/(app)/profile/components/Highlights"
+import { HighlightCard } from "@/app/(app)/profile/components/Highlights"
+import HighlightsText from "@/app/(app)/profile/components/highlights-text"
 type SectionType = "about" | "skills" | "credits"
 import React, { useState, useRef, useEffect } from "react";
 import AboutSectionComponent from "./components/About";
@@ -224,14 +225,8 @@ export default function Profile() {
                   Edit Highlights
                 </Button>
                 <div className="flex flex-col items-center gap-3 px-2">
-                  <div className="flex  items-center gap-3 w-full">
-                    <div className="flex gap-1 flex-nowrap">
-                      {letters.map((char, index) => (
-                        <span key={index} className={`text-lg font-semibold leading-none ${gradientText}`}>
-                          {char}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="flex items-center gap-3 w-full">
+                    <HighlightsText direction="row" letterClassName="h-6 w-6" className="gap-1" />
                     <span className="flex-1 h-px bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC]" />
                   </div>
                 </div>

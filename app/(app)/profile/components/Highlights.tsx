@@ -4,6 +4,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import HighlightsText from "./highlights-text";
 
 interface HighlightItem {
     id: string;
@@ -15,10 +16,6 @@ interface HighlightItem {
 interface HighlightsProps {
     highlights: HighlightItem[];
 }
-
-export const letters = Array.from("HIGHLIGHTS");
-export const gradientText =
-    "bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent";
 
 export function HighlightCard({
     highlight,
@@ -77,15 +74,18 @@ export default function Highlights({ highlights }: HighlightsProps) {
                     </div>
                 </aside>
 
-                <div className="flex flex-none flex-col items-center gap-4">
-                    <div className="flex flex-col items-center gap-2">
-                        {letters.map((char, index) => (
-                            <span key={index} className={`text-xl font-bold leading-none ${gradientText}`}>
-                                {char}
-                            </span>
-                        ))}
-                    </div>
-                    <div className="flex-1 w-px bg-gradient-to-b from-[#FA6E80] via-[#6A89BE] to-[#31A7AC]" />
+                <div className="flex flex-col items-center gap-4">
+                    <HighlightsText letterClassName="h-[26px] w-[26px] gap-0" />
+                    <div
+                        className="h-full w-px rounded-full"
+                        style={{
+                            border: '1px solid transparent',
+                            backgroundImage: 'linear-gradient(white, white), linear-gradient(180deg, #31A7AC 0%, #85AAB7 41.52%, #6A89BE 62.27%, #FA6E80 103.79%)',
+                            backgroundOrigin: 'border-box',
+                            backgroundClip: 'padding-box, border-box'
+                        }}
+                        aria-hidden
+                    />
                 </div>
             </div>
 
