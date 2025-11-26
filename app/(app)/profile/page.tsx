@@ -1,6 +1,6 @@
 "use client"
 
-import { Edit, List, GripVertical, ChevronLeft, ChevronRight } from "lucide-react";
+import { Edit, List, GripVertical, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 import {
   Dialog,
@@ -43,6 +43,7 @@ import Highlights from "./components/Highlights";
 import CreditsSection from "./components/CreditView";
 import { profileData, highlightsData } from "@/data/profile";
 import SlateView from "./components/slate";
+import AddNewSkill from "./components/add-new-skill";
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState<"profile" | "slate">("profile")
@@ -262,14 +263,14 @@ export default function Profile() {
 
 function SkillItem({ department, role, description, experience }: { department: string; role: string; description?: string; experience?: { value: string; title: string; description: string; } }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 ">
       <h3 className="text-base font-[400] text-[#000] sm:text-lg">{department} <span className="text-5xl">.</span> {role}</h3>
       {description && <p className="text-sm leading-relaxed text-[#444444]">{description}</p>}
       {experience && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <h4 className="text-sm font-[600] text-[#000] ml-10">{experience.title}</h4>
-            <p className="text-sm leading-relaxed text-[#444444]">{experience.description}</p>
+        <div className="space-y-2 ml-10 ">
+          <div className="flex flex-wrap items-center justify-start gap-x-1 px-4 bg-[#FFFFFF] h-[31px] w-[233px] rounded-[5px]">
+            <h4 className="text-sm font-[600] text-[#000]">{experience.title}</h4>
+            <p className="text-[10px] leading-relaxed text-[#444444]">{experience.description}</p>
 
           </div>
         </div>
@@ -330,14 +331,24 @@ function SkillsSection({ Profile: profile }: { Profile: { skills: { id: string, 
     <div className="w-full rounded-[20px] bg-[#FAFAFA] px-6 py-7 shadow-[0_1px_10px_rgba(0,0,0,0.1)] sm:px-10 sm:py-9">
       <div className="mb-5 flex items-center justify-between">
         <h2 className="text-[22px] font-semibold leading-[33px] text-[#000]">Skills</h2>
-        <SkillEditor
-          initialSkills={profile.skills}
-          trigger={
-            <Button size="icon" variant="ghost" className="rounded-full border border-[#31A7AC]/30 bg-white text-[#31A7AC]">
-              <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
-            </Button>
-          }
-        />
+        <div className="flex gap-1.5">
+          <AddNewSkill
+            trigger={
+              <Button size="icon" variant="default" className="rounded-full border border-[#31A7AC]/30 bg-[#FA6E80] text-[#ffffff]">
+                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            }
+          />
+          <SkillEditor
+            initialSkills={profile.skills}
+            trigger={
+              <Button size="icon" variant="default" className="rounded-full border border-[#31A7AC]/30 bg-[#31A7AC] text-[#ffffff]">
+                <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            }
+          />
+
+        </div>
       </div>
       <div className="space-y-4">
         {profile.skills.map((skill, index) => (

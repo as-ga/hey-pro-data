@@ -35,9 +35,8 @@ export default function SkillFormCard({
 }: SkillFormCardProps) {
     const [isPublic, setIsPublic] = React.useState(skill.isPublic ?? true)
     return (
-        <div className="space-y-5 rounded-[15px] border border-[#E0E0E0] bg-white p-6 shadow-sm">
-            <div className="flex items-start justify-between gap-3">
-                <p className="text-base font-medium text-black">Skill #{skill.id.slice(-4)}</p>
+        <div className="space-y-5 rounded-[15px] border  bg-[#4444]/10 p-6 shadow-sm">
+            <div className="flex items-start justify-end gap-3">
                 <Button
                     onClick={onRemove}
                     variant="ghost"
@@ -89,7 +88,7 @@ export default function SkillFormCard({
                 />
             </div>
 
-            <div className="rounded-[10px] border border-[#D6ECEC] bg-white px-4 py-3">
+            <div className="rounded-[10px]  bg-white px-4 py-3">
                 <button
                     type="button"
                     onClick={onToggleExperience}
