@@ -1120,48 +1120,488 @@ See detailed step-by-step guide:
 
 ### Purpose
 The Collab feature is a collaboration platform where users can:
-- Post project ideas and creative collaborations
-- Browse and search collab opportunities
-- Express interest in projects
-- Manage team collaborators
+- Post project ideas and creative collaborations with cover images
+- Browse and search collab opportunities with filters
+- Express interest in projects (with notification to owner)
+- View interested users' profiles
+- Manage team collaborators (add/remove)
+- Track collaboration status (open/closed/draft)
 - Close completed collaborations
 
 ### Frontend Location
 - **Path:** `/app/(app)/(collab)/`
-- **Pages:**
-  - `/collab` - Browse all collabs and create new ones
-  - `/collab/manage-collab` - Manage your collab posts
-  - `/collab/manage-collab/[id]` - Edit specific collab
+- **Main Pages:**
+  - `/collab` - Browse all collabs feed and create new collab post
+  - `/collab/manage-collab` - List of user's collab posts with management options
+  - `/collab/manage-collab/[id]` - Edit specific collab post, view applicants, manage collaborators
+
+### User Features
+
+#### For All Users
+1. **Browse Collab Feed:**
+   - View all open collaboration posts
+   - See post details (cover image, title, summary, tags)
+   - View interest count and avatars of interested users
+   - See author information (name, avatar, posted date)
+   - Action buttons: Like, Share, Message, Express Interest
+
+2. **Search & Filter:**
+   - Search by keyword in title/summary
+   - Filter by tags
+   - Filter by status (open/closed)
+   - Sort by date or popularity (interest count)
+
+3. **Express Interest:**
+   - Click "I'm interested" on any collab post (except own)
+   - Join waitlist for popular projects
+   - View own interest status
+
+#### For Collab Post Creators
+1. **Create Collab Post:**
+   - Upload cover image (16:9 recommended, PNG/JPG up to 5MB)
+   - Enter title (min 3 chars, max 200 chars)
+   - Write summary/idea description (min 10 chars, max 5000 chars)
+   - Add multiple tags (max 10 tags)
+   - Set status (open/closed/draft)
+
+2. **Manage Collab Posts:**
+   - View all own collab posts
+   - Edit existing posts (title, summary, tags, cover)
+   - View list of interested users with profiles
+   - View list of collaborators
+   - Add collaborators from interested users
+   - Remove collaborators
+   - Close collaboration when complete
+   - Delete collab posts
+
+3. **Collaborator Management:**
+   - View all users who expressed interest
+   - Add users as collaborators with role and department
+   - Chat with collaborators (future feature)
+   - Organize team members by role/department
 
 ### Backend Implementation
-- **Tables:** 4 new tables (collab_posts, collab_tags, collab_interests, collab_collaborators)
-- **Storage:** 1 new bucket (collab-covers)
-- **API Endpoints:** 14 new endpoints
-- **RLS Policies:** 17 new security policies
-- **Indexes:** 15+ new performance indexes
+
+#### Database Tables (4 New Tables)
+
+**1. collab_posts (Main table)**
+- `id` (UUID, PK) - Unique post identifier
+- `user_id` (UUID, FK → auth.users) - Post creator
+- `title` (TEXT, NOT NULL) - Post title
+- `slug` (TEXT, NOT NULL, UNIQUE) - URL-friendly identifier
+- `summary` (TEXT, NOT NULL) - Project description
+- `cover_image_url` (TEXT) - Supabase Storage URL
+- `status` (TEXT) - "open" | "closed" | "draft"
+- `created_at` (TIMESTAMP) - Creation timestamp
+- `updated_at` (TIMESTAMP) - Last update timestamp
+
+**2. collab_tags (Tags system)**
+- `id` (UUID, PK)
+- `collab_id` (UUID, FK → collab_posts)
+- `tag_name` (TEXT, NOT NULL)
+- `created_at` (TIMESTAMP)
+- **Constraint:** UNIQUE(collab_id, tag_name)
+
+**3. collab_interests (Interest tracking)**
+- `id` (UUID, PK)
+- `collab_id` (UUID, FK → collab_posts)
+- `user_id` (UUID, FK → auth.users)
+- `created_at` (TIMESTAMP)
+- **Constraint:** UNIQUE(collab_id, user_id) - One interest per user per collab
+
+**4. collab_collaborators (Team members)**
+- `id` (UUID, PK)
+- `collab_id` (UUID, FK → collab_posts)
+- `user_id` (UUID, FK → auth.users)
+- `role` (TEXT) - Collaborator role (Designer, Editor, etc.)
+- `department` (TEXT) - Department/specialty (Creative, Engineering, etc.)
+- `added_at` (TIMESTAMP)
+- `added_by` (UUID, FK → auth.users) - Who added them
+- **Constraint:** UNIQUE(collab_id, user_id)
+
+#### Storage Bucket
+
+**collab-covers/ (Public)**
+- **Purpose:** Cover images for collab posts
+- **Max Size:** 5 MB
+- **Allowed Types:** PNG, JPG, JPEG
+- **Path Structure:** `{user_id}/{collab_id}/{filename}`
+- **Access Control:**
+  - Public read access (anyone can view)
+  - Authenticated write to own folder
+  - File size validation enforced
+  - Type validation enforced
+
+#### API Endpoints (14 Total)
+
+**CRUD Operations (6 endpoints):**
+1. `POST /api/collab` - Create new collab post
+2. `GET /api/collab` - List all collab posts (public feed with pagination)
+3. `GET /api/collab/my` - Get my collab posts
+4. `GET /api/collab/[id]` - Get specific collab details
+5. `PATCH /api/collab/[id]` - Update collab post (owner only)
+6. `DELETE /api/collab/[id]` - Delete collab post (owner only)
+
+**Interest Management (3 endpoints):**
+7. `POST /api/collab/[id]/interest` - Express interest (not on own posts)
+8. `DELETE /api/collab/[id]/interest` - Remove interest
+9. `GET /api/collab/[id]/interests` - List interested users (owner only)
+
+**Collaborator Management (3 endpoints):**
+10. `GET /api/collab/[id]/collaborators` - List collaborators (public)
+11. `POST /api/collab/[id]/collaborators` - Add collaborator (owner only)
+12. `DELETE /api/collab/[id]/collaborators/[userId]` - Remove collaborator (owner only)
+
+**Additional Features (2 endpoints):**
+13. `PATCH /api/collab/[id]/close` - Close collab (owner only)
+14. `POST /api/upload/collab-cover` - Upload cover image
+
+#### Row Level Security (17 Policies)
+
+**collab_posts:**
+- ✅ Public can view open/closed posts
+- ✅ Users can view own drafts
+- ✅ Authenticated users can create posts
+- ✅ Only owners can update their posts
+- ✅ Only owners can delete their posts
+
+**collab_tags:**
+- ✅ Public can view tags
+- ✅ Only post owner can add tags
+- ✅ Only post owner can delete tags
+
+**collab_interests:**
+- ✅ Users can express interest (validation: not on own posts)
+- ✅ Users can remove own interest
+- ✅ Owners can view all interests on their posts
+- ✅ Users can view own interests
+
+**collab_collaborators:**
+- ✅ Public can view collaborators
+- ✅ Only owners can add collaborators
+- ✅ Only owners can remove collaborators
+
+#### Performance Indexes (15+)
+
+**collab_posts indexes:**
+- `idx_collab_posts_user_id` ON `user_id` (filter by creator)
+- `idx_collab_posts_status` ON `status` (filter by status)
+- `idx_collab_posts_created_at` ON `created_at DESC` (sort by date)
+- `idx_collab_posts_slug` ON `slug` (lookup by slug)
+- Full-text search index on `title` and `summary`
+
+**collab_tags indexes:**
+- `idx_collab_tags_collab_id` ON `collab_id` (join with posts)
+- `idx_collab_tags_tag_name` ON `tag_name` (filter by tag)
+
+**collab_interests indexes:**
+- `idx_collab_interests_collab_id` ON `collab_id` (count interests)
+- `idx_collab_interests_user_id` ON `user_id` (user's interests)
+- Composite index for unique constraint
+
+**collab_collaborators indexes:**
+- `idx_collab_collaborators_collab_id` ON `collab_id` (list team)
+- `idx_collab_collaborators_user_id` ON `user_id` (user's collabs)
+
+### API Request/Response Examples
+
+#### Create Collab Post
+**Request:**
+```json
+POST /api/collab
+{
+  "title": "Midnight Circus | Horror Launch",
+  "summary": "Enter a chilling world of suspense and terror...",
+  "tags": ["film writing", "screenplay", "creativity", "collaboration"],
+  "cover_image_url": "https://project.supabase.co/storage/v1/object/public/collab-covers/...",
+  "status": "open"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Collab post created successfully",
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "slug": "midnight-circus-horror-launch",
+    "title": "Midnight Circus | Horror Launch",
+    "summary": "Enter a chilling world of suspense and terror...",
+    "tags": ["film writing", "screenplay", "creativity", "collaboration"],
+    "cover_image_url": "https://...",
+    "status": "open",
+    "created_at": "2025-01-15T10:00:00.000Z",
+    "updated_at": "2025-01-15T10:00:00.000Z"
+  }
+}
+```
+
+#### List Collab Posts (with filters)
+**Request:**
+```
+GET /api/collab?page=1&limit=20&status=open&tag=screenplay&sortBy=interests
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "collabs": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "title": "Midnight Circus | Horror Launch",
+        "slug": "midnight-circus-horror-launch",
+        "summary": "Enter a chilling world of suspense and terror...",
+        "tags": ["film writing", "screenplay", "creativity"],
+        "cover_image_url": "https://...",
+        "status": "open",
+        "interests": 18,
+        "interestAvatars": ["https://avatar1.jpg", "https://avatar2.jpg", "https://avatar3.jpg"],
+        "author": {
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "name": "Michael Molar",
+          "avatar": "https://avatar.jpg"
+        },
+        "created_at": "2025-01-15T10:00:00.000Z",
+        "updated_at": "2025-01-15T10:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 5,
+      "totalCollabs": 87,
+      "limit": 20,
+      "hasNextPage": true,
+      "hasPrevPage": false
+    }
+  }
+}
+```
+
+### Data Relationships
+
+```
+auth.users (Supabase Auth)
+    │
+    ├──[1:N]──> collab_posts (Created collabs)
+    │               │
+    │               ├──[1:N]──> collab_tags (Tags for categorization)
+    │               ├──[1:N]──> collab_interests (Users who expressed interest)
+    │               └──[1:N]──> collab_collaborators (Team members)
+    │
+    ├──[1:N]──> collab_interests (Expressed interests)
+    └──[1:N]──> collab_collaborators (Collaborations)
+```
+
+### Data Flow Examples
+
+#### Creating a Collab Post
+```
+1. User uploads cover image → POST /api/upload/collab-cover
+2. Backend validates file (size < 5MB, type = PNG/JPG)
+3. Backend stores in collab-covers/{user_id}/{temp-id}/{filename}
+4. Backend returns public URL
+5. User submits form → POST /api/collab with cover URL
+6. Backend validates auth and required fields
+7. Backend generates URL-friendly slug from title
+8. Backend inserts into collab_posts
+9. Backend inserts tags into collab_tags (batch insert)
+10. Backend returns complete collab object with slug
+11. Frontend redirects to /collab/manage-collab
+```
+
+#### Expressing Interest
+```
+1. User clicks "I'm interested" → POST /api/collab/[id]/interest
+2. Backend validates:
+   - User is authenticated
+   - Collab exists and is open
+   - User is not the owner (RLS check)
+   - User hasn't already expressed interest (unique constraint)
+3. Backend inserts into collab_interests
+4. Backend creates notification for collab owner
+5. Backend counts total interests
+6. Backend returns updated interest count
+7. Frontend updates button to "Waitlisted" with new count
+8. Frontend updates interest avatars list
+```
+
+#### Viewing Collab Details
+```
+1. Request GET /api/collab/[id]
+2. Backend queries collab_posts with JOIN to user_profiles (author data)
+3. Backend queries collab_tags (array of tag names)
+4. Backend counts collab_interests + fetches first 3 avatars
+5. If authenticated:
+   - Check if user expressed interest (userHasInterest flag)
+   - Check if user is owner (isOwner flag)
+6. If requester is owner:
+   - Include full list of collab_collaborators with user profiles
+7. Backend combines all data into complete object
+8. Frontend renders collab details with conditional UI
+```
+
+#### Adding a Collaborator
+```
+1. Owner views interested users → GET /api/collab/[id]/interests
+2. Backend validates ownership (RLS)
+3. Backend returns paginated list with user profiles
+4. Owner clicks "Add" on a user → POST /api/collab/[id]/collaborators
+5. Backend validates:
+   - User is owner
+   - Target user exists
+   - Target user not already a collaborator
+6. Backend inserts into collab_collaborators with role/department
+7. Backend creates notification for added user
+8. Backend returns collaborator object
+9. Frontend updates collaborator list and removes from interests
+```
+
+### Validation Rules
+
+**Cover Image Upload:**
+- Max file size: 5 MB
+- Allowed types: PNG, JPG, JPEG only
+- Recommended aspect ratio: 16:9
+- Path validation: user must own the folder
+
+**Collab Post Creation:**
+- `title`: Required, 3-200 characters
+- `summary`: Required, 10-5000 characters
+- `tags`: Optional, array, max 10 tags
+- `cover_image_url`: Optional, valid URL from collab-covers bucket
+- `status`: Enum ("open" | "closed" | "draft"), defaults to "open"
+
+**Express Interest:**
+- Cannot express interest on own posts (RLS check)
+- Cannot duplicate interest (unique constraint)
+- Collab must be "open" status
+
+**Add Collaborator:**
+- Must be collab owner (RLS check)
+- Target user must exist
+- Cannot add duplicate collaborator (unique constraint)
+- Role and department are optional
 
 ### Implementation Guide
 See complete step-by-step implementation guide:
-- **`backend-command/collab/README.md`** - Start here
-- **`backend-command/collab/00_ANALYSIS.md`** - Frontend analysis
-- **`backend-command/collab/01_CREATE_TABLES.sql`** - Database tables
-- **`backend-command/collab/02_RLS_POLICIES.sql`** - Security policies
-- **`backend-command/collab/03_INDEXES.sql`** - Performance indexes
-- **`backend-command/collab/04_STORAGE_BUCKET.sql`** - Storage setup
-- **`backend-command/collab/05_IMPLEMENTATION_PLAN.md`** - Implementation steps
-- **`backend-command/collab/06_API_ENDPOINTS.md`** - API documentation
-- **`backend-command/collab/07_QUICK_REFERENCE.md`** - Quick reference
+- **`backend-command/collab/README.md`** - Overview and quick start (START HERE)
+- **`backend-command/collab/00_ANALYSIS.md`** - Frontend analysis and requirements
+- **`backend-command/collab/01_CREATE_TABLES.sql`** - Database table creation SQL
+- **`backend-command/collab/02_RLS_POLICIES.sql`** - Row Level Security policies SQL
+- **`backend-command/collab/03_INDEXES.sql`** - Performance optimization indexes SQL
+- **`backend-command/collab/04_STORAGE_BUCKET.sql`** - Storage bucket setup SQL
+- **`backend-command/collab/05_IMPLEMENTATION_PLAN.md`** - Step-by-step implementation guide
+- **`backend-command/collab/06_API_ENDPOINTS.md`** - Complete API documentation with examples
+- **`backend-command/collab/07_QUICK_REFERENCE.md`** - Quick reference for common tasks
+
+### Implementation Checklist
+
+**Phase 1: Database Setup**
+- [ ] Execute 01_CREATE_TABLES.sql (creates 4 tables)
+- [ ] Execute 02_RLS_POLICIES.sql (applies 17 security policies)
+- [ ] Execute 03_INDEXES.sql (creates 15+ performance indexes)
+- [ ] Execute 04_STORAGE_BUCKET.sql (creates collab-covers bucket)
+- [ ] Verify tables exist and have correct schema
+- [ ] Verify RLS policies are active
+- [ ] Verify indexes are created
+- [ ] Verify storage bucket is configured
+
+**Phase 2: API Implementation**
+- [ ] Create /api/collab route structure
+- [ ] Implement POST /api/collab (create collab)
+- [ ] Implement GET /api/collab (list with filters)
+- [ ] Implement GET /api/collab/my (user's collabs)
+- [ ] Implement GET /api/collab/[id] (details)
+- [ ] Implement PATCH /api/collab/[id] (update)
+- [ ] Implement DELETE /api/collab/[id] (delete)
+- [ ] Implement interest endpoints (POST, DELETE, GET)
+- [ ] Implement collaborator endpoints (GET, POST, DELETE)
+- [ ] Implement PATCH /api/collab/[id]/close
+- [ ] Implement POST /api/upload/collab-cover
+
+**Phase 3: Frontend Integration**
+- [ ] Create API utility functions in frontend
+- [ ] Update /collab page (replace hardcoded data)
+- [ ] Update /collab/manage-collab page
+- [ ] Update /collab/manage-collab/[id] page
+- [ ] Add loading states and error handling
+- [ ] Test all user flows end-to-end
+
+**Phase 4: Testing & Optimization**
+- [ ] Test create/edit/delete collab posts
+- [ ] Test express/remove interest
+- [ ] Test add/remove collaborators
+- [ ] Test RLS policies (try unauthorized actions)
+- [ ] Test file upload validation
+- [ ] Performance test with large dataset (100+ posts)
+- [ ] Test pagination and filters
 
 ### Implementation Status
 - ✅ Frontend UI complete with hardcoded data
-- ✅ Backend architecture designed
-- ✅ Database schema created
-- ✅ RLS policies designed
-- ✅ API endpoints documented
-- ✅ Implementation plan ready
-- ⏳ Database migration pending (run SQL files)
-- ⏳ API implementation pending
+- ✅ Backend architecture designed and documented
+- ✅ Database schema created (4 tables, complete SQL)
+- ✅ RLS policies designed (17 policies, complete SQL)
+- ✅ Performance indexes designed (15+ indexes, complete SQL)
+- ✅ Storage bucket configured (complete SQL)
+- ✅ API endpoints documented (14 endpoints with examples)
+- ✅ Implementation plan ready (step-by-step guide)
+- ⏳ Database migration pending (run SQL files in order)
+- ⏳ API routes implementation pending
 - ⏳ Frontend-backend integration pending
+
+### Integration with Existing System
+The collab feature integrates seamlessly with:
+- **auth.users** - User authentication and profiles
+- **user_profiles** - User names, avatars, bio for display
+- **notifications** - Optional notifications for interests and collaborator additions
+- **Storage system** - Uses existing Supabase Storage infrastructure
+
+### Security Features
+- ✅ Row Level Security (RLS) on all tables
+- ✅ JWT token authentication via Supabase Auth
+- ✅ Ownership validation (users can only modify own posts)
+- ✅ File upload validation (size, type, ownership)
+- ✅ Anti-fraud (cannot express interest on own posts)
+- ✅ Unique constraints (no duplicate interests/collaborators)
+- ✅ Public read for open posts, private for drafts
+
+### Performance Features
+- ✅ Database indexes on all foreign keys
+- ✅ Composite indexes for common queries
+- ✅ Full-text search indexes for title/summary
+- ✅ Pagination support on all list endpoints
+- ✅ Query optimization with selective field fetching
+- ✅ Storage optimization (5MB limit, optimized paths)
+
+---
+
+## 🆕 What's New in Version 2.2
+
+### Collab/Collaboration Feature ⭐ NEW
+- ✅ Complete frontend UI for collaboration platform
+- ✅ Designed 4 new database tables (collab_posts, collab_tags, collab_interests, collab_collaborators)
+- ✅ Created 17 Row Level Security policies for data protection
+- ✅ Designed 15+ performance indexes for fast queries
+- ✅ Configured collab-covers storage bucket (5MB, PNG/JPG)
+- ✅ Documented 14 new API endpoints with request/response examples
+- ✅ Created comprehensive implementation guide with SQL scripts
+- ✅ Validation rules, data flow examples, and integration patterns documented
+- ⏳ Database migration pending (run SQL files)
+- ⏳ API routes implementation pending
+- ⏳ Frontend-backend integration pending
+
+**Key Features:**
+- Post project ideas with cover images and tags
+- Browse collab feed with search and filters
+- Express interest in projects with notifications
+- Manage collaborators with roles and departments
+- Track status (open/closed/draft)
+- Full CRUD operations with proper security
+
+**Documentation Files:** 8 comprehensive guides in `backend-command/collab/`
 
 ---
 
@@ -1301,13 +1741,14 @@ Refer to the following documents for detailed information:
 
 ---
 
-**Document Version:** 2.1.0  
+**Document Version:** 2.2.0  
 **Last Updated:** January 2025  
-**Backend Status:** ✅ Production Ready (Profile Schema) | ⏳ Explore Feature (Implementation Planned)  
-**Database Schema:** ✅ 18 Tables (10 Profile + 8 Gigs/Apps) | ⏳ +6 Fields for Explore  
-**API Endpoints:** ✅ 40+ Existing | ⏳ +3 Explore Endpoints Planned
+**Backend Status:** ✅ Production Ready (Profile Schema) | ⏳ Explore Feature (Planned) | ⏳ Collab Feature (Ready for Implementation)  
+**Database Schema:** ✅ 18 Tables (10 Profile + 8 Gigs/Apps) | ⭐ +4 Tables for Collab v2.2 | ⏳ +6 Fields for Explore  
+**API Endpoints:** ✅ 40+ Existing | ⭐ +14 Collab Endpoints (Documented) | ⏳ +3 Explore Endpoints (Planned)
 
 ### Recent Updates
+- **v2.2 (Collab Feature):** ⭐ NEW - Complete collaboration platform with 4 tables, 14 endpoints, 17 RLS policies, comprehensive documentation
 - **v2.1 (Explore/Search):** Added comprehensive implementation plan for crew directory feature
 - **v2.0 (Profile Schema):** Enhanced profile system with 8 new tables and advanced features
 - **v1.0 (Core System):** Initial gigs, applications, and authentication system
