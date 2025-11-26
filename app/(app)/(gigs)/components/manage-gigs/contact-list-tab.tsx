@@ -52,48 +52,50 @@ export function ContactListTab({ selectedGigIds }: ContactListTabProps) {
 
                     <div className="space-y-6">
                         {contactGroups.map((group) => (
-                            <div key={`${gig.id}-${group.id}`} className="overflow-hidden rounded-2xl border border-gray-200">
-                                <div className="grid grid-cols-[180px_1fr] border-b border-gray-200 bg-gray-50 text-base">
-                                    <p className="px-4 py-3 font-semibold text-gray-900">Department</p>
-                                    <p className="px-4 py-3 text-gray-700">{group.department}</p>
-                                </div>
-                                <div className="grid grid-cols-[180px_1fr] border-b border-gray-200 bg-white text-base">
-                                    <p className="px-4 py-3 font-semibold text-gray-900">Role</p>
-                                    <p className="px-4 py-3 text-gray-700">{group.summary}</p>
-                                </div>
-                                <div className="grid grid-cols-[180px_repeat(4,minmax(0,1fr))] bg-gray-50 text-sm font-semibold text-gray-900">
-                                    <p className="px-4 py-3">Role</p>
-                                    <p className="px-4 py-3">Company</p>
-                                    <p className="px-4 py-3">Name</p>
-                                    <p className="px-4 py-3">Phone</p>
-                                    <p className="px-4 py-3">Email ID</p>
-                                </div>
-                                {group.entries.map((entry, index) => (
-                                    <div
-                                        key={`${group.id}-${entry.person.id}-${index}`}
-                                        className="grid grid-cols-[180px_repeat(4,minmax(0,1fr))] border-t border-gray-200 bg-white text-sm text-gray-700"
-                                    >
-                                        <p className="px-4 py-4 text-gray-600">{entry.role}</p>
-                                        <p className="px-4 py-4 text-gray-600">{entry.company}</p>
-                                        <div className="flex items-center gap-3 px-4 py-4">
-                                            <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
-                                                <Image
-                                                    src={entry.person.avatar}
-                                                    alt={entry.person.name}
-                                                    width={40}
-                                                    height={40}
-                                                    className="h-full w-full object-cover"
-                                                />
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-gray-900">{entry.person.name}</p>
-                                                <p className="text-xs text-gray-500">{entry.person.city}</p>
-                                            </div>
-                                        </div>
-                                        <p className="px-4 py-4 font-medium text-gray-900">{entry.person.phone}</p>
-                                        <p className="px-4 py-4 text-gray-600">{entry.person.email}</p>
+                            <div key={`${gig.id}-${group.id}`} className="overflow-x-auto rounded-2xl border border-gray-200">
+                                <div className="min-w-[720px]">
+                                    <div className="grid grid-cols-[160px_1fr] border-b border-gray-200 bg-gray-50 text-base">
+                                        <p className="px-4 py-3 font-semibold text-gray-900">Department</p>
+                                        <p className="px-4 py-3 text-gray-700">{group.department}</p>
                                     </div>
-                                ))}
+                                    <div className="grid grid-cols-[160px_1fr] border-b border-gray-200 bg-white text-base">
+                                        <p className="px-4 py-3 font-semibold text-gray-900">Role</p>
+                                        <p className="px-4 py-3 text-gray-700">{group.summary}</p>
+                                    </div>
+                                    <div className="grid grid-cols-[160px_repeat(4,minmax(0,1fr))] bg-gray-50 text-sm font-semibold text-gray-900">
+                                        <p className="px-4 py-3">Role</p>
+                                        <p className="px-4 py-3">Company</p>
+                                        <p className="px-4 py-3">Name</p>
+                                        <p className="px-4 py-3">Phone</p>
+                                        <p className="px-4 py-3">Email ID</p>
+                                    </div>
+                                    {group.entries.map((entry, index) => (
+                                        <div
+                                            key={`${group.id}-${entry.person.id}-${index}`}
+                                            className="grid grid-cols-[160px_repeat(4,minmax(0,1fr))] border-t border-gray-200 bg-white text-sm text-gray-700"
+                                        >
+                                            <p className="px-4 py-4 text-gray-600">{entry.role}</p>
+                                            <p className="px-4 py-4 text-gray-600">{entry.company}</p>
+                                            <div className="flex items-center gap-3 px-4 py-4">
+                                                <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
+                                                    <Image
+                                                        src={entry.person.avatar}
+                                                        alt={entry.person.name}
+                                                        width={40}
+                                                        height={40}
+                                                        className="h-full w-full object-cover"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">{entry.person.name}</p>
+                                                    <p className="text-xs text-gray-500">{entry.person.city}</p>
+                                                </div>
+                                            </div>
+                                            <p className="px-4 py-4 font-medium text-gray-900">{entry.person.phone}</p>
+                                            <p className="px-4 py-4 text-gray-600">{entry.person.email}</p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         ))}
                     </div>
