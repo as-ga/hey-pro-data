@@ -260,11 +260,20 @@ export default function Profile() {
   )
 }
 
-function SkillItem({ title, description }: { title: string; description?: string }) {
+function SkillItem({ department, role, description, experience }: { department: string; role: string; description?: string; experience?: { value: string; title: string; description: string; } }) {
   return (
     <div className="space-y-2">
-      <h3 className="text-base font-semibold text-[#000] sm:text-lg">{title}</h3>
+      <h3 className="text-base font-[400] text-[#000] sm:text-lg">{department} <span className="text-5xl">.</span> {role}</h3>
       {description && <p className="text-sm leading-relaxed text-[#444444]">{description}</p>}
+      {experience && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <h4 className="text-sm font-[600] text-[#000] ml-10">{experience.title}</h4>
+            <p className="text-sm leading-relaxed text-[#444444]">{experience.description}</p>
+
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -316,7 +325,7 @@ function AboutSection({ Profile: profile }: { Profile: { about: string } }) {
   )
 }
 
-function SkillsSection({ Profile: profile }: { Profile: { skills: { id: string, skillName: string, description: string }[] } }) {
+function SkillsSection({ Profile: profile }: { Profile: { skills: { id: string, department: string, role: string, description: string, experience?: { value: string; title: string; description: string; } }[] } }) {
   return (
     <div className="w-full rounded-[20px] bg-[#FAFAFA] px-6 py-7 shadow-[0_1px_10px_rgba(0,0,0,0.1)] sm:px-10 sm:py-9">
       <div className="mb-5 flex items-center justify-between">
@@ -332,7 +341,7 @@ function SkillsSection({ Profile: profile }: { Profile: { skills: { id: string, 
       </div>
       <div className="space-y-4">
         {profile.skills.map((skill, index) => (
-          <SkillItem key={index} title={skill.skillName} description={skill.description} />
+          <SkillItem key={index} department={skill.department} role={skill.role} description={skill.description} experience={skill.experience} />
         ))}
       </div>
     </div>

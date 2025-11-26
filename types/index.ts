@@ -38,7 +38,15 @@ export type ProfileDataTypes = {
   about: string;
   skills: {
     id: number | string;
-    skillName: string;
+    department: string;
+    role: string;
+    experience: {
+      value: string;
+      title: string;
+      description: string;
+    };
+    rate?: string;
+    isPublic?: boolean;
     description: string;
   }[];
   roles: string[];

@@ -1,3 +1,4 @@
+
 export const profileData = {
     id: "1",
     avtar: "/image (2).png",
@@ -44,21 +45,47 @@ export const profileData = {
     skills: [
         {
             id: "1",
-            skillName: "Cinematography",
+            department: "Cinematography",
+            role: "Director of Photography",
             description:
                 "the art and science of capturing moving images for films and television, serving as visual storytelling",
+            experience: {
+                value: "intern",
+                title: "Intern",
+                description: "helped on set, shadowed role",
+            },
+            rate: "$500 per day",
+            isPublic: true,
+
         },
         {
             id: "2",
-            skillName: "Color Grading",
+            department: "Editing",
+            role: "Color Grading",
             description:
                 "a post-production process that involves the artistic manipulation of an image's or video's color to cre...",
+            experience: {
+                value: "learning",
+                title: "Learning | Assisted",
+                description: "assisted the role under supervision",
+            },
+            rate: "$500 per day",
+            isPublic: true,
         },
         {
             id: "3",
-            skillName: "Editing",
+            department: "Editing",
+            role: "Editor",
             description: "",
+            experience: {
+                value: "competent",
+                title: "Competent | Independent",
+                description: "can handle role solo",
+            },
+            rate: "$500 per day",
+            isPublic: true,
         },
+
     ],
     roles: ["Director", "Cinematographer", "Editor", "Producer", "Screenwriter"],
     positions: ["Freelance Cinematographer", "Founder • HeyProData • Film Tech SaaS",],

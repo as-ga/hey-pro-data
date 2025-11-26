@@ -4,7 +4,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
     Dialog,
     DialogContent,
@@ -12,7 +11,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Menu, X, GripVertical } from "lucide-react";
+import { Menu, GripVertical } from "lucide-react";
 import {
     DndContext,
     closestCenter,
@@ -31,12 +30,58 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { toast } from "sonner";
+import SkillFormCard from "./SkillFormCard";
 
 export interface Skill {
     id: string;
-    skillName: string;
+    department: string;
+    role: string;
     description: string;
+    experience?: { value: string; title: string; description: string; };
+    rate?: string;
+    isPublic?: boolean;
 }
+
+const experienceOptions = [
+    {
+        value: "intern",
+        title: "Intern",
+        description: "helped on set, shadowed role",
+    },
+    {
+        value: "learning",
+        title: "Learning | Assisted",
+        description: "assisted the role under supervision",
+    },
+    {
+        value: "competent",
+        title: "Competent | Independent",
+        description: "can handle role solo",
+    },
+    {
+        value: "expert",
+        title: "Expert | Lead",
+        description: "leads team, multiple projects",
+    },
+]
+
+const primarySkillOptions = [
+    "Camera",
+    "Lighting",
+    "Sound",
+    "Production",
+    "Cinematography",
+    "Color Grading",
+    "Editing",
+]
+
+const specialtyOptions = [
+    "Camera Operator",
+    "Assistant",
+    "Director of Photography",
+    "Producer",
+    "Editor",
+]
 
 function SortableSkillItem({ skill }: { skill: Skill }) {
     const {
@@ -68,7 +113,7 @@ function SortableSkillItem({ skill }: { skill: Skill }) {
                 <GripVertical className="h-6 w-6 text-gray-400" />
             </div>
             <div className="flex-1">
-                <p className="font-medium text-gray-900">{skill.skillName}</p>
+                <p className="font-medium text-gray-900">{skill.department} . {skill.role}</p>
                 <p className="text-sm text-gray-500 line-clamp-1">
                     {skill.description || "No description"}
                 </p>
@@ -83,10 +128,18 @@ interface SkillEditorProps {
 }
 
 export default function SkillEditor({ initialSkills, trigger }: SkillEditorProps) {
-    const [skills, setSkills] = useState<Skill[]>(initialSkills);
+    const hydrateSkill = (skill: Skill): Skill => ({
+        ...skill,
+        experience: skill.experience ?? { value: "intern", title: "Intern", description: "helped on set, shadowed role" },
+        rate: skill.rate ?? "",
+        isPublic: skill.isPublic ?? true,
+    });
+
+    const [skills, setSkills] = useState<Skill[]>(initialSkills.map(hydrateSkill));
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isReorderOpen, setIsReorderOpen] = useState(false);
     const [tempSkills, setTempSkills] = useState<Skill[]>([]);
+    const [experienceVisibility, setExperienceVisibility] = useState<Record<string, boolean>>({});
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -118,31 +171,30 @@ export default function SkillEditor({ initialSkills, trigger }: SkillEditorProps
         toast.success("Skill order saved!");
     };
 
-    const handleAddSkill = () => {
-        toast.success("Skill added!");
-        const newSkill: Skill = {
-            id: Date.now().toString(),
-            skillName: "",
-            description: "",
-        };
-        setSkills([...skills, newSkill]);
-    };
+
 
     const handleRemoveSkill = (id: string) => {
         toast.success("Skill removed!");
         setSkills(skills.filter((skill) => skill.id !== id));
     };
 
-    const handleSkillChange = (
+    const handleSkillChange = <K extends keyof Skill>(
         id: string,
-        field: "skillName" | "description",
-        value: string
+        field: K,
+        value: Skill[K]
     ) => {
         setSkills(
             skills.map((skill) =>
                 skill.id === id ? { ...skill, [field]: value } : skill
             )
         );
+    };
+
+    const toggleExperienceSection = (id: string) => {
+        setExperienceVisibility((prev) => ({
+            ...prev,
+            [id]: !(prev[id] ?? true),
+        }));
     };
     const handleSaveChanges = () => {
         setIsDialogOpen(false);
@@ -152,7 +204,7 @@ export default function SkillEditor({ initialSkills, trigger }: SkillEditorProps
 
     const handleCancel = () => {
         // Reset skills to initial state if user cancels
-        setSkills(initialSkills);
+        setSkills(initialSkills.map(hydrateSkill));
         setIsDialogOpen(false);
     };
 
@@ -160,90 +212,66 @@ export default function SkillEditor({ initialSkills, trigger }: SkillEditorProps
         <>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>{trigger}</DialogTrigger>
-                <DialogContent className="max-w-4xl w-auto mx-auto h-[90vh] flex flex-col">
-                    <DialogHeader className="p-0 sm:p-1 md:p-1 pb-0">
-                        <h1 className="text-2xl font-normal text-gray-900 mb-0">
-                            Edit Skills
-                        </h1>
-                        <p className="text-base text-gray-600 mb-3 ">
-                            You can write about your years of experience, industry, or skills.
-                            People also talk about their achievements or previous job
-                            experiences.
-                        </p>
-                        <div className="flex flex-wrap gap-3 mb-1">
-                            <Button
-                                onClick={handleReorderClick}
-                                variant="outline"
-                                className="flex items-center h-10 gap-2 px-6 py-3 text-base border-2 border-cyan-500 text-cyan-600 hover:bg-cyan-50 rounded-2xl bg-transparent"
-                            >
-                                <Menu className="h-5 w-5" />
-                                Reorder
-                            </Button>
-                            <Button
-                                onClick={handleAddSkill}
-                                variant="outline"
-                                className="flex items-center h-10 gap-2 px-6 py-3 text-base border-2 border-cyan-500 text-cyan-600 hover:bg-cyan-50 rounded-2xl bg-transparent"
-                            >
-                                <Plus className="h-5 w-5" />
-                                Add Skill
-                            </Button>
-                        </div>
-                    </DialogHeader>
+                <DialogContent className="w-[560px] h-[874px] overflow-x-auto rounded-[15px] border-0 p-0 shadow-[2px_3px_8px_rgba(0,0,0,0.09)]">
+                    <div className="flex  flex-col">
+                        <div className="flex-1 overflow-y-auto">
+                            <div className="flex flex-col gap-[35px] bg-white p-[30px]">
+                                <div className="space-y-3">
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
+                                        <div>
+                                            <h1 className="text-[22px] font-normal leading-[33px] text-black">
+                                                Edit Skills
+                                            </h1>
+                                            <p className="mt-1 max-w-[484px] text-xs leading-[18px] text-[#181818]">
+                                                You can write about your years of experience, industry, or skills. People also talk about their achievements or previous job experiences.
+                                            </p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                onClick={handleReorderClick}
+                                                variant="outline"
+                                                className="flex items-center gap-2 rounded-xl border border-[#31A7AC] px-4 py-2 text-sm text-[#31A7AC] hover:bg-[#E7FAFC]"
+                                            >
+                                                <Menu className="h-4 w-4" />
+                                                Reorder
+                                            </Button>
 
-                    <div className="flex-1 overflow-y-auto px-6 sm:px-8 md:px-10">
-                        {/* Skills List */}
-                        <div className="space-y-6 mb-8">
-                            {skills.map((skill) => (
-                                <div key={skill.id} className="space-y-3">
-                                    <div className="flex w-full  items-center gap-2 border border-[#31A7AC] rounded-full">
-                                        <input
-                                            value={skill.skillName}
-                                            onChange={(e) =>
-                                                handleSkillChange(skill.id, "skillName", e.target.value)
-                                            }
-                                            placeholder="Skill name"
-                                            className="flex-1 h-10 px-6 py-6 text-base border-none border-gray-300 rounded-full focus:border-none focus:ring-none focus:outline-none "
-                                        />
-                                        <Button
-                                            onClick={() => handleRemoveSkill(skill.id)}
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-12 w-12 text-red-500 hover:bg-red-50 rounded-full"
-                                        >
-                                            <X className="h-5 w-5" />
-                                        </Button>
+                                        </div>
                                     </div>
-                                    <Textarea
-                                        value={skill.description}
-                                        onChange={(e) =>
-                                            handleSkillChange(skill.id, "description", e.target.value)
-                                        }
-                                        placeholder="Write skill description..."
-                                        className="min-h-[120px] px-6 py-4 text-base border-2 border-gray-500 rounded-3xl focus:border-[#31A7AC] focus:outline-none focus:ring-none resize-none"
-                                    />
-                                    {skill !== skills[skills.length - 1] && (
-                                        <div className="border-t border-gray-200 mt-2" />
-                                    )}
                                 </div>
-                            ))}
-                        </div>
-                    </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col justify-start sm:flex-row gap-4 p-3 sm:p-4 md:p-5 pt-6 border-t">
-                        <Button
-                            onClick={handleCancel}
-                            variant="outline"
-                            className="flex-1 py-3 h-15 text-lg border-2 border-[#FA6E80] text-[#FA6E80]  rounded-2xl bg-transparent"
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={handleSaveChanges}
-                            className="flex-1 py-3 h-15 text-lg bg-[#FA6E80] text-white rounded-2xl"
-                        >
-                            Save
-                        </Button>
+                                <div className="space-y-8">
+                                    {skills.map((skill) => (
+                                        <SkillFormCard
+                                            key={skill.id}
+                                            skill={skill}
+                                            isExperienceOpen={experienceVisibility[skill.id] ?? true}
+                                            experienceOptions={experienceOptions}
+                                            primarySkillOptions={primarySkillOptions}
+                                            specialtyOptions={specialtyOptions}
+                                            onFieldChange={(field, value) => handleSkillChange(skill.id, field, value)}
+                                            onToggleExperience={() => toggleExperienceSection(skill.id)}
+                                            onRemove={() => handleRemoveSkill(skill.id)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-end gap-6 border-t border-[#C8C8C8] px-[30px] py-4">
+                            <Button
+                                onClick={handleCancel}
+                                variant="outline"
+                                className="h-[47px] min-w-[120px] rounded-[10px] border border-[#FA6E80] px-6 text-sm font-semibold text-[#FA6E80] hover:bg-[#FFF3F5]"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleSaveChanges}
+                                className="h-[47px] min-w-[120px] rounded-[10px] bg-[#FA6E80] px-6 text-sm font-semibold text-white hover:bg-[#f2576b]"
+                            >
+                                Save
+                            </Button>
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>
