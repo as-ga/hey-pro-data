@@ -196,9 +196,6 @@ export default function Profile() {
                     <DialogTitle className="text-lg sm:text-xl font-bold">Reorder Sections</DialogTitle>
                   </DialogHeader>
                   <div className="mt-4">
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Drag and drop to reorder the sections on your profile
-                    </p>
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                       <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
                         <div className="space-y-2">
@@ -241,7 +238,7 @@ export default function Profile() {
                 <div className="mt-4">
                   <div className="flex gap-4 overflow-x-auto pb-4 px-4">
                     {highlights.map((highlight) => (
-                      <div key={highlight.id} className="flex-shrink-0 w-[260px]">
+                      <div key={highlight.id} className="flex-shrink-0 h-[400px] w-[275px]">
                         <HighlightCard highlight={highlight} />
                       </div>
                     ))}

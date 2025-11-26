@@ -1,14 +1,14 @@
 
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { Calendar as CalendarIcon, Camera, Edit2, LinkIcon, MapPin } from "lucide-react"
+import { Calendar as CalendarIcon, Camera, ChevronLeft, ChevronRight, Edit2, LinkIcon, MapPin, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ProfileProgress } from "@/app/(app)/profile/components/profileProgress"
 import { ProfileDataTypes } from "@/types"
-// import { countries } from "@/lib/countries"
+import { countries } from "@/lib/countries"
 
 import AvalableDilog from "./Avalable"
 import LinksDialog from "./Links"
@@ -18,9 +18,11 @@ import { CalendarDialog } from "./calendar"
 export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes }) {
     const [coverImageHovered, setCoverImageHovered] = useState(false)
     const [profileImageHovered, setProfileImageHovered] = useState(false)
+    const filterScrollRef = useRef<HTMLDivElement>(null)
+    const [filterScrollState, setFilterScrollState] = useState({ left: false, right: false })
 
-    // const nationality = countries.find((country) => country.code === Profile.countryCode)?.name ?? Profile.countryCode ?? "Unknown"
-    const locationDescriptor = [Profile.persionalDetails.location?.trim()].filter(Boolean).join(" • ")
+    const nationality = countries.find((country) => country.code === Profile.countryCode)?.name ?? Profile.countryCode ?? "Unknown"
+    const locationDescriptor = [nationality, Profile.persionalDetails.location?.trim()].filter(Boolean).join(" • ")
     const highlightedRoles = Profile.roles.slice(0, 6)
     const extraRecommendations = Math.max(Profile.recomendPeoples.length - 2, 0)
     const primaryLink = Profile.persionalDetails.links[0]?.url ?? ""
@@ -36,6 +38,42 @@ export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes })
             return extra > 0 ? `${primaryLink} & ${extra} other link${extra > 1 ? "s" : ""}` : primaryLink
         }
     })()
+
+    const filterChips = [
+        { id: "nationality", label: "Nationality", value: nationality },
+        { id: "work-status", label: "Work status", value: Profile.persionalDetails.availability || "--" },
+        { id: "languages", label: "Languages", value: Profile.language.join(", ") || "--" },
+        { id: "contact", label: "Contact", value: Profile.phoneNumber || "--" },
+        {
+            id: "available-travel",
+            label: "Available to travel",
+            value: `${Profile.AvailableCountriesForTravel.length} countries`,
+            icon: <Plus className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />,
+        },
+    ]
+
+    const updateFilterScrollState = () => {
+        const container = filterScrollRef.current
+        if (!container) return
+        const { scrollLeft, scrollWidth, clientWidth } = container
+        setFilterScrollState({ left: scrollLeft > 0, right: scrollLeft < scrollWidth - clientWidth - 1 })
+    }
+
+    const scrollFilters = (offset: number) => {
+        filterScrollRef.current?.scrollBy({ left: offset, behavior: "smooth" })
+    }
+
+    useEffect(() => {
+        updateFilterScrollState()
+        const container = filterScrollRef.current
+        if (!container) return
+        container.addEventListener("scroll", updateFilterScrollState)
+        window.addEventListener("resize", updateFilterScrollState)
+        return () => {
+            container.removeEventListener("scroll", updateFilterScrollState)
+            window.removeEventListener("resize", updateFilterScrollState)
+        }
+    }, [])
 
     return (
         <section className="relative w-full border-b  border-[#DADADA] pb-6 ">
@@ -185,6 +223,47 @@ export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes })
                             {role}
                         </span>
                     ))}
+                </div>
+
+                <div className="relative hidden sm:block">
+                    {filterScrollState.left && (
+                        <button
+                            type="button"
+                            onClick={() => scrollFilters(-200)}
+                            className="absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-[#BEE8EB] to-[#7CC7CE] text-[#0F4C5C] shadow-lg"
+                            aria-label="Scroll filters left"
+                        >
+                            <ChevronLeft className="h-5 w-5" />
+                        </button>
+                    )}
+                    {filterScrollState.right && (
+                        <button
+                            type="button"
+                            onClick={() => scrollFilters(200)}
+                            className="absolute right-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-[#5BC0C8] to-[#1FA1A9] text-white shadow-lg"
+                            aria-label="Scroll filters right"
+                        >
+                            <ChevronRight className="h-5 w-5" />
+                        </button>
+                    )}
+                    <div className="overflow-hidden px-12">
+                        <div
+                            ref={filterScrollRef}
+                            className="flex gap-4 overflow-x-auto py-3 pr-12 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                        >
+                            {filterChips.map((chip) => (
+                                <div
+                                    key={chip.id}
+                                    title={`${chip.label}: ${chip.value}`}
+                                    className="flex min-w-[126px] items-center gap-3 rounded-[15px] border border-[#444444] px-5 py-2 text-[16px] text-[#444444]"
+                                >
+                                    <span className="whitespace-nowrap">{chip.label}</span>
+                                    {chip.icon}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white to-transparent" />
                 </div>
 
                 <p className="text-[14px] leading-[21px] text-[#181818]">{Profile.persionalDetails.shortAbout}</p>
