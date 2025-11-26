@@ -92,16 +92,13 @@ export default function WhatupNumbers({
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
                 <div className="flex flex-row gap-5 h-[44px] w-auto text-base font-medium rounded-[15px]  bg-transparent border px-9 justify-center items-center cursor-pointer hover:bg-muted/50 border-[#444444] ">
-                    Add new Contact Details
+                    Contact Details
                 </div>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
-                        <DialogTitle>WhatsApp number</DialogTitle>
-                        <DialogDescription>
-                            Your WhatsApp number might help people to connect directly.
-                        </DialogDescription>
+                        <DialogTitle>Contact</DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="flex flex-col items-center gap-4">
@@ -165,10 +162,10 @@ export default function WhatupNumbers({
                                 </Popover>
                                 <div className="relative flex-1">
                                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-sm text-muted-foreground">
-                                        {selectedCountry.dial_code}
+                                        {selectedCountry.dial_code} |
                                     </div>
                                     <Input
-                                        className="pl-14 border border-[#31A7AC] focus-visible:border-[#31A7AC] focus-visible:ring-ring/10 rounded-full h-11 w-full"
+                                        className="pl-14 border border-[#31A7AC] focus-visible:border-[#31A7AC] focus-visible:ring-ring/10 rounded-[15px] h-11 w-full"
                                         id="phone"
                                         type="tel"
                                         placeholder="000-000-0000"
@@ -181,7 +178,7 @@ export default function WhatupNumbers({
                         </div>
                         <div>
                             <Input
-                                className="pl-3 border border-[#31A7AC] focus-visible:border-[#31A7AC] focus-visible:ring-ring/10 rounded-full h-11 w-full"
+                                className="pl-3 border border-[#31A7AC] focus-visible:border-[#31A7AC] focus-visible:ring-ring/10 rounded-[15px] h-11 w-full"
                                 id="email"
                                 type="email"
                                 placeholder="example@example.com"
@@ -191,18 +188,18 @@ export default function WhatupNumbers({
                             />
                         </div>
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className="flexl flex-row">
                         <DialogClose asChild>
                             <Button
                                 variant="outline"
-                                className="border-[#31A7AC] text-[#31A7AC] rounded-xl"
+                                className="border-[#31A7AC] h-[44px] w-[128px] text-[#31A7AC] rounded-xl"
                             >
                                 Cancel
                             </Button>
                         </DialogClose>
                         <Button
                             type="submit"
-                            className="bg-[#31A7AC] hover:bg-[#31A7AC] text-[#FFFFFF] rounded-xl"
+                            className="bg-[#31A7AC] h-[44px] hover:bg-[#31A7AC] text-[#FFFFFF] rounded-xl"
                         >
                             Save changes
                         </Button>
