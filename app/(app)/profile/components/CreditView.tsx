@@ -64,7 +64,7 @@ function CreditCard({ credit }: { credit: CreditType }) {
                                 className="sm:h-[225px] h-[346px] sm:w-[190px] w-[293px] rounded-[5px] object-cover"
                             />
                         ) : (
-                            <div className="relative sm:h-[225px] sm:w-[190px] w-full rounded-[5px] bg-[#ffffff] shadow-[4px_4px_6.4px_rgba(0,0,0,0.03)]">
+                            <div className="relative h-[346px] sm:h-[225px] sm:w-[190px] w-full rounded-[5px] bg-[#ffffff] shadow-[4px_4px_6.4px_rgba(0,0,0,0.03)]">
                                 <div className="absolute left-3 top-3 flex items-center gap-[6px]">
                                     <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#25C9D0] bg-white" />
                                     <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#FF5168] bg-white" />
@@ -85,8 +85,8 @@ function CreditCard({ credit }: { credit: CreditType }) {
                         <p className="text-sm font-[400] leading-[18px] text-[#393939]">{credit.description}</p>
                         {awards.length > 0 && (
                             <div className="relative isolate rounded-r-[5px]  bg-white px-2 py-2">
-                                <ScrollArea className="max-h-[85px] pr-2">
-                                    <ul className="space-y-1 overflow-x-auto">
+                                <ScrollArea className="max-h-[85px] sm:h-full h-[85px] p-2  pr-2">
+                                    <ul className="space-y-1">
                                         {awards.map((award, index) => (
                                             <li key={`${credit.id}-award-${index}`} className="text-[10px] font-semibold text-[#31A7AC]">
                                                 <span>{award.title}</span>
@@ -158,8 +158,8 @@ export default function CreditsSection({ Profile }: { Profile: ProfileDataTypes 
             </div>
 
             <div className="mt-8 flex flex-col items-start justify-between">
-                <div className="flex flex-row gap-5">
-                    <div className="relative sm:h-[145px] sm:w-[190px] w-full rounded-[5px] bg-[#ffffff] shadow-[4px_4px_6.4px_rgba(0,0,0,0.03)]">
+                <div className="flex flex-col sm:flex-row gap-5">
+                    <div className="relative h-[145px] sm:h-[145px] sm:w-[190px] w-full rounded-[5px] bg-[#ffffff] shadow-[4px_4px_6.4px_rgba(0,0,0,0.03)]">
                         <div className="absolute left-3 top-3 flex items-center gap-[6px]">
                             <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#25C9D0] bg-white" />
                             <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#FF5168] bg-white" />
