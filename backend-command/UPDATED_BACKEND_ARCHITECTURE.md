@@ -93,6 +93,18 @@ This document provides a comprehensive overview of the **UPDATED** backend archi
 │  │ - GET/POST /api/collab/[id]/collaborators         │            │
 │  │ - POST /api/upload/collab-cover                   │            │
 │  └──────────────────────────────────────────────────┘            │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────┐            │
+│  │ Slate (19) ⭐ NEW v2.4                            │            │
+│  │ - POST/GET /api/slate (create, feed)              │            │
+│  │ - GET /api/slate/my (my posts)                    │            │
+│  │ - GET/PATCH/DELETE /api/slate/[id]                │            │
+│  │ - POST/DELETE /api/slate/[id]/like                │            │
+│  │ - POST/GET /api/slate/[id]/comment                │            │
+│  │ - POST/DELETE /api/slate/[id]/share               │            │
+│  │ - POST/DELETE /api/slate/[id]/save                │            │
+│  │ - POST /api/upload/slate-media                    │            │
+│  └──────────────────────────────────────────────────┘            │
 └─────────────────────────────────────────────────────────────────────┘
                                │
                                ▼
@@ -129,7 +141,7 @@ This document provides a comprehensive overview of the **UPDATED** backend archi
 
 ## 🗄️ Database Schema Summary
 
-### Core Tables (23 Total) ⭐ UPDATED v2.3
+### Core Tables (29 Total) ⭐ UPDATED v2.4
 
 #### PROFILE TABLES (10 Tables)
 
@@ -532,6 +544,113 @@ Approved collaborators for collab projects.
 
 ---
 
+#### SLATE TABLES (6 Tables) ⭐ NEW v2.4
+
+##### 24. `slate_posts`
+Main table for social media-style slate posts.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `user_id` (FK → auth.users) - Post author
+- `content` (TEXT, NOT NULL) - Post text (max 5000 chars)
+- `slug` (TEXT, UNIQUE) - URL-friendly identifier
+- `status` (TEXT) - 'published' | 'draft' | 'archived'
+- `likes_count` (INTEGER, DEFAULT 0) - Cached like count
+- `comments_count` (INTEGER, DEFAULT 0) - Cached comment count
+- `shares_count` (INTEGER, DEFAULT 0) - Cached share count
+- `created_at`, `updated_at` (TIMESTAMPTZ)
+
+**Indexes:**
+- `idx_slate_posts_user_id` on `user_id`
+- `idx_slate_posts_status` on `status`
+- `idx_slate_posts_created_at` on `created_at DESC`
+- `idx_slate_posts_slug` on `slug`
+- Full-text search on `content`
+
+##### 25. `slate_media`
+Images and videos attached to slate posts.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `post_id` (FK → slate_posts, ON DELETE CASCADE)
+- `media_url` (TEXT, NOT NULL) - Supabase Storage URL
+- `media_type` (TEXT) - 'image' | 'video'
+- `sort_order` (INTEGER) - Display order
+- `created_at` (TIMESTAMPTZ)
+
+**Indexes:**
+- `idx_slate_media_post_id` on `post_id`
+- `idx_slate_media_post_sort` on `(post_id, sort_order)`
+
+##### 26. `slate_likes`
+Track which users liked which posts.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `post_id` (FK → slate_posts, ON DELETE CASCADE)
+- `user_id` (FK → auth.users, ON DELETE CASCADE)
+- `created_at` (TIMESTAMPTZ)
+
+**Constraints:**
+- UNIQUE(post_id, user_id) - One like per user per post
+
+**Indexes:**
+- `idx_slate_likes_post_id` on `post_id`
+- `idx_slate_likes_user_id` on `user_id`
+
+##### 27. `slate_comments`
+Comments on posts with nested replies support.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `post_id` (FK → slate_posts, ON DELETE CASCADE)
+- `user_id` (FK → auth.users)
+- `parent_comment_id` (FK → slate_comments, NULL for top-level)
+- `content` (TEXT, NOT NULL, max 2000 chars)
+- `created_at`, `updated_at` (TIMESTAMPTZ)
+
+**Indexes:**
+- `idx_slate_comments_post_id` on `post_id`
+- `idx_slate_comments_user_id` on `user_id`
+- `idx_slate_comments_parent_id` on `parent_comment_id`
+- `idx_slate_comments_post_created` on `(post_id, created_at DESC)`
+
+##### 28. `slate_shares`
+Track post shares/reposts.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `post_id` (FK → slate_posts, ON DELETE CASCADE)
+- `user_id` (FK → auth.users)
+- `created_at` (TIMESTAMPTZ)
+
+**Constraints:**
+- UNIQUE(post_id, user_id) - One share per user per post
+
+**Indexes:**
+- `idx_slate_shares_post_id` on `post_id`
+- `idx_slate_shares_user_id` on `user_id`
+
+##### 29. `slate_saved`
+User's saved/bookmarked posts for later viewing.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `post_id` (FK → slate_posts, ON DELETE CASCADE)
+- `user_id` (FK → auth.users, ON DELETE CASCADE)
+- `created_at` (TIMESTAMPTZ)
+
+**Constraints:**
+- UNIQUE(post_id, user_id) - One save per user per post
+
+**Indexes:**
+- `idx_slate_saved_user_id` on `user_id`
+- `idx_slate_saved_post_id` on `post_id`
+- `idx_slate_saved_user_created` on `(user_id, created_at DESC)`
+
+---
+
+
 ## 📦 Storage Buckets
 
 ### 1. `resumes/` (Private)
@@ -564,6 +683,16 @@ Approved collaborators for collab projects.
 - **Path Structure**: `{user_id}/{collab_id}/{filename}`
 - **Access**: Public read, Owner write
 - **Used For**: `collab_posts.cover_image_url`
+
+
+
+### 5. `slate-media/` (Public) ⭐ NEW v2.4
+- **Purpose:** Images and videos for slate posts
+- **Max Size:** 10 MB
+- **Allowed Types:** JPEG, JPG, PNG, WebP, MP4, MOV, AVI
+- **Path Structure:** `{user_id}/{post_id}/{filename}`
+- **Access:** Public read, Authenticated write (own posts only)
+- **Used For:** `slate_media.media_url`
 
 ---
 
@@ -1625,6 +1754,47 @@ The collab feature integrates seamlessly with:
 - ✅ Pagination support on all list endpoints
 - ✅ Query optimization with selective field fetching
 - ✅ Storage optimization (5MB limit, optimized paths)
+
+---
+
+
+## 🆕 What's New in Version 2.4 ⭐ NEW
+
+### Slate Group Feature ⭐ NEW
+- ✅ Complete analysis of frontend slate-group UI requirements
+- ✅ Designed 6 new database tables for social media-style posts
+- ✅ Created 28 RLS policies for comprehensive security
+- ✅ Designed 20+ performance indexes for fast queries
+- ✅ Configured slate-media storage bucket (10MB, images + videos)
+- ✅ Documented 19 API endpoints with implementation guide
+- ✅ Complete SQL scripts ready to execute
+- ⏳ Database migration ready (execute SQL files)
+- ⏳ API routes implementation pending
+- ⏳ Frontend-backend integration pending
+
+**Key Features:**
+- **Social media posts:** Create posts with text, images, and videos
+- **Engagement system:** Like, comment, share functionality
+- **Nested comments:** Support for comment replies
+- **Saved posts:** Bookmark posts for later
+- **Feed system:** Personalized feed with pagination and search
+- **Full-text search:** Fast search on post content
+- **Draft support:** Private drafts before publishing
+
+**New Database Tables:**
+| Table | Purpose |
+|-------|---------|
+| `slate_posts` | Main posts table with content and engagement counts |
+| `slate_media` | Images/videos attached to posts |
+| `slate_likes` | Track which users liked which posts |
+| `slate_comments` | Comments with nested replies support |
+| `slate_shares` | Track post shares/reposts |
+| `slate_saved` | User bookmarked/saved posts |
+
+**New Storage Bucket:**
+- `slate-media/` - Public bucket for post images/videos (10MB limit)
+
+**Documentation Files:** 6 comprehensive guides in `backend-command/slate-group/`
 
 ---
 
