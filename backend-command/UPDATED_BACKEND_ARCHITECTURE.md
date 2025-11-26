@@ -3150,6 +3150,137 @@ The What's On feature is an events platform where users can:
 - Join optimization with RSVPs and schedule
 - Date selection queries
 
+### API Request/Response Examples
+
+#### Create Event
+**Request:**
+```json
+POST /api/whatson
+{
+  "title": "Movie Makers' Meetup: Bi-Weekly Q&A",
+  "location": "Dubai, UAE",
+  "is_online": false,
+  "is_paid": true,
+  "price_amount": 100,
+  "price_currency": "AED",
+  "rsvp_deadline": "2025-10-23T23:59:59Z",
+  "max_spots_per_person": 3,
+  "total_spots": 150,
+  "is_unlimited_spots": false,
+  "description": "Filmmaking Q&A - Bi-weekly event for all your filmmaking questions.",
+  "terms_conditions": "By attending, you agree to...",
+  "thumbnail_url": "https://project.supabase.co/storage/...",
+  "hero_image_url": "https://project.supabase.co/storage/...",
+  "status": "published",
+  "schedule": [
+    {
+      "event_date": "2025-10-26",
+      "start_time": "21:00",
+      "end_time": "22:00",
+      "timezone": "GST"
+    }
+  ],
+  "tags": ["Movie", "Film", "Filmmaking", "Q&A"]
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Event created successfully",
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "slug": "movie-makers-meetup-bi-weekly-q-a",
+    "title": "Movie Makers' Meetup: Bi-Weekly Q&A",
+    "location": "Dubai, UAE",
+    "is_online": false,
+    "is_paid": true,
+    "price_label": "100 AED",
+    "status": "published",
+    "created_at": "2025-01-15T10:00:00.000Z",
+    "schedule": [...],
+    "tags": ["Movie", "Film", "Filmmaking", "Q&A"]
+  }
+}
+```
+
+#### List Events with Filters
+**Request:**
+```
+GET /api/whatson?page=1&limit=20&price=paid&is_online=false&location=Dubai&status=published&sortBy=created_at&sortOrder=desc
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "events": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "slug": "movie-makers-meetup-bi-weekly-q-a",
+        "title": "Movie Makers' Meetup: Bi-Weekly Q&A",
+        "location": "Dubai, UAE",
+        "is_online": false,
+        "is_paid": true,
+        "price_label": "100 AED",
+        "date_range_label": "Oct 15, 2025 - Oct 18, 2025",
+        "rsvp_deadline": "Sun, Oct 23 2025",
+        "thumbnail_url": "https://...",
+        "host": {
+          "name": "Cinema Studio",
+          "avatar": "https://..."
+        },
+        "spots_filled": 95,
+        "total_spots": 150,
+        "tags": ["Movie", "Film", "Filmmaking"]
+      }
+    ],
+    "pagination": {
+      "current_page": 1,
+      "total_pages": 5,
+      "total_events": 87,
+      "limit": 20
+    }
+  }
+}
+```
+
+#### Create RSVP
+**Request:**
+```json
+POST /api/whatson/{event_id}/rsvp
+{
+  "number_of_spots": 2,
+  "schedule_ids": [
+    "schedule-uuid-1",
+    "schedule-uuid-2"
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "RSVP confirmed successfully",
+  "data": {
+    "id": "rsvp-uuid",
+    "event_id": "event-uuid",
+    "user_id": "user-uuid",
+    "ticket_number": "WO-2025-000123",
+    "reference_number": "#ABC123XYZ4567",
+    "number_of_spots": 2,
+    "status": "confirmed",
+    "payment_status": "unpaid",
+    "selected_dates": [
+      {"date": "2025-10-26", "time": "21:00 - 22:00 GST"}
+    ]
+  }
+}
+```
+
 ### Data Relationships
 
 ```
@@ -3164,6 +3295,67 @@ auth.users
     └──[1:N]──> whatson_rsvps (user RSVPs)
                     │
                     └──[1:N]──> whatson_rsvp_dates (selected dates)
+```
+
+### Data Flow Examples
+
+#### Creating an Event
+```
+1. User uploads images → POST /api/upload/whatson-image
+2. Backend validates file (size < 5MB, type = JPEG/PNG/WebP)
+3. Backend stores in whatson-images/{user_id}/{temp-id}/{filename}
+4. Backend returns public URLs
+5. User submits form → POST /api/whatson with image URLs
+6. Backend validates auth and required fields
+7. Backend generates URL-friendly slug from title
+8. Backend inserts into whatson_events
+9. Backend inserts schedule slots into whatson_schedule (batch)
+10. Backend inserts tags into whatson_tags (batch)
+11. Backend returns complete event object with slug
+12. Frontend redirects to /whats-on/manage-whats-on
+```
+
+#### Creating an RSVP
+```
+1. User clicks "Count me in!" → Opens RSVP modal
+2. User selects dates and fills attendee info
+3. User submits → POST /api/whatson/[id]/rsvp
+4. Backend validates:
+   - User is authenticated
+   - Event exists and is published
+   - RSVP deadline not passed
+   - User is not the event creator (RLS check)
+   - User hasn't already RSVP'd (unique constraint)
+   - Requested spots <= max_spots_per_person
+   - Available capacity (if not unlimited)
+5. Backend generates ticket_number (WO-2025-NNNNNN)
+6. Backend generates reference_number (#ALPHANUMERIC13)
+7. Backend inserts into whatson_rsvps
+8. Backend inserts selected dates into whatson_rsvp_dates
+9. Backend returns RSVP details with ticket/reference
+10. Frontend shows confirmation with ticket number
+11. Frontend updates event capacity display
+```
+
+#### Managing RSVPs (Event Creator)
+```
+1. Creator clicks event → /whats-on/manage-whats-on/[id]
+2. Request GET /api/whatson/[id]/rsvps
+3. Backend validates ownership (RLS)
+4. Backend queries whatson_rsvps with JOINs:
+   - user_profiles (attendee name, avatar)
+   - whatson_rsvp_dates (selected dates)
+   - whatson_schedule (date details)
+5. Backend returns paginated list with full attendee info
+6. Frontend renders RSVP table with:
+   - Attendee name and avatar
+   - Ticket number
+   - Reference number
+   - Payment status
+   - Selected dates
+7. Creator can filter by status/payment
+8. Creator can export to CSV
+9. Creator can update payment status
 ```
 
 ### Validation Rules
