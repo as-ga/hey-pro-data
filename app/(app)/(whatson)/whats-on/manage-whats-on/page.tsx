@@ -70,9 +70,9 @@ const ManageCard = ({ event }: { event: (typeof whatsOnEvents)[number] }) => {
 export default function ManageWhatsOnPage() {
     return (
         <div className="space-y-10">
-            <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                 <span className="bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent text-3xl font-semibold">{"Manage What's On"}</span>
-                <Link href="/whats-on/manage-whats-on/add-new" className="ml-2 rounded-[10px] border bg-[#31A7AC] px-4 py-2 text-white"> Create What’s on</Link>
+                <Link href="/whats-on/manage-whats-on/add-new" className="ml-2 rounded-[10px] max-w-max sm:w-full border bg-[#31A7AC] px-4 py-2 text-white"> Create What’s on</Link>
             </div>
             <section className="space-y-6">
                 {whatsOnEvents.map((event) => (

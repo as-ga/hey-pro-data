@@ -27,7 +27,7 @@ export default async function ManageWhatsOnEditPage({ params }: ManageWhatsOnEdi
 
     return (
         <div className="space-y-8">
-            <div className="flex items-center justify-between p-4 bg-white rounded-lg">
+            <div className=" flex flex-col sm:flex-row gap-y-2 sm:gap-0 sm:items-center sm:justify-between p-4 bg-white rounded-lg">
                 <span className="bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent text-3xl font-semibold">Manage What&apos;s On</span>
                 <div className="flex gap-4">
                     <Link href={'/whats-on/manage-whats-on'} className="rounded-lg border border-[#31A7AC] h-[44px] px-4 py-2 text-[#31A7AC] hover:bg-[#f0f0f0]"> Discard</Link>

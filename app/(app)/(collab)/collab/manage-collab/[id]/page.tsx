@@ -9,8 +9,9 @@ type ManageCollabPageProps = {
     params: { id: string };
 };
 
-export default function ManageCollabPage({ params }: ManageCollabPageProps) {
-    const collabId = Number(params.id);
+export default async function ManageCollabPage({ params }: ManageCollabPageProps) {
+    const { id } = await params;
+    const collabId = Number(id);
     if (Number.isNaN(collabId)) {
         notFound();
     }

@@ -41,6 +41,7 @@ export type ProfileDataTypes = {
     skillName: string;
     description: string;
   }[];
+  roles: string[];
   credits: {
     id: number | string;
     creditTitle: string;

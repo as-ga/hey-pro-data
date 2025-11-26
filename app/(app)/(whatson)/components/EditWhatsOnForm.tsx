@@ -71,27 +71,29 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
     };
 
     return (
-        <section className="relative mx-auto w-full max-w-[1075px] rounded-[32px] bg-white p-8 shadow-[0_30px_120px_rgba(15,23,42,0.15)]">
+        <section className="relative mx-auto w-full max-w-5xl rounded-[32px] bg-white p-4 shadow-[0_30px_120px_rgba(15,23,42,0.15)] sm:p-6 lg:p-8">
             <form className="flex flex-col gap-8" onSubmit={(event) => event.preventDefault()}>
                 <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-4">
                         <div>
                             <label className="text-sm font-medium text-gray-500">Event title</label>
                             <input value={title} onChange={(event) => setTitle(event.target.value)} className="mt-2 w-full rounded-2xl border border-black/20 bg-black/5 px-4 py-3 text-sm text-black focus:border-[#31A7AC] focus:outline-none" />
                         </div>
-                        <div className="flex flex-row justify-start ">
-                            <Checkbox className="h-5 w-5" /> <span className="ml-2 text-sm text-gray-700">Guest Can Select The Dates To Attend</span>
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                            <Checkbox className="h-5 w-5" />
+                            <span className="text-sm text-gray-700">Guest Can Select The Dates To Attend</span>
                         </div>
                         <div className="grid gap-4 md:grid-cols-[2fr_1fr]">
                             <div>
                                 <label className="text-sm font-medium text-gray-500">Venue</label>
-                                <div className="flex flex-row items-center justify-start  gap-2">
-                                    <div className="w-2/3 flex flex-row justify-start items-center border rounded-2xl h-[45px] border-black/20 bg-black/5 px-4 py-3">
-                                        <LocationEdit />
-                                        <input value={venue} onChange={(event) => setVenue(event.target.value)} className="mt-2 px-4 py-3 text-sm text-black focus:border-[#31A7AC] focus:outline-none" />
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                                    <div className="flex w-full items-center gap-2 rounded-2xl border border-black/20 bg-black/5 px-4 py-3">
+                                        <LocationEdit className="h-4 w-4" />
+                                        <input value={venue} onChange={(event) => setVenue(event.target.value)} className="w-full bg-transparent text-sm text-black focus:border-[#31A7AC] focus:outline-none" placeholder="Enter venue" />
                                     </div>
                                     <Button
-                                        className={`h-[45px] text-black border rounded-2xl w-1/3 ${!isOnline ? "bg-transparent" : "bg-[#FA596E] text-white"}`}
+                                        type="button"
+                                        className={`h-[45px] rounded-2xl border text-sm font-semibold ${isOnline ? "bg-[#FA596E] text-white" : "bg-transparent text-black"}`}
                                         onClick={() => setIsOnline(!isOnline)}
                                     >
                                         Online
@@ -100,9 +102,9 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                             </div>
 
                         </div>
-                        <div className="flex flex-col gap-4 w-full">
-                            <div className="flex lg:flex-row flex-col justify-between gap-4 w-full max-w-[664px]  rounded-lg">
-                                <div>
+                        <div className="flex w-full flex-col gap-4">
+                            <div className="flex flex-col gap-4 rounded-lg lg:flex-row">
+                                <div className="flex-1">
                                     <label className="text-sm font-medium text-gray-500">Event date</label>
                                     <div className="mt-2 rounded-lg border border-gray-300 bg-gray-100 p-4">
 
@@ -113,9 +115,9 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                                                 Add
                                             </button>
                                         </div>
-                                        <div className="mt-3 space-y-3 overflow-y-auto max-h-[262px]">
+                                        <div className="mt-3 max-h-[262px] space-y-3 overflow-y-auto pr-1">
                                             {schedule.map((slot, index) => (
-                                                <div key={`slot-${index}`} className="flex items-center gap-2 rounded-2xl px-3 py-2 text-sm ">
+                                                <div key={`slot-${index}`} className="flex flex-col gap-2 rounded-2xl bg-white/70 px-3 py-2 text-sm sm:flex-row sm:items-center">
                                                     <CalendarIcon className="h-4 w-4 text-[#31A7AC]" />
                                                     <Popover>
                                                         <PopoverTrigger asChild>
@@ -155,7 +157,7 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                                                         const start = to24(rawStart);
                                                         const end = to24(rawEnd);
                                                         return (
-                                                            <div className="flex flex-1 items-center gap-2 rounded-xl border border-gray-200 px-2 py-1">
+                                                            <div className="flex flex-1 flex-col gap-2 rounded-xl border border-gray-200 px-2 py-2 sm:flex-row sm:items-center">
                                                                 <input
                                                                     type="time"
                                                                     step="60"
@@ -163,7 +165,7 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                                                                     onChange={(event) => handleScheduleChange(index, "timeRange", `${event.target.value} - ${end}`)}
                                                                     className=" appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                                                                 />
-                                                                <span className="text-xs text-gray-400">-</span>
+                                                                <span className="hidden text-xs text-gray-400 sm:inline">-</span>
                                                                 <input
                                                                     type="time"
                                                                     step="60"
@@ -174,7 +176,7 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => handleRemoveSchedule(index)}
-                                                                    className="rounded-full border border-[#FF8080] p-1 text-[#FF8080]"
+                                                                    className="self-end rounded-full border border-[#FF8080] p-1 text-[#FF8080] sm:self-auto"
                                                                 >
                                                                     <X className="h-3 w-3" />
                                                                 </button>
@@ -187,20 +189,20 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="w-full flex flex-col gap-2 rounded-lg mt-1 lg:mt-6">
-                                    <div className="mb-1 flex flex-row gap-2 w-full items-center px-2">
+                                <div className="mt-2 flex w-full flex-col gap-4 rounded-lg lg:mt-6">
+                                    <div className="flex items-center gap-2 rounded-2xl border border-gray-300 px-3 py-2">
                                         <Label className="text-sm font-medium text-gray-500">Max Spots Per Person</Label>
-                                        <Input type="number" min={1} defaultValue={1} disabled className="lg:max-w-[86px] border border-gray-300 rounded-2xl" />
+                                        <Input type="number" min={1} defaultValue={1} disabled className="max-w-[120px] border border-gray-300" />
                                     </div>
                                     <div>
-                                        <div className="mb-2 flex flex-row gap-2 w-full items-center border border-gray-300 rounded-2xl px-2">
+                                        <div className="mb-2 flex items-center gap-2 rounded-2xl border border-gray-300 px-3">
                                             <Label className="text-sm font-[600] text-gray-500">Spots</Label>
                                             <Separator orientation="vertical" className="h-4 w-2px bg-gray-300" />
                                             <Input
                                                 type="number"
                                                 min={1}
                                                 defaultValue={20}
-                                                className="mt-2 w-full px-4 py-3 text-sm text-black focus:border-[#31A7AC] focus:outline-none border-none bg-transparent"
+                                                className="w-full border-none bg-transparent px-4 py-3 text-sm text-black focus:border-[#31A7AC] focus:outline-none"
                                             />
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -209,14 +211,14 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                                         </div>
                                     </div>
                                     <div>
-                                        <div className="mb-2 flex flex-row gap-2 w-full items-center border border-gray-300 rounded-2xl px-2">
+                                        <div className="mb-2 flex items-center gap-2 rounded-2xl border border-gray-300 px-3">
                                             <Label className="text-sm font-[600] text-gray-500">ADE</Label>
                                             <Separator orientation="vertical" className="h-4 w-2px bg-gray-300" />
                                             <Input
                                                 type="number"
                                                 min={1}
                                                 defaultValue={20}
-                                                className="mt-2 w-full px-4 py-3 text-sm text-black focus:border-[#31A7AC] focus:outline-none border-none bg-transparent"
+                                                className="w-full border-none bg-transparent px-4 py-3 text-sm text-black focus:border-[#31A7AC] focus:outline-none"
                                             />
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -251,7 +253,7 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className="rounded-[30px] border border-dashed border-gray-300 bg-black/10">
-                            <div className="relative h-[360px] w-full overflow-hidden rounded-[26px]">
+                            <div className="relative h-[220px] w-full overflow-hidden rounded-[26px] sm:h-[320px]">
                                 <input
                                     id="poster-upload"
                                     type="file"
@@ -263,13 +265,13 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
 
                                 {posterPreview ? (
                                     <div className="group relative h-full w-full">
-                                        <Image src={posterPreview} alt={event.title} fill className="object-cover" />
+                                        <Image src={posterPreview} alt={event.title} fill sizes="(min-width: 1024px) 320px, 100vw" className="object-cover" />
                                         <div className="absolute inset-0 opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100">
                                             <div className="absolute inset-0 bg-black/50" />
-                                            <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-3 text-white">
+                                            <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-3 px-4 text-center text-white">
                                                 <p className="text-2xl font-semibold">Replace Banner Image</p>
                                                 <p className="text-sm opacity-90">Optimal dimensions 3000 x 750px</p>
-                                                <div className="mt-2 flex gap-3">
+                                                <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
                                                     <label
                                                         htmlFor="poster-upload"
                                                         className="cursor-pointer rounded-full bg-[#FF6F8F] px-6 py-2 text-sm font-semibold text-white shadow"
@@ -314,7 +316,7 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                         <label className="text-sm font-semibold text-gray-600">What&apos;s on Tags</label>
                         {tags.length > 0 && <span className={badgeClass}>{tags.length} tags</span>}
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-2 border p-2 rounded-[18px] bg-black/5">
+                    <div className="mt-3 flex flex-wrap gap-2 rounded-[18px] border bg-black/5 p-2">
                         {tags.map((tag) => (
                             <span key={tag} className="inline-flex items-center gap-2 border rounded-full bg-white px-4 py-1 text-xs font-medium text-gray-700">
                                 {tag}
@@ -324,12 +326,12 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                             </span>
                         ))}
                     </div>
-                    <div className="mt-3 flex gap-3 border border-black/20 rounded-2xl ">
+                    <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-black/20 p-2 sm:flex-row sm:items-center">
                         <input
                             value={tagInput}
                             onChange={(event) => setTagInput(event.target.value)}
                             placeholder="Add new tag"
-                            className="flex-1 px-4 py-3 text-sm text-gray-800 focus:border-[#31A7AC] focus:outline-none"
+                            className="flex-1 rounded-2xl px-4 py-3 text-sm text-gray-800 focus:border-[#31A7AC] focus:outline-none"
                             onKeyDown={(event) => {
                                 if (event.key === "Enter") {
                                     event.preventDefault();
@@ -337,7 +339,7 @@ export function EditWhatsOnForm({ event }: EditWhatsOnFormProps) {
                                 }
                             }}
                         />
-                        <button type="button" onClick={handleAddTag} className="rounded-[18px] bg-[#31A7AC] p-2 text-sm font-semibold text-white">
+                        <button type="button" onClick={handleAddTag} className="rounded-[18px] bg-[#31A7AC] p-3 text-sm font-semibold text-white">
                             <Plus className="h-6 w-6" />
                         </button>
                     </div>

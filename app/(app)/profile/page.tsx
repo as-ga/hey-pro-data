@@ -41,9 +41,11 @@ import { Button } from "@/components/ui/button";
 import ShortProfile from "./components/ShortProfiel";
 import Highlights from "./components/Highlights";
 import CreditsSection from "./components/CreditView";
+import { profileData, highlightsData } from "@/data/profile";
+import SlateView from "./components/slate";
 
 export default function Profile() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "activities">("dashboard")
+  const [activeTab, setActiveTab] = useState<"profile" | "slate">("profile")
   const [coverImageHovered, setCoverImageHovered] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -70,129 +72,8 @@ export default function Profile() {
     container?.addEventListener('scroll', handleScroll);
     return () => container?.removeEventListener('scroll', handleScroll);
   }, []);
-  const Profile = {
-    "id": "1",
-    "avtar": "/image (2).png",
-    "backgroundAvtar": "/image.png",
-    "persionalDetails": {
-      "name": "John Doe",
-      "aliasName": "JD",
-      "location": "India, Tamil Nadu, Chennai ",
-      "availability": "Available",
-      "shortAbout": "Award-winning cinematographer with 10+ years in narrative film and commercial work. Visual storytelling and collaborative filmmaking.",
-      "links": [
-        {
-          "label": "LinkedIn",
-          "url": "https://www.linkedin.com/in/johndoe",
-        },
-        {
-          "label": "Portfolio",
-          "url": "https://johndoe.com/portfolio",
-        },
-        {
-          "label": "GitHub",
-          "url": "https://github.com/johndoe",
-        },
-        {
-          "label": "Twitter",
-          "url": "https://twitter.com/johndoe",
-        }
-      ],
-
-    },
-    "language": ["English", "Spanish", "French"],
-    "countryCode": "IN",
-    "phoneNumber": "9876543230",
-    "AvailableCountriesForTravel": [
-      { name: "Bolivia", dial_code: "+591", code: "BO", flag: "🇧🇴" },
-      { name: "Bosnia and Herzegovina", dial_code: "+387", code: "BA", flag: "🇧🇦" },
-      { name: "Botswana", dial_code: "+267", code: "BW", flag: "🇧🇼" },
-      { name: "Brazil", dial_code: "+55", code: "BR", flag: "🇧🇷" },
-    ],
-    "profileCompletion": 80,
-    'about': `I'm a passionate cinematographer who believes in the power of visual storytelling. With over a decade of experience in the film industry, I've had the privilege of working on everything from intimate indie films to large-scale commercial productions.
-  My approach combines technical expertise with creative vision, always in service of the story. I specialize in natural lighting and handheld camera work, bringing an authentic, human quality to every frame.`,
-    "skills": [
-      {
-        "id": "1",
-        "skillName": "Cinematography",
-        "description": "the art and science of capturing moving images for films and television, serving as visual storytelling"
-      },
-      {
-        "id": "2",
-        "skillName": "Color Grading",
-        "description": "a post-production process that involves the artistic manipulation of an image's or video's color to cre..."
-      }, {
-        "id": "3",
-        "skillName": "Editing",
-        "description": ""
-      }
-    ],
-    "credits": [
-      {
-        "id": "1",
-        "creditTitle": "ABC Films",
-        "startDate": new Date("2018-01-01"),
-        "endDate": new Date("2020-01-01"),
-        "imgUrl": "/image (1).png",
-        "description": `Marvel Entertainment, LLC was an American entertainment company founded on June 2, 1998 and based in New York City, formed by the merger of Marvel Entertainment Group and Toy Biz.`
-      },
-      {
-        "id": "2",
-        "creditTitle": "XYZ Productions",
-        "startDate": new Date("2016-01-01"),
-        "endDate": new Date("2018-01-01"),
-        "imgUrl": "/image (2).png",
-        "description": "Marvel Entertainment, LLC was an American entertainment creditTitle founded on June 2, 1998 and based in New York City, formed by the merger of Marvel Entertainment Group and Toy Biz."
-      },
-      {
-        "id": "3",
-        "creditTitle": "123 Cinemas",
-        "startDate": new Date("2014-01-01"),
-        "endDate": new Date("2016-01-01"),
-        "imgUrl": "/image (3).png",
-        "description": "Marvel Entertainment, LLC was an American entertainment creditTitle founded on June 2, 1998 and based in New York City, formed by the merger of Marvel Entertainment Group and Toy Biz."
-      },
-      {
-        "id": "4",
-        "creditTitle": "456 Studios",
-        "startDate": new Date("2012-01-01"),
-        "endDate": new Date("2014-01-01"),
-        "imgUrl": "/image (4).png",
-        "description": "Marvel Entertainment, LLC was an American entertainment creditTitle founded on June 2, 1998 and based in New York City, formed by the merger of Marvel Entertainment Group and Toy Biz."
-      },
-    ],
-    "recomendPeoples": [
-      {
-        "imgUrl": "/image (2).png"
-      },
-      {
-        "imgUrl": "/image (1).png"
-      },
-      {
-        "imgUrl": "/image (1).png"
-      }
-    ]
-  }
-  const highlights = [
-    {
-      id: '1',
-      title: 'Highlights',
-      description: `Cinematography is the art and technology of capturing motion pictures to tell a story visually. It involves using techniques like camera angles, lighting, composition, color, and camera movement to evoke emotions, create a mood, and direct the audience's focus to enhance the narrative. A director of photography (DP) or cinematographer is responsible for making these creative and technical choices, working with their crews to achieve the director's vision. `,
-      images: "/image (3).png"
-    }, {
-      id: '2',
-      title: 'Cinematography',
-      description: `Cinematography is the art and technology of capturing motion pictures to tell a story visually. It involves using techniques like camera angles, lighting, composition, color, and camera movement to evoke emotions, create a mood, and direct the audience's focus to enhance the narrative. A director of photography (DP) or cinematographer is responsible for making these creative and technical choices, working with their crews to achieve the director's vision. `,
-      images: "/image (4).png"
-    }, {
-      id: '3',
-      title: 'Editing',
-      description: `Cinematography is the art and technology of capturing motion pictures to tell a story visually. It involves using techniques like camera angles, lighting, composition, color, and camera movement to evoke emotions, create a mood, and direct the audience's focus to enhance the narrative. A director of photography (DP) or cinematographer is responsible for making these creative and technical choices, working with their crews to achieve the director's vision. `,
-      images: "/image (5).png"
-    }
-
-  ]
+  const profile = profileData
+  const highlights = highlightsData
   const [sectionOrder, setSectionOrder] = useState<SectionType[]>(["about", "skills", "credits"])
   const [isReorderDialogOpen, setIsReorderDialogOpen] = useState(false)
 
@@ -216,9 +97,9 @@ export default function Profile() {
   }
 
   const sectionComponents = {
-    about: <AboutSection key="about" Profile={Profile} />,
-    skills: <SkillsSection key="skills" Profile={Profile} />,
-    credits: <CreditsSection key="credits" Profile={Profile} />,
+    about: <AboutSection key="about" Profile={profile} />,
+    skills: <SkillsSection key="skills" Profile={profile} />,
+    credits: <CreditsSection key="credits" Profile={profile} />,
   }
 
   return (
@@ -226,7 +107,7 @@ export default function Profile() {
       <main className="flex-1 w-full max-w-full lg:max-w-[700px] space-y-3 flex flex-col">
         <div className="relative mb-16 sm:mb-20 lg:mb-24" onMouseEnter={() => setCoverImageHovered(true)} onMouseLeave={() => setCoverImageHovered(false)}>
           <div className="relative h-40 xs:h-44 sm:h-56 md:h-60 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-400 to-blue-500">
-            <Image src={Profile.backgroundAvtar} alt="Cover" width={100} height={100} className="w-full h-full object-cover" />
+            <Image src={profile.backgroundAvtar} alt="Cover" width={100} height={100} className="w-full h-full object-cover" />
 
             <div className={`absolute inset-0 flex flex-col items-center justify-center px-4 text-center transition-opacity ${coverImageHovered ? 'opacity-100 bg-black/60 text-white' : 'opacity-0'}`}>
               <div className="flex flex-col items-center justify-center mb-4 text-center">
@@ -234,9 +115,18 @@ export default function Profile() {
                 <span className="text-[10px] sm:text-xs">Optimal dimensions: 3000x759px</span>
               </div>
               <div className="flex flex-col xs:flex-row gap-3 -mt-1 sm:-mt-2">
-                <Button variant="default" className="rounded-full bg-[#FA6E80] hover:bg-[#FA6E80] w-full xs:w-auto">
-                  Replace Image
-                </Button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  // onChange={(e) => { }}
+                  className="hidden"
+                  id="cover-image-upload"
+                />
+                <label htmlFor="cover-image-upload">
+                  <Button variant="default" className="rounded-full bg-[#FA6E80] hover:bg-[#FA6E80] w-full xs:w-auto" asChild>
+                    <span className="cursor-pointer">Replace Image</span>
+                  </Button>
+                </label>
                 <Button variant="ghost" className="rounded-full border border-white hover:bg-transparent hover:text-white w-full xs:w-auto">
                   Remove
                 </Button>
@@ -245,153 +135,159 @@ export default function Profile() {
           </div>
         </div>
 
-        <ShortProfile Profile={Profile} />
+        <ShortProfile Profile={profile} />
         <div className="w-full bg-slate-200 h-px sm:h-[1px] mb-5" />
 
         <div className="space-y-2 mx-auto w-full">
           <div className="flex flex-row  gap-3 sm:gap-6 text-black mb-6 sm:mb-8">
             <Button
-              onClick={() => setActiveTab("dashboard")}
-              className={`flex-1 min-h-[44px] text-sm sm:text-base font-semibold rounded-[12px] sm:rounded-[15px] ${activeTab === "dashboard"
+              onClick={() => setActiveTab("profile")}
+              className={`flex-1 min-h-[44px] text-sm sm:text-base font-semibold rounded-[12px] sm:rounded-[15px] ${activeTab === "profile"
                 ? "bg-[#FA6E80] text-white hover:bg-[#FA6E80] hover:text-white hover:opacity-100"
                 : "bg-[#f3f4f6] shadow-sm text-foreground hover:bg-[#f3f4f6] hover:text-foreground hover:opacity-100"
                 }`}
             >
-              Profile Dashboard
+              Profile
             </Button>
             <Button
-              onClick={() => setActiveTab("activities")}
-              className={`flex-1 min-h-[44px] text-sm sm:text-base font-semibold rounded-[12px] sm:rounded-[15px] ${activeTab === "activities"
+              onClick={() => setActiveTab("slate")}
+              className={`flex-1 min-h-[44px] text-sm sm:text-base font-semibold rounded-[12px] sm:rounded-[15px] ${activeTab === "slate"
                 ? "bg-[#FA6E80] text-white hover:bg-[#FA6E80] hover:text-white hover:opacity-100"
                 : "bg-[#ffffff] shadow-sm text-foreground hover:bg-[#ffffff] hover:text-foreground hover:opacity-100"
                 }`}
             >
-              Activities
+              Slate
             </Button>
           </div>
 
-          <div className="relative">
-            <div
-              ref={scrollContainerRef}
-              onScroll={handleScroll}
-              className="flex flex-row overflow-x-auto gap-x-4 mb-6 sm:mb-7 scrollbar-hide -mx-2 xs:-mx-1 sm:mx-0 px-2 xs:px-1 sm:px-0"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              <div className="flex-none ">
-                <AboutSectionComponent title="About" about={Profile.about} />
+          {activeTab === "profile" ? (
+            <div className=" max-w-[600px]">
+              <div className="relative">
+                <div
+                  ref={scrollContainerRef}
+                  onScroll={handleScroll}
+                  className="flex flex-row overflow-x-auto gap-x-4 mb-6 sm:mb-7 scrollbar-hide -mx-2 xs:-mx-1 sm:mx-0 px-2 xs:px-1 sm:px-0"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  <div className="flex-none ">
+                    <AboutSectionComponent title="About" about={profile.about} />
+                  </div>
+                  <div className="flex-none ">
+                    <VisaSection visaType={''} visaIssueBy={''} visaExpData={''} />
+                  </div>
+                  <div className="flex-none ">
+                    <WorkStatusSection statusProp={profile.persionalDetails.availability} />
+                  </div>
+                  <div className="flex-none ">
+                    <AddLanguageSection languages={profile.language} />
+                  </div>
+                  <div className="flex-none ">
+                    <WhatupNumbers
+                      countryCode={profile.countryCode}
+                      phoneNumber={profile.phoneNumber}
+                    />
+                  </div>
+                  <div className="flex-none ">
+                    <AvalableCountryForTravel availableCountries={profile.AvailableCountriesForTravel} />
+                  </div>
+                </div>
+                {showLeftArrow && (
+                  <Button
+                    variant="default"
+                    size="icon"
+                    className="absolute left-1 sm:left-0 top-1/2 -translate-y-1/2 transform rounded-full shadow-md z-10"
+                    onClick={() => scroll(-200)}
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </Button>
+                )}
+                {showRightArrow && (
+                  <Button
+                    variant="default"
+                    size="icon"
+                    className="absolute right-1 sm:right-0 top-1/2 -translate-y-1/2 transform rounded-full shadow-md z-10"
+                    onClick={() => scroll(200)}
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </Button>
+                )}
               </div>
-              <div className="flex-none ">
-                <VisaSection visaType={''} visaIssueBy={''} visaExpData={''} />
-              </div>
-              <div className="flex-none ">
-                <WorkStatusSection statusProp={Profile.persionalDetails.availability} />
-              </div>
-              <div className="flex-none ">
-                <AddLanguageSection languages={Profile.language} />
-              </div>
-              <div className="flex-none ">
-                <WhatupNumbers
-                  countryCode={Profile.countryCode}
-                  phoneNumber={Profile.phoneNumber}
-                />
-              </div>
-              <div className="flex-none ">
-                <AvalableCountryForTravel availableCountries={Profile.AvailableCountriesForTravel} />
-              </div>
-            </div>
-            {showLeftArrow && (
-              <Button
-                variant="default"
-                size="icon"
-                className="absolute left-1 sm:left-0 top-1/2 -translate-y-1/2 transform rounded-full shadow-md z-10"
-                onClick={() => scroll(-200)}
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </Button>
-            )}
-            {showRightArrow && (
-              <Button
-                variant="default"
-                size="icon"
-                className="absolute right-1 sm:right-0 top-1/2 -translate-y-1/2 transform rounded-full shadow-md z-10"
-                onClick={() => scroll(200)}
-              >
-                <ChevronRight className="h-6 w-6" />
-              </Button>
-            )}
-          </div>
 
-          <Dialog open={isReorderDialogOpen} onOpenChange={setIsReorderDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="w-full sm:w-auto gap-2 text-sm sm:text-base h-12 rounded-full bg-transparent">
-                <List className="h-5 w-5" />
-                Reorder sections
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md w-[90vw] sm:w-auto">
-              <DialogHeader>
-                <DialogTitle className="text-lg sm:text-xl font-bold">Reorder Sections</DialogTitle>
-              </DialogHeader>
-              <div className="mt-4">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Drag and drop to reorder the sections on your profile
-                </p>
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
-                    <div className="space-y-2">
-                      {sectionOrder.map((section) => (
-                        <SortableItem key={section} id={section} />
+              <Dialog open={isReorderDialogOpen} onOpenChange={setIsReorderDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="w-full sm:w-auto gap-2 text-sm sm:text-base h-12 rounded-full bg-transparent">
+                    <List className="h-5 w-5" />
+                    Reorder sections
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md w-[90vw] sm:w-auto">
+                  <DialogHeader>
+                    <DialogTitle className="text-lg sm:text-xl font-bold">Reorder Sections</DialogTitle>
+                  </DialogHeader>
+                  <div className="mt-4">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Drag and drop to reorder the sections on your profile
+                    </p>
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                      <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
+                        <div className="space-y-2">
+                          {sectionOrder.map((section) => (
+                            <SortableItem key={section} id={section} />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
+                  </div>
+                  <div className="mt-6 flex flex-col sm:flex-row sm:justify-end gap-3">
+                    <Button
+                      onClick={() => setIsReorderDialogOpen(false)}
+                      className="bg-coral-500 hover:bg-coral-600 w-full sm:w-auto"
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              <div className="lg:hidden">
+                <Button
+                  variant="outline"
+                  className="h-11 rounded-[10px] mt-3 sm:mt-0 w-full border-[#31A7AC] text-black hover:bg-transparent px-4 flex-shrink-0 mb-3"
+                >
+                  Edit Highlights
+                </Button>
+                <div className="flex flex-col items-center gap-3 px-2">
+                  <div className="flex  items-center gap-3 w-full">
+                    <div className="flex gap-1 flex-nowrap">
+                      {letters.map((char, index) => (
+                        <span key={index} className={`text-lg font-semibold leading-none ${gradientText}`}>
+                          {char}
+                        </span>
                       ))}
                     </div>
-                  </SortableContext>
-                </DndContext>
-              </div>
-              <div className="mt-6 flex flex-col sm:flex-row sm:justify-end gap-3">
-                <Button
-                  onClick={() => setIsReorderDialogOpen(false)}
-                  className="bg-coral-500 hover:bg-coral-600 w-full sm:w-auto"
-                >
-                  Done
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-          <div className="lg:hidden">
-            <Button
-              variant="outline"
-              className="h-11 rounded-[10px] w-full border-[#31A7AC] text-black hover:bg-transparent px-4 flex-shrink-0 mb-3"
-            >
-              Edit Highlights
-            </Button>
-            <div className="flex flex-col items-center gap-3 px-2">
-              <div className="flex  items-center gap-3 w-full">
-                <div className="flex gap-1 flex-nowrap">
-                  {letters.map((char, index) => (
-                    <span key={index} className={`text-lg font-semibold leading-none ${gradientText}`}>
-                      {char}
-                    </span>
-                  ))}
-                </div>
-                <span className="flex-1 h-px bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC]" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="flex gap-4 overflow-x-auto pb-4 px-4">
-                {highlights.map((highlight) => (
-                  <div key={highlight.id} className="flex-shrink-0 w-[260px]">
-                    <HighlightCard highlight={highlight} />
+                    <span className="flex-1 h-px bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC]" />
                   </div>
-                ))}
+                </div>
+                <div className="mt-4">
+                  <div className="flex gap-4 overflow-x-auto pb-4 px-4">
+                    {highlights.map((highlight) => (
+                      <div key={highlight.id} className="flex-shrink-0 w-[260px]">
+                        <HighlightCard highlight={highlight} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
+              <div className="my-8" />
+              {sectionOrder.map((section, index) => (
+                <div key={section}>
+                  {sectionComponents[section]}
+                  {index < sectionOrder.length - 1 && <div className="my-8" />}
+                </div>
+              ))}
             </div>
-          </div>
-          <div className="my-8" />
-          {sectionOrder.map((section, index) => (
-            <div key={section}>
-              {sectionComponents[section]}
-              {index < sectionOrder.length - 1 && <div className="my-8" />}
-            </div>
-          ))}
+          ) : (
+            <SlateView />
+          )}
         </div>
       </main>
       <Highlights highlights={highlights} />
@@ -439,7 +335,7 @@ function SortableItem({ id }: { id: SectionType }) {
   )
 }
 
-function AboutSection({ Profile }: { Profile: { about: string } }) {
+function AboutSection({ Profile: profile }: { Profile: { about: string } }) {
   return (
     <div className="space-y-4 max-w-full sm:max-w-3xl mx-auto shadow-md p-6 sm:p-8 lg:p-10 rounded-xl bg-[#FAFAFA]">
       <div className="flex items-center justify-between">
@@ -449,19 +345,19 @@ function AboutSection({ Profile }: { Profile: { about: string } }) {
         </Button>
       </div>
       <div className="space-y-4 text-sm sm:text-base leading-relaxed text-muted-foreground">
-        {Profile.about}
+        {profile.about}
       </div>
     </div>
   )
 }
 
-function SkillsSection({ Profile }: { Profile: { skills: { id: string, skillName: string, description: string }[] } }) {
+function SkillsSection({ Profile: profile }: { Profile: { skills: { id: string, skillName: string, description: string }[] } }) {
   return (
     <div className="space-y-4 max-w-full sm:max-w-3xl mx-auto shadow-md p-6 sm:p-8 lg:p-10 rounded-xl bg-[#FAFAFA]">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-bold">Skills</h2>
         <SkillEditor
-          initialSkills={Profile.skills}
+          initialSkills={profile.skills}
           trigger={
             <Button size="icon" variant="ghost" className="rounded-full">
               <Edit className="h-4 w-4 sm:h-5 sm:w-5" color="#31A7AC" />
@@ -470,11 +366,12 @@ function SkillsSection({ Profile }: { Profile: { skills: { id: string, skillName
         />
       </div>
       <div className="space-y-2">
-        {Profile.skills.map((skill, index) => (
+        {profile.skills.map((skill, index) => (
           <SkillItem key={index} title={skill.skillName} description={skill.description} />
         ))}
       </div>
     </div>
   )
 }
+
 

@@ -3,7 +3,7 @@
 
 
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Camera, Calendar, Edit2 } from "lucide-react";
+import { MapPin, Camera, Edit2 } from "lucide-react";
 import { ProfileProgress } from "@/app/(app)/profile/components/profileProgress";
 
 
@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import LinksDialog from "./Links";
 import ProfileEditor from "./ProfileEdit";
 import { ProfileDataTypes } from "@/types";
+import AvalableDilog from "./Avalable";
+import { CalendarDialog } from "./calendar";
 export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes }) {
 
     const [profileImageHovered, setProfileImageHovered] = useState(false)
@@ -44,10 +46,13 @@ export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes })
                                 <h1 className="text-3xl sm:text-4xl font-bold">{Profile.persionalDetails.name}</h1>
                                 <div className="flex flex-row justify-center items-center gap-0   px-2 py-1">
                                     <span className="h-2 w-2 rounded-full bg-[#34A353]" />
-                                    <Badge className=" text-green-700 text-xl  bg-transparent">{Profile.persionalDetails.availability}</Badge>
-                                    <div className="flex flex-row justify-center items-center gap-3 text-[#31A7AC]">
-                                        <span className="">View in Calendar </span> { } <Calendar className="h-5 w-5" color="#31A7AC" />
-                                    </div>
+                                    <Badge className=" text-green-700 text-xl  bg-transparent"><AvalableDilog initialProfile={Profile.persionalDetails} /></Badge>
+                                    {Profile.persionalDetails.availability === "Available" && (
+                                        <div className="flex flex-row justify-center items-center gap-3 text-[#31A7AC]">
+                                            <CalendarDialog />
+                                        </div>
+                                    )}
+
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 mt-2 text-muted-foreground">
@@ -67,7 +72,14 @@ export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes })
 
                     </div>
                 </div>
-
+                {/* Role */}
+                <div>
+                    {Profile.roles.map((role, index) => (
+                        <div key={index} className="inline-flex">
+                            <Badge className="bg-[#FA6E80] h-[22px] text-[#ffffff] rounded-full px-4 py-2 m-1">{role}</Badge>
+                        </div>
+                    ))}
+                </div>
                 {/* shortAbout */}
                 <p className="text-base leading-relaxed ">
                     {Profile.persionalDetails.shortAbout}

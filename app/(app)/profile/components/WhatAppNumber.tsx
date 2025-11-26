@@ -51,12 +51,16 @@ export default function WhatupNumbers({
     const [selectedCountry, setSelectedCountry] =
         useState<Country>(defaultCountry);
     const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber || "");
+    const [email, setEmail] = useState("");
 
     const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.replace(/\D/g, ""); // Remove non-digit characters
         if (value.length <= 15) {
             setPhoneNumber(value);
         }
+    };
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -88,7 +92,7 @@ export default function WhatupNumbers({
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
                 <div className="flex flex-row gap-5 h-[44px] w-auto text-base font-medium rounded-[15px]  bg-transparent border px-9 justify-center items-center cursor-pointer hover:bg-muted/50 border-[#444444] ">
-                    Add new number
+                    Add new Contact Details
                 </div>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -100,7 +104,7 @@ export default function WhatupNumbers({
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
+                        <div className="flex flex-col items-center gap-4">
                             <div className="col-span-3 flex items-center w-full gap-2">
                                 <Popover open={open} onOpenChange={setOpen}>
                                     <PopoverTrigger asChild>
@@ -108,7 +112,7 @@ export default function WhatupNumbers({
                                             variant="outline"
                                             role="combobox"
                                             aria-expanded={open}
-                                            className="w-[110px] justify-between bg-transparent border rounded-full h-11 text-4xl border-[#31A7AC]"
+                                            className="w-[80px] justify-between bg-transparent border rounded-full h-11 text-4xl border-[#31A7AC]"
                                         >
                                             {selectedCountry.flag}
                                             <ChevronsUpDown
@@ -174,6 +178,17 @@ export default function WhatupNumbers({
                                     />
                                 </div>
                             </div>
+                        </div>
+                        <div>
+                            <Input
+                                className="pl-3 border border-[#31A7AC] focus-visible:border-[#31A7AC] focus-visible:ring-ring/10 rounded-full h-11 w-full"
+                                id="email"
+                                type="email"
+                                placeholder="example@example.com"
+                                value={email}
+                                onChange={handleEmailChange}
+                                maxLength={50}
+                            />
                         </div>
                     </div>
                     <DialogFooter>
