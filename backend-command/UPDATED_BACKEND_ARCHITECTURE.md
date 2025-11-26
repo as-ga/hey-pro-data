@@ -5,7 +5,7 @@
 This document provides a comprehensive overview of the **UPDATED** backend architecture including all profile-related enhancements.
 
 **Last Updated:** January 2025  
-**Version:** 2.1 (Updated with Explore/Search Feature)
+**Version:** 2.2 (Updated with Collab Feature)
 
 ---
 
@@ -77,10 +77,21 @@ This document provides a comprehensive overview of the **UPDATED** backend archi
 │  └──────────────┘  └──────────────┘  └──────────────┘            │
 │                                                                     │
 │  ┌──────────────────────────────────────────────────┐            │
-│  │ Explore/Search (3) ⭐ NEW v2.1                    │            │
+│  ┌──────────────────────────────────────────────────┐            │
+│  │ Explore/Search (3) ⭐ v2.1                       │            │
 │  │ - GET /api/explore (search & filter)              │            │
 │  │ - GET /api/explore/categories                     │            │
 │  │ - GET /api/explore/[userId]                       │            │
+│  └──────────────────────────────────────────────────┘            │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────┐            │
+│  │ Collab (14) ⭐ NEW v2.2                           │            │
+│  │ - POST/GET /api/collab (create, list)             │            │
+│  │ - GET /api/collab/my (my posts)                   │            │
+│  │ - GET/PATCH/DELETE /api/collab/[id]               │            │
+│  │ - POST/DELETE /api/collab/[id]/interest           │            │
+│  │ - GET/POST /api/collab/[id]/collaborators         │            │
+│  │ - POST /api/upload/collab-cover                   │            │
 │  └──────────────────────────────────────────────────┘            │
 └─────────────────────────────────────────────────────────────────────┘
                                │
@@ -98,7 +109,7 @@ This document provides a comprehensive overview of the **UPDATED** backend archi
 │                                                                     │
 │  ┌─────────────────────────────────────────────────────────┐      │
 │  │  DATABASE (PostgreSQL)                                    │      │
-│  │  - 18 Tables with Relationships ⭐ UPDATED                │      │
+│  │  - 22 Tables with Relationships ⭐ UPDATED v2.2           │      │
 │  │  - Row Level Security (RLS) Policies                      │      │
 │  │  - Indexes for Performance                                │      │
 │  │  - Triggers for Auto-updates                              │      │
@@ -109,6 +120,7 @@ This document provides a comprehensive overview of the **UPDATED** backend archi
 │  │  - resumes/ (Private, 5MB)                                │      │
 │  │  - portfolios/ (Private, 10MB)                            │      │
 │  │  - profile-photos/ (Public, 2MB)                          │      │
+│  │  - collab-covers/ (Public, 5MB) ⭐ NEW v2.2               │      │
 │  └─────────────────────────────────────────────────────────┘      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -117,7 +129,7 @@ This document provides a comprehensive overview of the **UPDATED** backend archi
 
 ## 🗄️ Database Schema Summary
 
-### Core Tables (18 Total) ⭐ UPDATED
+### Core Tables (22 Total) ⭐ UPDATED v2.2
 
 #### PROFILE TABLES (10 Tables)
 
@@ -396,6 +408,80 @@ In-app notification system.
 
 ---
 
+#### COLLAB TABLES (4 Tables) ⭐ NEW v2.2
+
+##### 19. `collab_posts`
+Main table for collaboration posts where users share project ideas and seek collaborators.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `user_id` (FK → auth.users) - Post creator
+- `title` (TEXT, NOT NULL)
+- `slug` (TEXT, NOT NULL, UNIQUE)
+- `summary` (TEXT, NOT NULL)
+- `cover_image_url` (TEXT)
+- `status` (TEXT) - open/closed/draft
+- `created_at`, `updated_at` (TIMESTAMP)
+
+**Indexes:**
+- `idx_collab_posts_user_id` on `user_id`
+- `idx_collab_posts_status` on `status`
+- `idx_collab_posts_created_at` on `created_at DESC`
+- `idx_collab_posts_slug` on `slug`
+
+##### 20. `collab_tags`
+Tags for categorizing collab posts (many-to-many).
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `collab_id` (FK → collab_posts)
+- `tag_name` (TEXT, NOT NULL)
+- `created_at` (TIMESTAMP)
+
+**Constraints:**
+- UNIQUE(collab_id, tag_name)
+
+**Indexes:**
+- `idx_collab_tags_collab_id` on `collab_id`
+- `idx_collab_tags_tag_name` on `tag_name`
+
+##### 21. `collab_interests`
+Users who expressed interest in collab posts.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `collab_id` (FK → collab_posts)
+- `user_id` (FK → auth.users)
+- `created_at` (TIMESTAMP)
+
+**Constraints:**
+- UNIQUE(collab_id, user_id)
+
+**Indexes:**
+- `idx_collab_interests_collab_id` on `collab_id`
+- `idx_collab_interests_user_id` on `user_id`
+
+##### 22. `collab_collaborators`
+Approved collaborators for collab projects.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `collab_id` (FK → collab_posts)
+- `user_id` (FK → auth.users)
+- `role` (TEXT) - Designer, Editor, etc.
+- `department` (TEXT) - Creative, Engineering, etc.
+- `added_at` (TIMESTAMP)
+- `added_by` (FK → auth.users)
+
+**Constraints:**
+- UNIQUE(collab_id, user_id)
+
+**Indexes:**
+- `idx_collab_collaborators_collab_id` on `collab_id`
+- `idx_collab_collaborators_user_id` on `user_id`
+
+---
+
 ## 📦 Storage Buckets
 
 ### 1. `resumes/` (Private)
@@ -420,6 +506,14 @@ In-app notification system.
 - **Path Structure**: `{user_id}/{filename}`
 - **Access**: Public read, Owner write
 - **Used For**: `user_profiles.profile_photo_url`, `user_profiles.banner_url`
+
+### 4. `collab-covers/` (Public) ⭐ NEW v2.2
+- **Purpose**: Cover images for collab posts
+- **Max Size**: 5 MB
+- **Allowed Types**: JPEG, JPG, PNG
+- **Path Structure**: `{user_id}/{collab_id}/{filename}`
+- **Access**: Public read, Owner write
+- **Used For**: `collab_posts.cover_image_url`
 
 ---
 
@@ -584,10 +678,21 @@ WITH CHECK (
 ├── applications/
 │   ├── my/route.js                              # GET my apps
 │   └── [id]/route.js                            # GET app details
-└── explore/ ⭐ NEW (v2.1)
-    ├── route.js                             # GET search & filter profiles
-    ├── categories/route.js                  # GET all categories
-    └── [userId]/route.js                    # GET profile details
+├── explore/ ⭐ (v2.1)
+│   ├── route.js                             # GET search & filter profiles
+│   ├── categories/route.js                  # GET all categories
+│   └── [userId]/route.js                    # GET profile details
+└── collab/ ⭐ NEW (v2.2)
+    ├── route.js                             # POST create, GET list all
+    ├── my/route.js                          # GET my collab posts
+    └── [id]/
+        ├── route.js                         # GET details, PATCH update, DELETE
+        ├── interest/route.js                # POST express, DELETE remove
+        ├── interests/route.js               # GET list interested users
+        ├── collaborators/
+        │   ├── route.js                     # GET list, POST add
+        │   └── [userId]/route.js            # DELETE remove collaborator
+        └── close/route.js                   # PATCH close collab
 ```
 
 ### Request/Response Format
@@ -1011,6 +1116,55 @@ See detailed step-by-step guide:
 
 ---
 
+## 🔥 Collab Feature Overview (v2.2) ⭐ NEW
+
+### Purpose
+The Collab feature is a collaboration platform where users can:
+- Post project ideas and creative collaborations
+- Browse and search collab opportunities
+- Express interest in projects
+- Manage team collaborators
+- Close completed collaborations
+
+### Frontend Location
+- **Path:** `/app/(app)/(collab)/`
+- **Pages:**
+  - `/collab` - Browse all collabs and create new ones
+  - `/collab/manage-collab` - Manage your collab posts
+  - `/collab/manage-collab/[id]` - Edit specific collab
+
+### Backend Implementation
+- **Tables:** 4 new tables (collab_posts, collab_tags, collab_interests, collab_collaborators)
+- **Storage:** 1 new bucket (collab-covers)
+- **API Endpoints:** 14 new endpoints
+- **RLS Policies:** 17 new security policies
+- **Indexes:** 15+ new performance indexes
+
+### Implementation Guide
+See complete step-by-step implementation guide:
+- **`backend-command/collab/README.md`** - Start here
+- **`backend-command/collab/00_ANALYSIS.md`** - Frontend analysis
+- **`backend-command/collab/01_CREATE_TABLES.sql`** - Database tables
+- **`backend-command/collab/02_RLS_POLICIES.sql`** - Security policies
+- **`backend-command/collab/03_INDEXES.sql`** - Performance indexes
+- **`backend-command/collab/04_STORAGE_BUCKET.sql`** - Storage setup
+- **`backend-command/collab/05_IMPLEMENTATION_PLAN.md`** - Implementation steps
+- **`backend-command/collab/06_API_ENDPOINTS.md`** - API documentation
+- **`backend-command/collab/07_QUICK_REFERENCE.md`** - Quick reference
+
+### Implementation Status
+- ✅ Frontend UI complete with hardcoded data
+- ✅ Backend architecture designed
+- ✅ Database schema created
+- ✅ RLS policies designed
+- ✅ API endpoints documented
+- ✅ Implementation plan ready
+- ⏳ Database migration pending (run SQL files)
+- ⏳ API implementation pending
+- ⏳ Frontend-backend integration pending
+
+---
+
 ## 🆕 What's New in Version 2.1
 
 ### Explore/Search Feature
@@ -1101,8 +1255,19 @@ Refer to the following documents for detailed information:
 12. **backend-command/profile/06_schema_diagram.md** - Visual schema
 13. **backend-command/profile/07_quick_reference.md** - Quick reference
 
-### Explore/Search Documentation (Version 2.1) ⭐ NEW
+### Explore/Search Documentation (Version 2.1) ⭐
 14. **backend-command/explore/01_EXPLORE_BACKEND_IMPLEMENTATION_PLAN.md** - Complete implementation guide
+
+### Collab Feature Documentation (Version 2.2) ⭐ NEW
+15. **backend-command/collab/README.md** - Overview and quick start
+16. **backend-command/collab/00_ANALYSIS.md** - Frontend analysis and requirements
+17. **backend-command/collab/01_CREATE_TABLES.sql** - Database table creation
+18. **backend-command/collab/02_RLS_POLICIES.sql** - Security policies
+19. **backend-command/collab/03_INDEXES.sql** - Performance indexes
+20. **backend-command/collab/04_STORAGE_BUCKET.sql** - Storage configuration
+21. **backend-command/collab/05_IMPLEMENTATION_PLAN.md** - Step-by-step guide
+22. **backend-command/collab/06_API_ENDPOINTS.md** - API documentation
+23. **backend-command/collab/07_QUICK_REFERENCE.md** - Quick reference guide
 
 ---
 
@@ -1112,13 +1277,14 @@ Refer to the following documents for detailed information:
 
 | Metric | Count |
 |--------|-------|
-| Total Tables | 18 |
+| Total Tables | 22 (⭐ +4 for collab v2.2) |
 | Profile Tables | 10 |
 | Gigs/Application Tables | 8 |
-| Total Indexes | 35+ (⭐ +5 for explore v2.1) |
-| Total RLS Policies | 62+ (⭐ +2 for explore v2.1) |
-| Storage Buckets | 3 |
-| API Endpoints | 43+ (⭐ +3 for explore v2.1) |
+| Collab Tables | 4 (⭐ NEW v2.2) |
+| Total Indexes | 50+ (⭐ +15 for collab v2.2) |
+| Total RLS Policies | 79+ (⭐ +17 for collab v2.2) |
+| Storage Buckets | 4 (⭐ +1 for collab v2.2) |
+| API Endpoints | 57+ (⭐ +14 for collab v2.2) |
 
 ### Code Coverage
 
@@ -1131,6 +1297,7 @@ Refer to the following documents for detailed information:
 | File Uploads | ✅ Complete |
 | Notifications | ✅ Complete |
 | RLS Security | ✅ Complete |
+| Collab System | ⏳ Ready for Implementation (v2.2) |
 
 ---
 
