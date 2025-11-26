@@ -208,28 +208,31 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
         <>
             <div className="">
                 <span className="bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent text-3xl font-semibold">Crew Directory</span>
-                <div className="flex flex-row justify-center items-center space-x-4 mt-4 mb-6 w-full">
-                    <div
-                        className={`flex items-center justify-center space-x-2 h-[48px] border rounded-full px-4 py-2 cursor-pointer transition-all ${isFilterOpen ? 'w-[300px] bg-[#FA6E80]' : 'w-[150px] bg-[#f7f7f700] border-[#FA6E80] '}`}
+                <div className="mt-4 mb-6 flex w-full flex-row gap-3 md:flex-row md:items-center">
+                    <button
+                        className={`flex h-12 w-auto items-center justify-between rounded-full border px-4 py-2 text-sm font-medium transition-all whitespace-nowrap ${isFilterOpen ? 'bg-[#FA6E80] text-white border-[#FA6E80]' : 'bg-transparent text-[#FA6E80] border-[#FA6E80]'}`}
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
                     >
-                        <button className={`text-sm font-medium ${isFilterOpen ? 'text-white' : 'text-[#FA6E80]'}`}>Filter (<span>{"3"}</span>)</button>
-                        <Filter className={`h-5 w-5 ${isFilterOpen ? 'text-white' : 'text-[#FA6E80]'}`} />
-                    </div>
-                    <div className="flex flex-row border rounded-full px-4 py-2 justify-center items-center h-[48px] w-[960px]">
+                        <span className="flex items-center space-x-2">
+                            <span>Filter (<span>{"3"}</span>)</span>
+                            <Filter className="h-5 w-5" />
+                        </span>
+                    </button>
+                    <div className="flex h-12 flex-row w-full items-center justify-between rounded-full border px-2 py-2">
                         <input
+                            type="text"
                             placeholder="Search by name, role, or department..."
-                            className="w-full border-none outline-none focus:ring-0 text-sm"
-                            onChange={(e) => console.log(e.target.value)} // Add onChange handler
+                            className="w-full border-none bg-transparent text-sm outline-none focus:ring-0"
+                            onChange={(e) => console.log(e.target.value)}
                         />
-                        <span className="flex items-center justify-center border rounded-full h-[34px] w-[34px] bg-[#FA6E80]">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FA6E80]">
                             <Search className="h-5 w-5 text-white" />
                         </span>
                     </div>
 
                 </div>
-                <div className="flex flex-row w-full">
-                    <div className="h-screen max-w-[280px] w-full overflow-y-auto p-4 space-y-2">
+                <div className="flex w-full flex-col gap-6 lg:flex-row">
+                    <div className={`${isFilterOpen ? 'flex' : 'hidden lg:flex'} w-full flex-col gap-4 rounded-2xl border border-gray-100 bg-white/50 p-4 lg:max-w-[280px] lg:overflow-y-auto`}>
                         {isFilterOpen && (
                             <form onSubmit={handleFilterSubmit} className="space-y-5 border rounded-xl bg-white p-4 text-[#017A7C]">
                                 <div className="space-y-2">
@@ -356,7 +359,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                             </form>
                         )}
                         {filterOptions.map(opt => (
-                            <details key={opt.label} className="group border rounded-md bg-white">
+                            <details key={opt.label} className="group rounded-md border bg-white">
                                 <summary className="cursor-pointer select-none flex items-center justify-between px-3 py-2 text-sm font-medium">
                                     <span>{opt.label}</span>
                                     <span>
@@ -380,7 +383,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                         ))
                         }
                     </div>
-                    <div className=" h-screen w-full overflow-y-auto">{children}</div>
+                    <div className="w-full flex-1 overflow-x-hidden rounded-2xl border border-gray-100 bg-white/70 p-2 sm:p-4 lg:min-h-[600px]">{children}</div>
                 </div>
 
             </div>
