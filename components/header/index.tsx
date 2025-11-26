@@ -15,6 +15,7 @@ import {
   Compass,
   Calendar,
   NewspaperIcon,
+  SatelliteDishIcon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -452,6 +453,17 @@ export default function Header() {
             }}
           >
             <NewspaperIcon className="h-6 w-6" />
+          </Link>
+          <Link
+            href="/slate"
+            className="flex flex-col items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+            onClick={() => {
+              setChatOpen(false)
+              setNotificationOpen(false)
+              setUserMenuOpen(false)
+            }}
+          >
+            <SatelliteDishIcon className="h-6 w-6" />
           </Link>
         </div>
       </div>
