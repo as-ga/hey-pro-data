@@ -80,7 +80,7 @@ export default function ProfileEditor({ initialProfile, trigger }: EditProfileIn
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <DialogContent className="max-w-2xl mx-auto h-[90vh] flex flex-col">
+            <DialogContent className="w-[500px] mx-auto h-[90vh] flex flex-col">
                 <DialogHeader className="p-2 sm:p-3 md:p-5 pb-1">
                     <DialogTitle className="text-2xl font-normal">Edit Profile info</DialogTitle>
                     <p className="text-sm text-muted-foreground mt-2">
@@ -89,7 +89,7 @@ export default function ProfileEditor({ initialProfile, trigger }: EditProfileIn
                     </p>
                 </DialogHeader>
 
-                <div className="flex-1 overflow-y-auto px-6 sm:px-8 md:px-10">
+                <div className="flex-1  overflow-y-auto px-6 sm:px-8 md:px-10">
                     <div className="space-y-6">
                         {/* Name */}
                         <div className="space-y-2 flex flex-col">
