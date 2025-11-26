@@ -190,8 +190,8 @@ export default function Collab() {
 
                 <section className="space-y-8">
                     {collabPosts.map((post) => (
-                        <article key={post.id} className="grid gap-6 md:grid-cols-[360px_auto]">
-                            <div className="overflow-hidden rounded-[32px]">
+                        <article key={post.id} className="grid gap-6 md:grid-cols-[360px_auto] p-2">
+                            <div className="overflow-hidden rounded-[3px]">
                                 <Image
                                     src={post.cover}
                                     alt={post.title}
