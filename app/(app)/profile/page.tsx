@@ -251,7 +251,7 @@ export default function Profile() {
               <div className="lg:hidden">
                 <Button
                   variant="outline"
-                  className="h-11 rounded-[10px] w-full border-[#31A7AC] text-black hover:bg-transparent px-4 flex-shrink-0 mb-3"
+                  className="h-11 rounded-[10px] mt-3 sm:mt-0 w-full border-[#31A7AC] text-black hover:bg-transparent px-4 flex-shrink-0 mb-3"
                 >
                   Edit Highlights
                 </Button>
