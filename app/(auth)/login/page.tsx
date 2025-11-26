@@ -8,8 +8,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { login } from "./action";
-import { Apple, Google } from "@/components/icons";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Eye, EyeOff } from "lucide-react";
 
 interface User {
   firstName?: string;
@@ -36,6 +37,7 @@ const Login: React.FC = () => {
   const [rememberPassword, setRememberPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: Errors = {};
@@ -91,9 +93,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-white overflow-hidden">
+    <div className="min-h-screen flex overflow-hidde">
       {/* Left side - Gradient Background */}
-      <div className="hidden md:flex md:w-1/2 items-center justify-end pl-8 pr-0 py-8">
+      <div className="hidden md:flex md:w-1/2 items-center justify-end pl-2 pr-0 py-2">
         <div
           className="w-full h-full max-w-[450px] max-h-[721px] rounded-[68px]"
           style={{
@@ -104,30 +106,29 @@ const Login: React.FC = () => {
       </div>
 
       {/* Right side - Login Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-start px-4 sm:px-6 md:pl-0 py-6 md:py-12 bg-white">
+      <div className="w-full md:w-1/2 flex items-center justify-start px-4 sm:px-6 md:pl-0 py-6 md:py-12">
         <div className="w-full max-w-md md:max-w-lg md:pl-12 lg:pl-16 xl:pl-20">
           {/* Logo */}
-          <div className="mb-6 md:mb-12 md:text-left text-center">
+          <div className="mb-6 md:text-left text-center">
             <Image
-              src="https://customer-assets.emergentagent.com/job_2a9bf250-13c7-456d-9a61-1240d767c09d/artifacts/97u04lh8_hpd.png"
+              src="/logo/LogoIcon.svg"
               alt="HeyProData"
               width={200}
               height={60}
               className="h-14 md:h-12 mb-4 md:mb-8 w-auto mx-auto md:mx-0 "
             />
-            <p className="text-2xl md:text-3xl font-light text-gray-900">Login to HeyProData</p>
+            <p className="text-2xl md:text-3xl font-light text-gray-900">
+              Login to
+              <span className="font-semibold text-pink"> Hey</span>
+              <span className="font-semibold text-black">Pro</span>
+              <span className="font-semibold text-light-green">Data</span>
+            </p>
           </div>
 
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-2 md:space-y-3">
             {/* Email Field */}
             <div>
-              <label
-                htmlFor="email"
-                className="block mb-2 text-sm md:text-base font-medium text-gray-900"
-              >
-                Email
-              </label>
               <Input
                 type="email"
                 placeholder="Email"
@@ -136,59 +137,81 @@ const Login: React.FC = () => {
                   setEmail(e.target.value);
                   if (errors.email) setErrors({ ...errors, email: "" });
                 }}
-                className="h-11 md:h-12 text-sm md:text-base border-gray-300 rounded-xl focus:border-[#FA6E80] focus:ring-[#FA6E80] transition-all duration-300"
+                className="h-11 md:h-12 text-sm md:text-base border-gray-300 rounded-xl focus:border-pink focus:ring-pink transition-all duration-300"
               />
               {errors.email && (
-                <p className="text-xs md:text-sm text-red-500 mt-2">{errors.email}</p>
+                <p className="text-xs md:text-sm text-red-500 mt-2">
+                  {errors.email}
+                </p>
               )}
             </div>
 
             {/* Password Field */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm md:text-base font-medium text-gray-900"
-              >
-                Password
-              </label>
+
+            <div className="relative">
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setPassword(e.target.value);
                   if (errors.password) setErrors({ ...errors, password: "" });
                 }}
-                className="h-11 md:h-12 text-sm md:text-base border-gray-300 rounded-xl focus:border-[#FA6E80] focus:ring-[#FA6E80] transition-all duration-300"
+                className="h-11 md:h-12 text-sm md:text-base border-gray-300 rounded-xl focus:border-[#FA6E80] focus:ring-[#FA6E80] pr-10"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 top-1 pr-3 flex items-center text-gray-600"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
               {errors.password && (
-                <p className="text-xs md:text-sm text-red-500 mt-2">{errors.password}</p>
+                <p className="text-xs md:text-sm text-red-500 mt-2">
+                  {errors.password}
+                </p>
               )}
             </div>
 
             {/* Remember Password Checkbox */}
-            <div className="flex items-center space-x-2 md:space-x-3">
-              <Checkbox
-                id="remember"
-                checked={rememberPassword}
-                onCheckedChange={(checked) =>
-                  setRememberPassword(checked as boolean)
-                }
-                className="border-gray-400 data-[state=checked]:bg-[#FA6E80] data-[state=checked]:border-[#FA6E80]"
-              />
-              <label
-                htmlFor="remember"
-                className="text-xs md:text-sm text-gray-600 cursor-pointer select-none"
+            <div className="flex items-center flex-row justify-between mb-4">
+              <span className="flex items-center space-x-2 md:space-x-3">
+                <Checkbox
+                  id="remember"
+                  checked={rememberPassword}
+                  onCheckedChange={(checked) =>
+                    setRememberPassword(checked as boolean)
+                  }
+                  className="border-gray-400 data-[state=checked]:bg-pink data-[state=checked]:border-pink"
+                />
+                <label
+                  htmlFor="remember"
+                  className="text-xs md:text-sm text-gray-600 cursor-pointer select-none"
+                >
+                  Keep me logged in
+                </label>
+              </span>
+
+              <Link
+                href="/forget-password"
+                className="text-xs md:text-sm text-light-green font-medium hover:underline transition-all duration-200"
               >
-                remember the password
-              </label>
+                Forgot Password?
+              </Link>
             </div>
 
             {/* Login Button */}
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-[40px] md:h-[50px] bg-[#FA6E80] hover:bg-[#f95569] text-white text-sm md:text-lg font-medium rounded-[15px] transition-all duration-300 ease-out transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
+              className={cn(
+                "w-full h-[40px] md:h-[50px] bg-pink hover:bg-[#f95569] text-white text-sm md:text-lg font-medium rounded-[15px] transition-all duration-300 ease-out transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl cursor-pointer",
+                isLoading && "opacity-70 cursor-progress"
+              )}
             >
               {isLoading ? "Loading..." : "Login"}
             </Button>
@@ -197,28 +220,42 @@ const Login: React.FC = () => {
           {/* Divider */}
           <div className="flex items-center my-5 md:my-8">
             <div className="flex-1 border-t border-gray-300"></div>
-            <span className="px-3 md:px-4 text-gray-500 text-xs md:text-sm">or</span>
+            <span className="px-3 md:px-4 text-gray-500 text-xs md:text-sm">
+              or
+            </span>
             <div className="flex-1 border-t border-gray-300"></div>
           </div>
 
           {/* Social Login Buttons */}
-          <div className="flex flex-col w-full gap-3 md:gap-4 justify-center">
+          <div className="flex flex-row w-full gap-3 md:gap-4 justify-center">
             <Button
               type="button"
               onClick={handleGoogleAuth}
               disabled={isLoading}
-              className=" h-[45px] md:h-[40px] bg-white border border-gray-300 rounded-[12px] md:rounded-[15px] hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center p-3 md:p-6"
+              className="w-1/2 h-[45px] md:h-[40px] bg-white border border-gray-300 rounded-[12px] md:rounded-[15px] hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center p-3 md:p-6"
             >
-              <Google className="" size={700} />
+              <Image
+                src="/assets/icons/google.svg"
+                alt="Google Logo"
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
             </Button>
 
             <Button
               type="button"
               onClick={handleAppleAuth}
               disabled={isLoading}
-              className=" h-[45px] md:h-[40px] bg-white border border-gray-300 rounded-[12px] md:rounded-[15px] hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center p-3 md:p-6"
+              className="w-1/2 h-[45px] md:h-[40px] bg-white border border-gray-300 rounded-[12px] md:rounded-[15px] hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center p-3 md:p-6"
             >
-              <Apple className="" size={700} />
+              <Image
+                src="/assets/icons/apple.svg"
+                alt="Apple Logo"
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
             </Button>
           </div>
 
