@@ -5,7 +5,35 @@
 This document provides a comprehensive overview of the **UPDATED** backend architecture including all profile-related enhancements.
 
 **Last Updated:** January 2025  
-**Version:** 2.6 (Updated with Design Projects Feature - PENDING IMPLEMENTATION)
+**Version:** 2.7 (Jobs Feature Enhancement - SQL Commands Ready)
+
+---
+
+## 🆕 Latest Update - Jobs Feature (v2.7)
+
+**New Implementation Ready:** Complete SQL migration scripts for Jobs feature are available in `/backend-command/jobs/`
+
+### What's New in v2.7:
+- ✅ Enhanced `gigs` table with 4 new columns (company_logo, terms_conditions, budget_amount, budget_currency)
+- ✅ Updated `gigs.type` to distinguish 'project' vs 'gig' types
+- ✅ Updated `gigs.status` to support production workflow phases (pre-production, production, post-production, etc.)
+- ✅ New `gig_skills` table for required skills/roles
+- ✅ Enhanced `gig_dates` table with timeline phase support
+- ✅ New `gig_project_details` table for flexible project data
+- ✅ 15 new RLS policies ensuring secure access
+- ✅ 12+ new performance indexes
+
+### Quick Links:
+- **Implementation Plan:** `/backend-command/jobs/01_JOBS_SQL_IMPLEMENTATION_PLAN.md`
+- **SQL Scripts:** `/backend-command/jobs/02_execute_step1_*.sql` through Step 7
+- **Architecture Update:** `/backend-command/jobs/09_ARCHITECTURE_UPDATE.md`
+- **README:** `/backend-command/jobs/README.md`
+
+**Status:** SQL scripts ready for execution. See `/backend-command/jobs/` for complete implementation.
+
+---
+
+**Previous Version:** 2.6 (Updated with Design Projects Feature - PENDING IMPLEMENTATION)
 
 ---
 
