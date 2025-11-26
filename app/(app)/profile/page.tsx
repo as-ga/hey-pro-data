@@ -163,7 +163,7 @@ export default function Profile() {
                   <Button
                     variant="default"
                     size="icon"
-                    className="absolute left-1 sm:left-0 top-1/2 -translate-y-1/2 transform rounded-full shadow-md z-10"
+                    className="absolute left-1 sm:left-0 top-1/2 -translate-y-1/2 transform bg-[#FA6E80] rounded-full shadow-md z-10"
                     onClick={() => scroll(-200)}
                   >
                     <ChevronLeft className="h-6 w-6" />
@@ -173,7 +173,7 @@ export default function Profile() {
                   <Button
                     variant="default"
                     size="icon"
-                    className="absolute right-1 sm:right-0 top-1/2 -translate-y-1/2 transform rounded-full shadow-md z-10"
+                    className="absolute right-1 sm:right-0 top-1/2 -translate-y-1/2 transform bg-[#FA6E80] rounded-full shadow-md z-10"
                     onClick={() => scroll(200)}
                   >
                     <ChevronRight className="h-6 w-6" />
