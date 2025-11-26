@@ -41,66 +41,64 @@ function CreditCard({ credit }: { credit: CreditType }) {
     const awards = credit.awards ?? []
 
     return (
-        <article className="flex flex-col gap-4 border-b border-[#E6E6E6] pb-6 last:border-b-0">
-            <div className="flex flex-col gap-1">
-                <p className="text-[18px] font-semibold text-[#181818]">
-                    {heading}
-                    {releaseSuffix}
-                </p>
-                {credit.headlineStats && (
-                    <p className="text-[12px] font-semibold text-[#31A7AC]">{credit.headlineStats}</p>
-                )}
-            </div>
-
-            <div className="flex flex-col gap-5 lg:flex-row">
-                <div className="relative w-full max-w-[190px] flex-shrink-0">
-                    {credit.imgUrl ? (
-                        <Image
-                            src={credit.imgUrl}
-                            alt={credit.creditTitle}
-                            width={190}
-                            height={225}
-                            className="h-[225px] w-full rounded-[5px] object-cover"
-                        />
-                    ) : (
-                        <div className="relative h-[145px] w-full rounded-[5px] bg-[#FAFAFA] shadow-[4px_4px_6.4px_rgba(0,0,0,0.03)]">
-                            <div className="absolute left-3 top-3 flex items-center gap-[6px]">
-                                <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#25C9D0] bg-white" />
-                                <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#FF5168] bg-white" />
-                            </div>
-                            <p className="absolute inset-0 flex items-center justify-center px-4 text-center text-[20px] font-medium text-[#444444]">
-                                Too busy to take a pic..!
-                            </p>
-                        </div>
+        <>
+            <article className="flex sm:w-[540px] sm:h-[281px] mb-5 flex-col gap-4 border-b border-[#E6E6E6] pb-6 last:border-b-0">
+                <div className="flex flex-col gap-1">
+                    <p className="text-[18px] font-semibold text-[#181818]">
+                        {heading}
+                        {releaseSuffix}
+                    </p>
+                    {credit.headlineStats && (
+                        <p className="text-[12px] font-semibold text-[#31A7AC]">{credit.headlineStats}</p>
                     )}
                 </div>
 
-                <div className="flex flex-1 flex-col gap-4">
-                    <div className="space-y-1 text-[#181818]">
-                        {roleLine && <p className="text-sm leading-[21px]">{roleLine}</p>}
-                        {companyLine && <p className="text-xs text-[#444444]">{companyLine}</p>}
-                        {productionTimeline && <p className="text-[10px] font-semibold text-[#444444] uppercase">{productionTimeline}</p>}
-                    </div>
-                    <p className="text-sm leading-[18px] text-[#393939]">{credit.description}</p>
-
-                    {awards.length > 0 && (
-                        <div className="relative isolate rounded-r-[5px] bg-white px-2 py-2">
-                            <ScrollArea className="h-[85px] pr-2">
-                                <ul className="space-y-1">
-                                    {awards.map((award, index) => (
-                                        <li key={`${credit.id}-award-${index}`} className="text-[10px] font-semibold text-[#31A7AC]">
-                                            <span>{award.title}</span>
-                                            {award.detail && <span className="text-[#6B6B6B]"> {award.detail}</span>}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </ScrollArea>
-                            <div className="pointer-events-none absolute right-1 top-2 h-[81px] w-[10px] rounded-[9px] bg-[#F8F8F8]">
-                                <div className="absolute inset-x-[2px] top-1 h-[27px] rounded-[24px] bg-[#D9D9D9]" />
+                <div className="flex flex-col sm:w-[540px]  gap-5 lg:flex-row">
+                    <div className="relative sm:w-[190px] flex-shrink-0">
+                        {credit.imgUrl ? (
+                            <Image
+                                src={credit.imgUrl}
+                                alt={credit.creditTitle}
+                                width={190}
+                                height={225}
+                                className="sm:h-[225px] h-[346px] sm:w-[190px] w-[293px] rounded-[5px] object-cover"
+                            />
+                        ) : (
+                            <div className="relative sm:h-[225px] sm:w-[190px] w-full rounded-[5px] bg-[#ffffff] shadow-[4px_4px_6.4px_rgba(0,0,0,0.03)]">
+                                <div className="absolute left-3 top-3 flex items-center gap-[6px]">
+                                    <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#25C9D0] bg-white" />
+                                    <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#FF5168] bg-white" />
+                                </div>
+                                <p className="absolute inset-0 flex items-center justify-center px-4 text-center text-[20px] font-medium text-[#444444]">
+                                    Too busy to take a pic..!
+                                </p>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
 
+                    <div className="flex flex-1 flex-col gap-4">
+                        <div className="space-y-0 text-[#181818]">
+                            {roleLine && <p className="text-sm leading-[21px]">{roleLine}</p>}
+                            {companyLine && <p className="text-xs text-[#444444]">{companyLine}</p>}
+                            {productionTimeline && <p className="text-[10px] font-semibold text-[#444444] uppercase">{productionTimeline}</p>}
+                        </div>
+                        <p className="text-sm font-[400] leading-[18px] text-[#393939]">{credit.description}</p>
+                        {awards.length > 0 && (
+                            <div className="relative isolate rounded-r-[5px]  bg-white px-2 py-2">
+                                <ScrollArea className="max-h-[85px] pr-2">
+                                    <ul className="space-y-1 overflow-x-auto">
+                                        {awards.map((award, index) => (
+                                            <li key={`${credit.id}-award-${index}`} className="text-[10px] font-semibold text-[#31A7AC]">
+                                                <span>{award.title}</span>
+                                                {award.detail && <span className="text-[#6B6B6B]"> {award.detail}</span>}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </ScrollArea>
+
+                            </div>
+                        )}
+                        {/* 
                     {credit.awardsSummary && (
                         <p className="text-sm font-semibold text-[#31A7AC]">{credit.awardsSummary}</p>
                     )}
@@ -108,10 +106,11 @@ function CreditCard({ credit }: { credit: CreditType }) {
                     <div className="mt-auto flex items-center gap-3 text-xs text-[#000000]">
                         <Calendar className="h-4 w-4" />
                         <span>{formatRange(credit.startDate, credit.endDate)}</span>
+                    </div> */}
                     </div>
                 </div>
-            </div>
-        </article>
+            </article>
+        </>
     )
 }
 
@@ -141,11 +140,48 @@ export default function CreditsSection({ Profile }: { Profile: ProfileDataTypes 
 
             <div className="flex flex-col gap-8">
                 {credits.map((credit) => (
-                    <CreditCard key={credit.id} credit={credit} />
+                    <>
+                        <CreditCard key={credit.id} credit={credit} />
+                        <div
+                            className="h-0 w-full rounded-full"
+                            style={{
+                                border: '1px solid transparent',
+                                backgroundImage: 'linear-gradient(white, white), linear-gradient(90deg, #FA6E80 0%, #6A89BE 33%, #85AAB7 66%, #31A7AC 100%)',
+                                backgroundOrigin: 'border-box',
+                                backgroundClip: 'padding-box, border-box'
+                            }}
+                            aria-hidden
+                        />
+                    </>
+
                 ))}
             </div>
 
-            <div className="mt-8 flex items-center justify-between">
+            <div className="mt-8 flex flex-col items-start justify-between">
+                <div className="flex flex-row gap-5">
+                    <div className="relative sm:h-[145px] sm:w-[190px] w-full rounded-[5px] bg-[#ffffff] shadow-[4px_4px_6.4px_rgba(0,0,0,0.03)]">
+                        <div className="absolute left-3 top-3 flex items-center gap-[6px]">
+                            <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#25C9D0] bg-white" />
+                            <span className="relative inline-flex h-[22px] w-[22px] items-center justify-center rounded-full border-[2px] border-[#FF5168] bg-white" />
+                        </div>
+                        <p className="absolute inset-0 flex items-center justify-center px-4 text-center text-[20px] font-medium text-[#444444]">
+                            Too busy to take a pic..!
+                        </p>
+                    </div>
+                    <div>
+                        <h1 className="text-[14px] font-[600]">Role  |  Production type</h1>
+                        <p>Client</p>
+                        <p>Description</p>
+                        <p>.....</p>
+                        <p>.......</p>
+                        <p>.........</p>
+                        <div className="mt-auto flex items-center gap-3 text-xs text-[#000000]">
+                            <Calendar className="h-4 w-4" />
+                            <span>start_date - end_date</span>
+                        </div>
+                    </div>
+                </div>
+
                 <Link href="#" className="text-[14px] font-semibold text-[#31A7AC]">See all credits</Link>
             </div>
         </section>
