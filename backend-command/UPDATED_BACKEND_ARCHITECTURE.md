@@ -149,7 +149,7 @@ This document provides a comprehensive overview of the **UPDATED** backend archi
 │                                                                     │
 │  ┌─────────────────────────────────────────────────────────┐      │
 │  │  DATABASE (PostgreSQL)                                    │      │
-│  │  - 39 Tables with Relationships ⭐ UPDATED v2.6           │      │
+│  │  - 41 Tables with Relationships ⭐ UPDATED v2.7           │      │
 │  │  - Row Level Security (RLS) Policies                      │      │
 │  │  - Indexes for Performance                                │      │
 │  │  - Triggers for Auto-updates                              │      │
@@ -170,7 +170,7 @@ This document provides a comprehensive overview of the **UPDATED** backend archi
 
 ## 🗄️ Database Schema Summary
 
-### Core Tables (39 Total) ⭐ UPDATED v2.6
+### Core Tables (41 Total) ⭐ UPDATED v2.7
 
 #### PROFILE TABLES (10 Tables)
 
@@ -360,9 +360,9 @@ Skills associated with users.
 
 ---
 
-#### GIGS & APPLICATIONS TABLES (9 Tables) ⭐ ENHANCED v2.3
+#### GIGS & APPLICATIONS TABLES (11 Tables) ⭐ ENHANCED v2.7
 
-##### 11. `gigs` ⭐ ENHANCED (Version 2.3)
+##### 11. `gigs` ⭐ ENHANCED (Version 2.7)
 Main table for job postings with comprehensive gig management.
 
 **Key Fields:**
@@ -384,6 +384,12 @@ Main table for job postings with comprehensive gig management.
 - `expiry_date` (TIMESTAMPTZ) - Application deadline ("Apply before" date)
 - `supporting_file_label` (TEXT) - Label for reference file
 - `reference_url` (TEXT) - URL for reference link
+
+**New Fields (v2.7):** ⭐
+- `company_logo` (TEXT) - URL to company/project logo image
+- `terms_conditions` (TEXT) - Terms, conditions, and return policy text
+- `budget_amount` (INTEGER) - Total project budget amount
+- `budget_currency` (TEXT, DEFAULT 'AED') - Budget currency code (AED, USD, EUR, GBP, etc.)
 
 **Indexes:**
 - `idx_gigs_created_by` on `created_by`
@@ -497,11 +503,77 @@ Supporting references (files and links) for gigs.
 
 **Note:** Multiple references per gig supported (one-to-many relationship)
 
+##### 20. `gig_skills` ⭐ NEW v2.7
+Required skills and roles for gigs/projects.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `gig_id` (FK → gigs) - Parent gig
+- `skill_name` (TEXT, NOT NULL) - Skill or role name (e.g., Producer, Director, Camera Operator, Editor, Sound Engineer)
+- `skill_level` (TEXT) - Skill importance: 'required' | 'preferred' | 'nice-to-have'
+- `sort_order` (INTEGER, DEFAULT 0) - Display order for skills list
+- `created_at` (TIMESTAMPTZ)
+
+**Constraints:**
+- UNIQUE(gig_id, skill_name) - Prevent duplicate skills per gig
+- CHECK(skill_level IN ('required', 'preferred', 'nice-to-have'))
+- ON DELETE CASCADE (skills deleted when gig deleted)
+
+**Indexes:**
+- `idx_gig_skills_gig_id` on `gig_id` - For joining with gigs
+- `idx_gig_skills_gig_sort` on `(gig_id, sort_order)` - For ordered display
+- `idx_gig_skills_name` on `skill_name` - For filtering by skill name
+
+**RLS Policies:**
+- Public can view skills for published gigs (not drafts)
+- Creators can view/manage all skills for their own gigs
+- Full CRUD operations for gig creators
+
+**Note:** Supports multiple skills per gig with skill level classification
+
+##### 21. `gig_project_details` ⭐ NEW v2.7
+Project-specific details as flexible key-value pairs.
+
+**Key Fields:**
+- `id` (PK, UUID)
+- `gig_id` (FK → gigs) - Parent gig
+- `detail_key` (TEXT, NOT NULL) - Detail key/field name (e.g., projectName, projectType, projectDuration, projectBudget, projectDescription)
+- `detail_value` (TEXT, NOT NULL) - Detail value as text
+- `sort_order` (INTEGER, DEFAULT 0) - Display order
+- `created_at` (TIMESTAMPTZ)
+- `updated_at` (TIMESTAMPTZ) - Auto-updated by trigger
+
+**Constraints:**
+- UNIQUE(gig_id, detail_key) - Prevent duplicate keys per gig
+- ON DELETE CASCADE (details deleted when gig deleted)
+
+**Indexes:**
+- `idx_gig_project_details_gig_id` on `gig_id` - For joining with gigs
+- `idx_gig_project_details_gig_sort` on `(gig_id, sort_order)` - For ordered display
+- `idx_gig_project_details_key` on `detail_key` - For filtering/searching by key
+
+**RLS Policies:**
+- Public can view details for published gigs (not drafts)
+- Creators can view/manage all details for their own gigs
+- Full CRUD operations for gig creators
+
+**Common detail_key values:**
+- Basic: projectName, projectType, projectDuration, projectBudget, projectLocation, projectDescription
+- Credits: director, producer, writer, cinematographer, editor
+- Genre/Style: genre, style, tone
+- Technical: format, aspect_ratio, runtime
+- Distribution: release_date, platform, distributor
+
+**Trigger:**
+- Auto-updates `updated_at` timestamp on record modification
+
+**Note:** Flexible schema allows adding custom fields without database changes
+
 ---
 
 #### COLLAB TABLES (4 Tables) ⭐ NEW v2.2
 
-##### 20. `collab_posts`
+##### 22. `collab_posts`
 Main table for collaboration posts where users share project ideas and seek collaborators.
 
 **Key Fields:**
@@ -520,7 +592,7 @@ Main table for collaboration posts where users share project ideas and seek coll
 - `idx_collab_posts_created_at` on `created_at DESC`
 - `idx_collab_posts_slug` on `slug`
 
-##### 21. `collab_tags`
+##### 23. `collab_tags`
 Tags for categorizing collab posts (many-to-many).
 
 **Key Fields:**
@@ -536,7 +608,7 @@ Tags for categorizing collab posts (many-to-many).
 - `idx_collab_tags_collab_id` on `collab_id`
 - `idx_collab_tags_tag_name` on `tag_name`
 
-##### 22. `collab_interests`
+##### 24. `collab_interests`
 Users who expressed interest in collab posts.
 
 **Key Fields:**
@@ -552,7 +624,7 @@ Users who expressed interest in collab posts.
 - `idx_collab_interests_collab_id` on `collab_id`
 - `idx_collab_interests_user_id` on `user_id`
 
-##### 23. `collab_collaborators`
+##### 25. `collab_collaborators`
 Approved collaborators for collab projects.
 
 **Key Fields:**
@@ -575,7 +647,7 @@ Approved collaborators for collab projects.
 
 #### SLATE TABLES (6 Tables) ⭐ NEW v2.4
 
-##### 24. `slate_posts`
+##### 26. `slate_posts`
 Main table for social media-style slate posts.
 
 **Key Fields:**
@@ -596,7 +668,7 @@ Main table for social media-style slate posts.
 - `idx_slate_posts_slug` on `slug`
 - Full-text search on `content`
 
-##### 25. `slate_media`
+##### 27. `slate_media`
 Images and videos attached to slate posts.
 
 **Key Fields:**
@@ -611,7 +683,7 @@ Images and videos attached to slate posts.
 - `idx_slate_media_post_id` on `post_id`
 - `idx_slate_media_post_sort` on `(post_id, sort_order)`
 
-##### 26. `slate_likes`
+##### 28. `slate_likes`
 Track which users liked which posts.
 
 **Key Fields:**
@@ -627,7 +699,7 @@ Track which users liked which posts.
 - `idx_slate_likes_post_id` on `post_id`
 - `idx_slate_likes_user_id` on `user_id`
 
-##### 27. `slate_comments`
+##### 29. `slate_comments`
 Comments on posts with nested replies support.
 
 **Key Fields:**
@@ -644,7 +716,7 @@ Comments on posts with nested replies support.
 - `idx_slate_comments_parent_id` on `parent_comment_id`
 - `idx_slate_comments_post_created` on `(post_id, created_at DESC)`
 
-##### 28. `slate_shares`
+##### 30. `slate_shares`
 Track post shares/reposts.
 
 **Key Fields:**
@@ -660,7 +732,7 @@ Track post shares/reposts.
 - `idx_slate_shares_post_id` on `post_id`
 - `idx_slate_shares_user_id` on `user_id`
 
-##### 29. `slate_saved`
+##### 31. `slate_saved`
 User's saved/bookmarked posts for later viewing.
 
 **Key Fields:**
@@ -681,7 +753,7 @@ User's saved/bookmarked posts for later viewing.
 
 #### WHAT'S ON TABLES (5 Tables) ⭐ NEW v2.5
 
-##### 30. `whatson_events`
+##### 32. `whatson_events`
 Main table for What's On events where users create and manage events.
 
 **Key Fields:**
@@ -724,7 +796,7 @@ Main table for What's On events where users create and manage events.
 - `idx_whatson_events_browse` on `(status, is_paid, is_online, created_at)` - Common browse query
 - Full-text search index on `(title, description)` - Keyword search
 
-##### 31. `whatson_schedule`
+##### 33. `whatson_schedule`
 Event date and time slots (multiple per event).
 
 **Key Fields:**
@@ -747,7 +819,7 @@ Event date and time slots (multiple per event).
 - `idx_whatson_schedule_date` on `event_date` - Date filtering
 - `idx_whatson_schedule_event_date` on `(event_id, event_date)` - Event date queries
 
-##### 32. `whatson_tags`
+##### 34. `whatson_tags`
 Tags for categorizing and discovering events.
 
 **Key Fields:**
@@ -765,7 +837,7 @@ Tags for categorizing and discovering events.
 - `idx_whatson_tags_name` on `tag_name` - Tag filtering
 - `idx_whatson_tags_name_lower` on `LOWER(tag_name)` - Case-insensitive search
 
-##### 33. `whatson_rsvps`
+##### 35. `whatson_rsvps`
 User RSVPs to events with ticket generation.
 
 **Key Fields:**
@@ -796,7 +868,7 @@ User RSVPs to events with ticket generation.
 - `idx_whatson_rsvps_reference_number` on `reference_number` - Reference lookups
 - `idx_whatson_rsvps_user_active` on `(user_id, status, created_at)` - Active RSVPs
 
-##### 34. `whatson_rsvp_dates`
+##### 36. `whatson_rsvp_dates`
 Tracks which event dates an attendee selected for their RSVP.
 
 **Key Fields:**
@@ -817,7 +889,7 @@ Tracks which event dates an attendee selected for their RSVP.
 
 #### DESIGN PROJECTS TABLES (5 Tables) ⭐ NEW v2.6 - PENDING IMPLEMENTATION
 
-##### 35. `design_projects` ⭐ NEW
+##### 37. `design_projects` ⭐ NEW
 Main table for design projects - user-created creative work containers.
 
 **Key Fields:**
@@ -860,7 +932,7 @@ Main table for design projects - user-created creative work containers.
 - `idx_design_projects_browse` on `(privacy, status, created_at DESC)` - Browse query
 - Full-text search index on `(title, description)` - Keyword search
 
-##### 36. `project_tags` ⭐ NEW
+##### 38. `project_tags` ⭐ NEW
 Tags for categorizing and searching design projects.
 
 **Key Fields:**
@@ -878,7 +950,7 @@ Tags for categorizing and searching design projects.
 - `idx_project_tags_tag_name` on `tag_name` - Tag filtering
 - `idx_project_tags_tag_name_lower` on `LOWER(tag_name)` - Case-insensitive search
 
-##### 37. `project_team` ⭐ NEW
+##### 39. `project_team` ⭐ NEW
 Team members assigned to design projects with roles and permissions.
 
 **Key Fields:**
@@ -902,7 +974,7 @@ Team members assigned to design projects with roles and permissions.
 - `idx_project_team_permission` on `permission` - Permission filter
 - `idx_project_team_composite` on `(project_id, permission, added_at DESC)` - Team listing
 
-##### 38. `project_files` ⭐ NEW
+##### 40. `project_files` ⭐ NEW
 File attachments for design projects (stored in Supabase Storage).
 
 **Key Fields:**
@@ -927,7 +999,7 @@ File attachments for design projects (stored in Supabase Storage).
 - `idx_project_files_file_type` on `file_type` - Type filter
 - `idx_project_files_composite` on `(project_id, file_type, created_at DESC)` - File listing
 
-##### 39. `project_links` ⭐ NEW
+##### 41. `project_links` ⭐ NEW
 External links and references for design projects.
 
 **Key Fields:**
@@ -1459,7 +1531,10 @@ gigs
     ├──[1:N]──> gig_locations (Locations)
     ├──[1:N]──> applications (Applications to gig)
     ├──[1:N]──> crew_contacts (Gig contacts)
-    └──[1:N]──> referrals (Gig referrals)
+    ├──[1:N]──> referrals (Gig referrals)
+    ├──[1:N]──> gig_references (File and link references) ⭐ NEW v2.3
+    ├──[1:N]──> gig_skills (Required skills/roles) ⭐ NEW v2.7
+    └──[1:N]──> gig_project_details (Flexible project data) ⭐ NEW v2.7
 ```
 
 ---
