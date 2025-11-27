@@ -35,15 +35,36 @@ const buildMonthMatrix = (year: number, month: number) => {
 };
 
 export default function GigDetails(gig: GigsDataType[0]) {
+  const [calendarsPerTab, setCalendarsPerTab] = useState(3);
+  const [activeGroupIndex, setActiveGroupIndex] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const query = window.matchMedia("(max-width: 640px)");
+
+    const syncTabs = () => {
+      setCalendarsPerTab(query.matches ? 1 : 3);
+    };
+
+    syncTabs();
+
+    if (typeof query.addEventListener === "function") {
+      query.addEventListener("change", syncTabs);
+      return () => query.removeEventListener("change", syncTabs);
+    }
+
+    query.addListener(syncTabs);
+    return () => query.removeListener(syncTabs);
+  }, []);
+
   const monthGroups = useMemo(() => {
     const groups: Array<typeof gig.calendarMonths> = [];
-    for (let index = 0; index < gig.calendarMonths.length; index += 3) {
-      groups.push(gig.calendarMonths.slice(index, index + 3));
+    const chunkSize = Math.max(calendarsPerTab, 1);
+    for (let index = 0; index < gig.calendarMonths.length; index += chunkSize) {
+      groups.push(gig.calendarMonths.slice(index, index + chunkSize));
     }
     return groups;
-  }, [gig.calendarMonths]);
-
-  const [activeGroupIndex, setActiveGroupIndex] = useState(0);
+  }, [gig.calendarMonths, calendarsPerTab]);
 
   useEffect(() => {
     setActiveGroupIndex(0);
