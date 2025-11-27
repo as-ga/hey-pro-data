@@ -46,7 +46,7 @@ export function SeeAllReferralsDialog() {
         <Dialog>
             <div>
                 <DialogTrigger asChild>
-                    <Button className="bg-[#FFE9ED] text-[#FA6E80] hover:bg-[#ffd3da]">
+                    <Button className="bg-[#fbfbfb] text-[#FA6E80] rounded-[10px] ">
                         See referrals
                     </Button>
                 </DialogTrigger>

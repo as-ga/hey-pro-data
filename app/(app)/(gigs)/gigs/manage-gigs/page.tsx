@@ -51,26 +51,26 @@ export default function ManageGigsPage() {
                 </div>
             </div>
             <Tabs value={currentTab} onValueChange={setCurrentTab} className="space-y-6">
-                <TabsList className="flex flex-wrap gap-[1px]">
+                <TabsList className="flex flex-wrap gap-[1px] sm:w-[680px">
                     <TabsTrigger value="gigs">Gigs</TabsTrigger>
                     <TabsTrigger value="application">Application</TabsTrigger>
                     <TabsTrigger value="availability">Availability Check</TabsTrigger>
                     <TabsTrigger value="contacts">Contact list</TabsTrigger>
                 </TabsList>
-
-                <TabsContent value="gigs" className="bg-[#F8F8F8]">
+                <span className="h-[10px] w-full bg-[#F8F8F8] -mt-8" />
+                <TabsContent value="gigs" className="bg-[#F8F8F8] -mt-10">
                     <GigList selectedGigIds={selectedGigIds} onToggleGig={handleToggleGig} />
                 </TabsContent>
 
-                <TabsContent value="application" className="bg-[#F8F8F8]">
+                <TabsContent value="application" className="bg-[#F8F8F8] -mt-10">
                     <ApplicationTab selectedGigIds={selectedGigIds} />
                 </TabsContent>
 
-                <TabsContent value="availability" className="bg-[#F8F8F8]">
+                <TabsContent value="availability" className="bg-[#F8F8F8] -mt-10">
                     <AvailabilityTab selectedGigIds={selectedGigIds} />
                 </TabsContent>
 
-                <TabsContent value="contacts" className="bg-[#F8F8F8]">
+                <TabsContent value="contacts" className="bg-[#F8F8F8] -mt-10">
                     <ContactListTab selectedGigIds={selectedGigIds} />
                 </TabsContent>
             </Tabs>

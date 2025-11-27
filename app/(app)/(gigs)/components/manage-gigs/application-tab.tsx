@@ -50,11 +50,13 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
 
     return (
         <div className="space-y-8">
-            <div className="flex flex-wrap gap-3">
-                <SeeAllReferralsDialog />
-                <Button className="bg-[#FA6E80] text-white hover:bg-[#f9586d]">
-                    Invite crew for this Gig
-                </Button>
+            <div className="px-4">
+                <div className="flex flex-wrap gap-3 mt-3 justify-between items-center sm:justify-start bg-white w-full rounded-[10px]">
+                    <SeeAllReferralsDialog />
+                    <Button className="bg-[#FA6E80] rounded-[10px] text-white hover:bg-[#f9586d]">
+                        Invite crew for this Gig
+                    </Button>
+                </div>
             </div>
             {selectedGigs.map((gig) => (
                 <section key={gig.id} className="space-y-4 ">
