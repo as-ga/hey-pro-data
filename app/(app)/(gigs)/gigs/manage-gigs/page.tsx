@@ -20,6 +20,7 @@ import { Package } from "lucide-react";
 export default function ManageGigsPage() {
     const [selectedGigIds, setSelectedGigIds] = useState<string[]>([]);
     const [currentTab, setCurrentTab] = useState<string>("gigs");
+    const [actionIndicators, setActionIndicators] = useState<Record<string, Partial<Record<"release" | "shortlist" | "confirm", boolean>>>>({});
     const handleToggleGig = (gigId: string, checked: boolean) => {
         setSelectedGigIds((prev) => {
             if (checked) {
@@ -30,6 +31,16 @@ export default function ManageGigsPage() {
             }
             return prev.filter((id) => id !== gigId);
         });
+    };
+
+    const handleApplicantAction = (rowKey: string, action: "release" | "shortlist" | "confirm") => {
+        setActionIndicators((prev) => ({
+            ...prev,
+            [rowKey]: {
+                ...prev[rowKey],
+                [action]: true,
+            },
+        }));
     };
 
     return (
@@ -63,7 +74,11 @@ export default function ManageGigsPage() {
                 </TabsContent>
 
                 <TabsContent value="application" className="bg-[#F8F8F8] -mt-10 w-[1060px]">
-                    <ApplicationTab selectedGigIds={selectedGigIds} />
+                    <ApplicationTab
+                        selectedGigIds={selectedGigIds}
+                        actionIndicators={actionIndicators}
+                        onActionChange={handleApplicantAction}
+                    />
                 </TabsContent>
 
                 <TabsContent value="availability" className="bg-[#F8F8F8] -mt-10">
@@ -71,7 +86,10 @@ export default function ManageGigsPage() {
                 </TabsContent>
 
                 <TabsContent value="contacts" className="bg-[#F8F8F8] -mt-10">
-                    <ContactListTab selectedGigIds={selectedGigIds} />
+                    <ContactListTab
+                        selectedGigIds={selectedGigIds}
+                        actionIndicators={actionIndicators}
+                    />
                 </TabsContent>
             </Tabs>
         </div>

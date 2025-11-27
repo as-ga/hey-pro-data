@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { CalendarDays, Check, Mail, MessageCircle, Plus, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,21 +17,12 @@ import Image from "next/image";
 
 type ApplicationTabProps = {
     selectedGigIds: string[];
+    actionIndicators: Record<string, Partial<Record<"release" | "shortlist" | "confirm", boolean>>>;
+    onActionChange: (rowKey: string, action: "release" | "shortlist" | "confirm") => void;
 };
 
-export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
-    const [actionIndicators, setActionIndicators] = useState<Record<string, Partial<Record<"release" | "shortlist" | "confirm", boolean>>>>({});
+export function ApplicationTab({ selectedGigIds, actionIndicators, onActionChange }: ApplicationTabProps) {
     const selectedGigs = gigsData.filter((gig) => selectedGigIds.includes(gig.id));
-
-    const handleActionClick = (rowKey: string, action: "release" | "shortlist" | "confirm") => {
-        setActionIndicators((prev) => ({
-            ...prev,
-            [rowKey]: {
-                ...prev[rowKey],
-                [action]: true,
-            },
-        }));
-    };
 
     if (!selectedGigs.length) {
         return (
@@ -135,7 +124,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                                                 <button
                                                     className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#FFE9ED] text-[#FA6E80]"
                                                     aria-label="Release via email"
-                                                    onClick={() => handleActionClick(rowKey, "release")}
+                                                    onClick={() => onActionChange(rowKey, "release")}
                                                 >
                                                     {showReleaseEmail ? (
                                                         <Mail className="h-5 w-5" />
@@ -148,7 +137,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                                                 <button
                                                     className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[#ffffff]"
                                                     aria-label="Shortlist via email"
-                                                    onClick={() => handleActionClick(rowKey, "shortlist")}
+                                                    onClick={() => onActionChange(rowKey, "shortlist")}
                                                 >
                                                     {showShortlistEmail ? (
                                                         <Mail className="h-5 w-5" />
@@ -161,7 +150,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                                                 <button
                                                     className="inline-flex h-8 w-8 items-center justify-center rounded-full  text-white"
                                                     aria-label="Confirm via email"
-                                                    onClick={() => handleActionClick(rowKey, "confirm")}
+                                                    onClick={() => onActionChange(rowKey, "confirm")}
                                                 >
                                                     {showConfirmEmail ? (
                                                         <Mail className="h-5 w-5" />
