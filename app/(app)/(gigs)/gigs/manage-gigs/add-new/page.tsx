@@ -284,7 +284,7 @@ export default function AddGigPage() {
             <div className="grid w-full max-w-[1100px] gap-8 lg:grid-cols-[1.2fr_0.8fr]">
                 <form
                     onSubmit={handleSubmit}
-                    className="w-full max-w-[589px] mb-10"
+                    className="w-full mb-10"
                 >
                     <div className="flex items-start justify-between">
                         <div>
@@ -301,7 +301,7 @@ export default function AddGigPage() {
                     </div>
 
                     <section className="mt-8 space-y-6">
-                        <div className="space-y-2 flex flex-row gap-[30px] ml-5">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-[30px] sm:pl-5">
                             <Label className="text-[18px] font-[400] text-[#1D1D1F]">Number of crew</Label>
                             <div className="flex items-center gap-3">
                                 <div className="inline-flex items-center rounded-[15px] h-[50px] w-[125px] border border-[#DEDEDE] bg-[#FFFFFF] px-3 py-1">
@@ -324,9 +324,9 @@ export default function AddGigPage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row justify-between items-center w-full">
+                        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <Select onValueChange={(value) => handleFieldChange("role", value)} value={formValues.role}>
-                                <SelectTrigger className="h-[54px]  border-[#646464] bg-[#ffffff] text-[#000000] w-[243px]  rounded-[15px] ">
+                                <SelectTrigger className="h-[54px] w-full rounded-[15px] border-[#646464] bg-[#ffffff] text-[#000000] sm:w-[243px]">
                                     <SelectValue placeholder="Enter GIG role" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -336,7 +336,7 @@ export default function AddGigPage() {
                                 </SelectContent>
                             </Select>
                             <Select onValueChange={(value) => handleFieldChange("type", value)} value={formValues.type}>
-                                <SelectTrigger className="h-[54px]  border-[#646464] bg-[#ffffff] text-[#000000] w-[243px]  rounded-[15px] ">
+                                <SelectTrigger className="h-[54px] w-full rounded-[15px] border-[#646464] bg-[#ffffff] text-[#000000] sm:w-[243px]">
                                     <SelectValue placeholder="Enter GIG type" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -380,28 +380,28 @@ export default function AddGigPage() {
                             <div className="flex items-center justify-between">
                                 <Label className="text-sm font-medium text-[#1D1D1F]">Choose date(s)</Label>
                             </div>
-                            <div className="rounded-[24px]  p-4">
-                                <div className="">
-                                    <div className="flex flex-row justify-between items-center p-[10px] rounded-[10px] gap-2 text-[#1D1D1F] bg-[#ffffff] w-[425px] h-[56px]">
-                                        <span className="text-[24px] font-[400] text-[#FA596E]">{format(currentMonth, "MMM, yyyy")}</span>
-                                        <div className="flex gap-2">
-                                            <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, -1))}>
-                                                -
-                                            </Button>
-                                            <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, 1))}>
-                                                +
-                                            </Button>
-                                        </div>
-                                        <CalendarIcon className="h-5 w-5 text-[#FF5470]" />
-                                    </div>
+                            <div className="rounded-[24px] p-4">
 
+                                <div className="mx-auto sm:mx-0 mb-5 flex w-full max-w-[425px] flex-row items-center justify-between gap-2 rounded-[10px] p-[10px] text-[#1D1D1F] bg-[#ffffff] min-h-[56px]">
+                                    <span className="text-[24px] font-[400] text-[#FA596E]">{format(currentMonth, "MMM, yyyy")}</span>
+                                    <div className="flex gap-2">
+                                        <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, -1))}>
+                                            -
+                                        </Button>
+                                        <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, 1))}>
+                                            +
+                                        </Button>
+                                    </div>
+                                    <CalendarIcon className="h-5 w-5 text-[#FF5470]" />
                                 </div>
-                                <div className="grid grid-cols-7 gap-2 text-center text-[25px] font-[400] bg-[#ffffff] text-[#FF8FA5] w-[425px] h-[60px] rounded-t-[10px]">
+
+
+                                <div className="mx-auto sm:mx-0 grid w-full max-w-[425px] grid-cols-7 items-center gap-2 rounded-t-[10px] bg-[#ffffff] text-center text-[25px] font-[400] text-[#FF8FA5] min-h-[60px]">
                                     {["M", "T", "W", "T", "F", "S", "S"].map((day) => (
                                         <span key={day}>{day}</span>
                                     ))}
                                 </div>
-                                <ScrollArea className=" max-h-[260px] w-[425px] rounded-b-[10px] bg-[#ffffff]">
+                                <ScrollArea className="mx-auto sm:mx-0 max-h-[260px] w-full max-w-[425px] rounded-b-[10px] bg-[#ffffff]">
                                     <div className="grid grid-cols-7 gap-x-0 gap-y-2">
                                         {calendarDays.map((day, index) => {
                                             const dayNumber = day.getDate()
@@ -459,7 +459,7 @@ export default function AddGigPage() {
                                 </ScrollArea>
                             </div>
 
-                            <div className="flex items-center gap-3 ml-10">
+                            <div className="ml-0 flex items-center gap-3 sm:ml-10">
                                 <Checkbox id="tbc" checked={isTbc} onCheckedChange={() => setIsTbc((prev) => !prev)} className="h-[27px] w-[27px]" />
                                 <Label htmlFor="tbc" className="text-[18px] font-[400] text-[#1D1D1F]">
                                     TBC
@@ -544,7 +544,7 @@ export default function AddGigPage() {
                                         className="h-12 border-0 bg-transparent focus-visible:ring-0"
                                     />
                                 </div>
-                                <div className="flex items-center gap-2 ml-[18px]">
+                                <div className="flex items-center gap-2 ml-0 sm:ml-[18px]">
                                     <Checkbox
                                         className="h-[27px] w-[27px]"
                                         id="request-quote"
@@ -567,7 +567,7 @@ export default function AddGigPage() {
                                         type="button"
                                         variant="outline"
                                         className={cn(
-                                            "flex items-center justify-between rounded-[10px] w-[403px] h-[56px] border-[#646464] bg-[#ffffff]  text-left text-[#515151]",
+                                            "flex w-full max-w-[403px] items-center justify-between rounded-[10px] h-[56px] border-[#646464] bg-[#ffffff]  text-left text-[#515151]",
                                             !expiryDate && "text-[#A3A3A3]"
                                         )}
                                     >
@@ -613,7 +613,7 @@ export default function AddGigPage() {
                     </div>
                 </form>
 
-                <aside className="rounded-[32px]">
+                <aside className="w-full rounded-[32px]">
                     <h2 className="text-lg font-[400] text-[#1D1D1F]">Preview</h2>
                     <div className="mt-4 rounded-[28px] p-6">
                         {hasActivePreview ? (
