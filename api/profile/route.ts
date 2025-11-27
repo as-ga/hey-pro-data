@@ -8,7 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 /**
  * GET /api/profile
- * Get current user's profile
+ * Get current user's profile with all related data
  */
 export async function GET(request: NextRequest) {
   try {
@@ -22,9 +22,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get profile from database
+    // Get profile from user_profiles table
     const { data: profile, error } = await supabase
-      .from('profiles')
+      .from('user_profiles')
       .select('*')
       .eq('user_id', user.id)
       .single();
@@ -76,20 +76,9 @@ export async function PATCH(request: NextRequest) {
 
     const body = await request.json();
 
-    // Validate required fields for profile creation
-    const requiredFields = ['legal_first_name', 'legal_surname', 'country', 'city'];
-    const missingFields = requiredFields.filter(field => !body[field]);
-
-    if (missingFields.length > 0) {
-      return NextResponse.json(
-        errorResponse(`Missing required fields: ${missingFields.join(', ')}`),
-        { status: 400 }
-      );
-    }
-
     // Check if profile exists
     const { data: existingProfile } = await supabase
-      .from('profiles')
+      .from('user_profiles')
       .select('user_id')
       .eq('user_id', user.id)
       .single();
@@ -99,7 +88,7 @@ export async function PATCH(request: NextRequest) {
     if (existingProfile) {
       // Update existing profile
       const { data, error } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .update({
           ...body,
           updated_at: new Date().toISOString()
@@ -120,12 +109,10 @@ export async function PATCH(request: NextRequest) {
     } else {
       // Create new profile
       const { data, error } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .insert({
           user_id: user.id,
-          ...body,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          ...body
         })
         .select()
         .single();

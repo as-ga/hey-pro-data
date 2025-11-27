@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 /**
  * GET /api/profile/visa
@@ -17,10 +22,29 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Fetch from user_visa_info table (private data, RLS enforced)
+    const { data: visaInfo, error } = await supabase
+      .from('user_visa_info')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (error) {
+      // No visa info found
+      if (error.code === 'PGRST116') {
+        return NextResponse.json(
+          successResponse(null, 'No visa information found'),
+          { status: 200 }
+        );
+      }
+      console.error('Visa info fetch error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to fetch visa information', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Visa information retrieved'),
+      successResponse(visaInfo, 'Visa information retrieved successfully'),
       { status: 200 }
     );
   } catch (error: any) {
@@ -48,12 +72,36 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { visa_type, issued_by, expiry_date } = body;
 
-    // TODO: Insert into user_visa_info table (UNIQUE user_id constraint)
-    // Validate visa_type (H1B, L1, O1, TN, E3, F1, J1, B1/B2)
+    const { data, error } = await supabase
+      .from('user_visa_info')
+      .insert({
+        user_id: user.id,
+        visa_type,
+        issued_by,
+        expiry_date
+      })
+      .select()
+      .single();
+
+    if (error) {
+      // Check for unique constraint violation
+      if (error.code === '23505') {
+        return NextResponse.json(
+          errorResponse('Visa information already exists. Use PATCH to update.'),
+          { status: 409 }
+        );
+      }
+      console.error('Visa creation error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to create visa information', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Visa information created'),
+      successResponse(data, 'Visa information created successfully'),
       { status: 201 }
     );
   } catch (error: any) {
@@ -81,11 +129,30 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { visa_type, issued_by, expiry_date } = body;
 
-    // TODO: Update user_visa_info table
+    const updateData: any = {};
+    if (visa_type !== undefined) updateData.visa_type = visa_type;
+    if (issued_by !== undefined) updateData.issued_by = issued_by;
+    if (expiry_date !== undefined) updateData.expiry_date = expiry_date;
+
+    const { data, error } = await supabase
+      .from('user_visa_info')
+      .update(updateData)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Visa update error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to update visa information', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Visa information updated'),
+      successResponse(data, 'Visa information updated successfully'),
       { status: 200 }
     );
   } catch (error: any) {

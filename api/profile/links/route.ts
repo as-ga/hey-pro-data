@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 /**
  * GET /api/profile/links
@@ -17,10 +22,22 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Fetch from user_links table ordered by sort_order
+    const { data: links, error } = await supabase
+      .from('user_links')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      console.error('Links fetch error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to fetch links', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse([], 'Links retrieved successfully'),
+      successResponse(links || [], 'Links retrieved successfully'),
       { status: 200 }
     );
   } catch (error: any) {
@@ -48,11 +65,37 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { label, url, sort_order } = body;
 
-    // TODO: Validate and insert into user_links table
+    // Validate required fields
+    if (!label || !url) {
+      return NextResponse.json(
+        errorResponse('Label and URL are required'),
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await supabase
+      .from('user_links')
+      .insert({
+        user_id: user.id,
+        label,
+        url,
+        sort_order: sort_order || 0
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Link creation error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to add link', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Link added successfully'),
+      successResponse(data, 'Link added successfully'),
       { status: 201 }
     );
   } catch (error: any) {
@@ -80,11 +123,38 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { id, label, url, sort_order } = body;
 
-    // TODO: Update user_links table
+    if (!id) {
+      return NextResponse.json(
+        errorResponse('Link ID is required'),
+        { status: 400 }
+      );
+    }
+
+    const updateData: any = {};
+    if (label !== undefined) updateData.label = label;
+    if (url !== undefined) updateData.url = url;
+    if (sort_order !== undefined) updateData.sort_order = sort_order;
+
+    const { data, error } = await supabase
+      .from('user_links')
+      .update(updateData)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Link update error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to update link', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Link updated successfully'),
+      successResponse(data, 'Link updated successfully'),
       { status: 200 }
     );
   } catch (error: any) {
@@ -111,7 +181,29 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // TODO: Delete from user_links table
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        errorResponse('Link ID is required'),
+        { status: 400 }
+      );
+    }
+
+    const { error } = await supabase
+      .from('user_links')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Link deletion error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to delete link', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       successResponse(null, 'Link deleted successfully'),

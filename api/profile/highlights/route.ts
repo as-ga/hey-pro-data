@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 /**
  * GET /api/profile/highlights
@@ -17,10 +22,22 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Fetch from user_highlights table ordered by sort_order
+    const { data: highlights, error } = await supabase
+      .from('user_highlights')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      console.error('Highlights fetch error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to fetch highlights', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse([], 'Highlights retrieved successfully'),
+      successResponse(highlights || [], 'Highlights retrieved successfully'),
       { status: 200 }
     );
   } catch (error: any) {
@@ -48,11 +65,38 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { title, description, image_url, sort_order } = body;
 
-    // TODO: Insert into user_highlights table
+    // Validate required fields
+    if (!title || !description) {
+      return NextResponse.json(
+        errorResponse('Title and description are required'),
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await supabase
+      .from('user_highlights')
+      .insert({
+        user_id: user.id,
+        title,
+        description,
+        image_url,
+        sort_order: sort_order || 0
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Highlight creation error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to add highlight', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Highlight added successfully'),
+      successResponse(data, 'Highlight added successfully'),
       { status: 201 }
     );
   } catch (error: any) {
@@ -80,11 +124,39 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { id, title, description, image_url, sort_order } = body;
 
-    // TODO: Update user_highlights table
+    if (!id) {
+      return NextResponse.json(
+        errorResponse('Highlight ID is required'),
+        { status: 400 }
+      );
+    }
+
+    const updateData: any = {};
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (image_url !== undefined) updateData.image_url = image_url;
+    if (sort_order !== undefined) updateData.sort_order = sort_order;
+
+    const { data, error } = await supabase
+      .from('user_highlights')
+      .update(updateData)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Highlight update error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to update highlight', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Highlight updated successfully'),
+      successResponse(data, 'Highlight updated successfully'),
       { status: 200 }
     );
   } catch (error: any) {
@@ -111,7 +183,29 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // TODO: Delete from user_highlights table
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        errorResponse('Highlight ID is required'),
+        { status: 400 }
+      );
+    }
+
+    const { error } = await supabase
+      .from('user_highlights')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Highlight deletion error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to delete highlight', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       successResponse(null, 'Highlight deleted successfully'),
