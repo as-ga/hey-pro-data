@@ -140,7 +140,7 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                     <Mail className="h-5 w-5" /> Apply
                 </Button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="h-[92vh] max-h-[92vh] overflow-y-auto rounded-t-[32px] border-none px-0">
+            <SheetContent side="bottom" className="h-[100vh] max-h-[100vh] overflow-y-auto border-none px-0">
                 <div className="mx-auto w-full max-w-5xl px-6 py-8">
                     <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-6">
                         <div>
