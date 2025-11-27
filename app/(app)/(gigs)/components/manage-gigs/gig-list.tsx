@@ -10,7 +10,7 @@ type GigListProps = {
 
 export function GigList({ selectedGigIds, onToggleGig }: GigListProps) {
     return (
-        <section className="space-y-4 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+        <section className="space-y-4  bg-transparent p-4 sm:p-6">
             {gigsData.map((gig) => (
                 <article key={gig.id} className="flex gap-4">
                     <div className="flex items-center justify-center">

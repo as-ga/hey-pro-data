@@ -55,7 +55,7 @@ export function AvailabilityTab({ selectedGigIds }: AvailabilityTabProps) {
 
     if (!selectedGigs.length) {
         return (
-            <Card>
+            <Card className="bg-transparent border-none">
                 <CardHeader>
                     <CardTitle>Select gigs to review availability</CardTitle>
                     <CardDescription>
@@ -73,7 +73,7 @@ export function AvailabilityTab({ selectedGigIds }: AvailabilityTabProps) {
                 // console.log(timeline);
                 const monthBadges = Array.from(new Set(timeline.map((entry) => entry.monthLabel)));
                 return (
-                    <section key={gig.id} className="space-y-4 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+                    <section key={gig.id} className="space-y-4 bg-transparent">
                         <header className="space-y-3">
                             <p className="text-lg font-semibold text-gray-900">{gig.title}</p>
                             <div className="flex flex-wrap gap-2">

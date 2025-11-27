@@ -20,7 +20,7 @@ export function ContactListTab({ selectedGigIds }: ContactListTabProps) {
 
     if (!selectedGigs.length) {
         return (
-            <Card>
+            <Card className="bg-transparent border-none">
                 <CardHeader>
                     <CardTitle>Select gigs to review contacts</CardTitle>
                     <CardDescription>
@@ -34,7 +34,7 @@ export function ContactListTab({ selectedGigIds }: ContactListTabProps) {
     return (
         <div className="space-y-8">
             {selectedGigs.map((gig) => (
-                <section key={gig.id} className="space-y-4 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+                <section key={gig.id} className="space-y-4 bg-transparent p-4">
                     <header className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
                         <p className="text-lg font-semibold text-gray-900">{gig.title}</p>
                         <span className="flex items-center gap-1">

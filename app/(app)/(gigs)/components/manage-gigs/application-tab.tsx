@@ -37,7 +37,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
 
     if (!selectedGigs.length) {
         return (
-            <Card>
+            <Card className="bg-transparent border-none">
                 <CardHeader>
                     <CardTitle>Select gigs to review applications</CardTitle>
                     <CardDescription>
@@ -57,7 +57,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                 </Button>
             </div>
             {selectedGigs.map((gig) => (
-                <section key={gig.id} className="space-y-4 rounded-3xl p-4 shadow-sm sm:p-6  ">
+                <section key={gig.id} className="space-y-4 ">
                     <header className="space-y-3">
 
                         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
@@ -79,9 +79,9 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                         </div>
                     </header>
 
-                    <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white">
+                    <div className="overflow-x-auto">
                         <table className="min-w-[900px] border-collapse text-sm">
-                            <thead className="bg-gray-50 text-left text-gray-500">
+                            <thead className="bg-transparent text-left text-gray-500">
                                 <tr>
                                     <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Name</th>
                                     <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">City</th>
@@ -94,7 +94,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                                     <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Confirm</th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white">
+                            <tbody className="bg-transparent">
                                 {sampleApplicants.map((person) => {
                                     const rowKey = `${gig.id}-${person.id}`;
                                     const rowState = actionIndicators[rowKey] ?? {};
