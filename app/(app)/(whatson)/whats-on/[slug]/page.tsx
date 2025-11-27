@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, ChevronLeft, Heart, Share2 } from "lucide-react";
+import { ArrowLeft, Calendar, ChevronLeft, Heart, Share2 } from "lucide-react";
 
 import { getWhatsOnEventBySlug, whatsOnEvents } from "@/data/whatsOnEvents";
 import { RSVP } from "../../components/rsvp";
@@ -27,8 +27,8 @@ export default async function WhatsOnPage({ params }: WhatsOnPageProps) {
             <div className="overflow-hidden">
                 <div className=" mb-5 flex flex-row items-center justify-between gap-2 text-sm text-[#000000] sm:justify-start">
                     <div className="flex flex-row items-center justify-center">
-                        <ChevronLeft className="h-4 w-4" />
-                        <Link href="/whats-on" className="font-medium text-[#31A7AC] hover:underline">
+
+                        <Link href="/whats-on" className="font-medium text-[#31A7AC] hover:underline flex items-center"> <ArrowLeft className="h-4 w-4" />
                             back to What&apos;s on
                         </Link>
                     </div>

@@ -78,7 +78,7 @@ const createEvent = (id: string, title: string, location: string, isPaid: boolea
     host: {
         name: "Cinema Studio",
         organization: "Cinema Studio",
-        avatar: "/whats-on.png",
+        avatar: "/image (2).png",
     },
     schedule: baseSchedule,
     description: baseDescription,
@@ -97,7 +97,7 @@ export const whatsOnEvents: WhatsOnEvent[] = [
     createEvent("6", "Post Production Roundtable", "UAE, Dubai", true),
     createEvent("7", "Film Financing 101", "UAE, Dubai", true),
     createEvent("8", "On-Set Safety Briefing", "UAE, Dubai", false),
-    createEvent("9", "Casting & Audition Clinic", "UAE, Dubai", true),
+    createEvent("9", "Production Events (name)", "UAE, Dubai", true),
 ];
 
 export const getWhatsOnEventBySlug = (slug: string) => whatsOnEvents.find((event) => event.slug === slug);

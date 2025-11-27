@@ -1,8 +1,10 @@
 "use client";
 import { Calendar, ChevronDown, Filter, MapPin, Search } from "lucide-react";
 import Link from "next/link";
-import React from "react";
-import WhatsOnMainContent from "../components/main-content";
+import React, { JSX } from "react";
+// import WhatsOnMainContent from "../components/main-content";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import EventListingPage from "../components/main-content";
 const initialFilterState = {
     price: "free",
     relevance: true,
@@ -66,15 +68,15 @@ export default function WhatsOnHeader() {
     const resetForm = () => setFilterForm(initialFilterState);
     return (
         <>
-            <div className="">
+            <div className=" h-screen w-full overflow-x-hidden sm:mb-5 mb-20">
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:items-center sm:justify-between justify-start">
                     <span className="bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent text-3xl font-semibold">{"What's On"}</span>
                     <Link href="/whats-on/manage-whats-on" className="ml-2 text-white bg-[#31A7AC] border rounded-[10px] sm:w-auto w-[192px] px-4 py-2 "> <span className="text-[16px] font-[400]">Manage What’s On</span></Link>
                 </div>
 
-                <div className="flex sm:flex-row mx-auto flex-row-reverse justify-center w-[354px] items-center gap-0.5 space-x-4 mt-4 mb-6 sm:w-full">
+                <div className="flex flex-row mx-auto  justify-center w-[354px] items-center gap-0.5 space-x-4 mt-4 mb-6 sm:w-full">
                     <div
-                        className={`flex items-center justify-center space-x-2 h-[48px] w-[111px] border rounded-full px-4 py-2 cursor-pointer transition-all ${isFilterOpen ? 'w-[300px] bg-[#FA6E80]' : 'w-[150px] bg-[#f7f7f700] border-[#FA6E80] '}`}
+                        className={`sm:flex items-center hidden justify-center space-x-2 h-[48px] w-[111px] border rounded-full px-4 py-2 cursor-pointer transition-all ${isFilterOpen ? 'w-[300px] bg-[#FA6E80]' : 'w-[150px] bg-[#f7f7f700] border-[#FA6E80] '}`}
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
                     >
                         <button className={`text-sm font-medium ${isFilterOpen ? 'text-white' : 'text-[#FA6E80]'}`}>Filter (<span>{"3"}</span>)</button>
@@ -90,11 +92,24 @@ export default function WhatsOnHeader() {
                             <Search className="h-5 w-5 text-white" />
                         </span>
                     </div>
+                    <MobileFilter
+                        filterForm={filterForm}
+                        calendarDays={calendarDays}
+                        gradientDivider={gradientDivider}
+                        getRangeClasses={getRangeClasses}
+                        toggleSingleDay={toggleSingleDay}
+                        isFilterOpen={isFilterOpen}
+                        setIsFilterOpen={setIsFilterOpen}
+                        handleFilterChange={handleFilterChange}
+                        handleFilterSubmit={handleFilterSubmit}
+                        resetForm={resetForm}
+                    />
+
 
                 </div>
-                <div className="flex flex-col sm:flex-row w-full">
+                <div className=" flex flex-col md:flex-row gap-6">
                     {isFilterOpen && (
-                        <div className="h-screen max-w-[280px] w-full overflow-y-auto p-4 space-y-2">
+                        <div className="hidden h-screen w-full max-w-[280px] overflow-y-auto p-4 space-y-2 sm:block">
                             <form onSubmit={handleFilterSubmit} className="space-y-5 rounded-[10px] border bg-white p-4 text-[#017A7C] shadow-sm">
                                 <div className="flex gap-3">
                                     {["free", "paid"].map((price) => (
@@ -223,10 +238,183 @@ export default function WhatsOnHeader() {
                             </form>
                         </div>
                     )}
-                    <div className=" h-screen w-full overflow-hidden"><WhatsOnMainContent /></div>
+                    <EventListingPage isFilterOpen={isFilterOpen} />
+
                 </div>
 
             </div>
+        </>
+    )
+}
+
+
+
+
+function MobileFilter({
+    isFilterOpen,
+    setIsFilterOpen,
+    filterForm,
+    handleFilterChange,
+    handleFilterSubmit,
+    calendarDays,
+    gradientDivider,
+    getRangeClasses,
+    toggleSingleDay,
+    resetForm,
+}: {
+    isFilterOpen: boolean;
+    setIsFilterOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    filterForm: typeof initialFilterState;
+    handleFilterChange: (field: keyof typeof initialFilterState, value: string | number | boolean | number[]) => void;
+    handleFilterSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+    calendarDays: Array<number | null>;
+    gradientDivider: JSX.Element;
+    getRangeClasses: (day: number | null) => string;
+    toggleSingleDay: (day: number) => void;
+    resetForm: () => void;
+}) {
+    return (
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <div
+                        className={`flex items-center sm:hidden  justify-center space-x-1 h-[48px] w-[111px] border rounded-full px-4 py-2 cursor-pointer transition-all  bg-[#ffffff]`}
+                    >
+                        <button className={`text-[10px] font-medium ${isFilterOpen ? 'text-white' : 'text-[#FA6E80]'}`}>Filter (<span>{"3"}</span>)</button>
+                        <Filter className={`h-5 w-5 ${isFilterOpen ? 'text-white' : 'text-[#FA6E80]'}`} />
+                    </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[273px] border-none" align="start">
+                    <div className="h-screen max-w-[280px] w-full overflow-y-auto p-4 space-y-2">
+                        <form onSubmit={handleFilterSubmit} className="space-y-5 rounded-[10px] border bg-white p-4 text-[#017A7C] shadow-sm">
+                            <div className="flex gap-3">
+                                {["free", "paid"].map((price) => (
+                                    <button
+                                        key={price}
+                                        type="button"
+                                        onClick={() => handleFilterChange("price", price)}
+                                        className={`flex-1 rounded-[10px] border px-4 py-2 text-sm font-semibold ${filterForm.price === price ? "border-[#FA6E80] text-[#FA6E80] bg-[#FFE5EA]" : "border-[#FA6E80]/40 text-gray-500"}`}
+                                    >
+                                        {price === "free" ? "Free" : "Paid"}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => handleFilterChange("relevance", !filterForm.relevance)}
+                                className={`w-full rounded-[10px] border px-4 py-2 text-left text-sm font-semibold ${filterForm.relevance ? "border-[#FA6E80] text-[#FA6E80]" : "border-[#FA6E80]/40 text-gray-500"}`}
+                            >
+                                Relevant to you <span className="text-xs font-normal text-gray-500">(beta)</span>
+                            </button>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold">Event Type</label>
+                                <div className="relative">
+                                    <select
+                                        value={filterForm.eventType}
+                                        onChange={(e) => handleFilterChange("eventType", e.target.value)}
+                                        className="w-full appearance-none rounded-[10px] border border-[#017A7C]/30 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#31A7AC]"
+                                    >
+                                        <option value="">Select Event Type</option>
+                                        <option value="screening">Screening</option>
+                                        <option value="festival">Festival</option>
+                                        <option value="masterclass">Masterclass</option>
+                                    </select>
+                                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#FA6E80]" />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold">Event Status</label>
+                                <div className="relative">
+                                    <select
+                                        value={filterForm.eventStatus}
+                                        onChange={(e) => handleFilterChange("eventStatus", e.target.value)}
+                                        className="w-full appearance-none rounded-[10px] border border-[#017A7C]/30 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#31A7AC]"
+                                    >
+                                        <option value="">Select Status</option>
+                                        <option value="upcoming">Upcoming</option>
+                                        <option value="ongoing">Ongoing</option>
+                                        <option value="ended">Past</option>
+                                    </select>
+                                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#FA6E80]" />
+                                </div>
+                            </div>
+
+                            {gradientDivider}
+
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between text-sm font-semibold">
+                                    <span>{filterForm.monthLabel}</span>
+                                    <Calendar className="h-4 w-4 text-[#FA6E80]" />
+                                </div>
+                                <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-[#FA6E80]">
+                                    {["M", "T", "W", "T", "F", "S", "S"].map((day) => (
+                                        <span key={day}>{day}</span>
+                                    ))}
+                                </div>
+                                <div className="grid grid-cols-7 gap-1 text-sm">
+                                    {calendarDays.map((day, index) => (
+                                        <button
+                                            key={`${day ?? "blank"}-${index}`}
+                                            type="button"
+                                            disabled={!day}
+                                            onClick={() => day && toggleSingleDay(day)}
+                                            className={`flex h-9 w-full items-center justify-center rounded-[10px] text-center ${day ? "text-[#017A7C]" : "text-transparent"} ${getRangeClasses(day)} ${!day ? "cursor-default" : "hover:border-[#FA6E80]/40"}`}
+                                        >
+                                            {day ?? ""}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {gradientDivider}
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold">Location</label>
+                                <div className="flex items-center gap-2 rounded-2xl border border-[#017A7C]/30 px-4 py-2">
+                                    <input
+                                        value={filterForm.location}
+                                        onChange={(e) => handleFilterChange("location", e.target.value)}
+                                        className="w-full border-none text-sm outline-none"
+                                    />
+                                    <MapPin className="h-4 w-4 text-[#31A7AC]" />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3">
+                                {["online", "in-person"].map((mode) => (
+                                    <button
+                                        key={mode}
+                                        type="button"
+                                        onClick={() => handleFilterChange("attendance", mode)}
+                                        className={`flex-1 rounded-[10px] border px-4 py-2 text-sm font-semibold ${filterForm.attendance === mode ? "border-[#FA6E80] text-[#FA6E80] bg-[#FFE5EA]" : "border-[#FA6E80]/40 text-gray-500"}`}
+                                    >
+                                        {mode === "online" ? "Online" : "In-person"}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="flex gap-3 pt-1">
+                                <button
+                                    type="submit"
+                                    className="flex-1 rounded-[10px] bg-[#31A7AC] py-2 text-sm font-semibold text-white hover:bg-[#279497]"
+                                >
+                                    Apply Filters
+                                </button>
+                                <button
+                                    type="button"
+                                    className="flex-1 rounded-[10px] border border-[#31A7AC] py-2 text-sm font-semibold text-[#31A7AC]"
+                                    onClick={resetForm}
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </>
     )
 }
