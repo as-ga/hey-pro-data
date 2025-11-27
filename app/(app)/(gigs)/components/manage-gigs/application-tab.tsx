@@ -49,7 +49,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 ">
             <div className="px-4">
                 <div className="flex flex-wrap gap-3 mt-3 justify-between items-center sm:justify-start bg-white w-full rounded-[10px]">
                     <SeeAllReferralsDialog />
@@ -64,13 +64,14 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
 
                         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
                             <p className="text-lg font-semibold text-gray-900">{gig.title}</p>
-                            <span className="flex items-center gap-1 justify-center text-gray-700">
+                            <span className="flex items-center gap-1 justify-center text-[#000000]">
                                 <CalendarDays className="h-4 w-4" />
                                 {gig.dateWindows.map((window, index) => (
-                                    <span key={window.label}>
-                                        <span className="font-medium">
+                                    <span key={window.label} className="">
+                                        <span className="font-[500] text-[14px]">
                                             <span>{window.label.split(" ")[1]}</span>
-                                            <span className="text-[#FA6E80]"> {window.label.split(" ")[0]}</span>
+                                            <span className="text-[#FA6E80] text-[14px]"> {window.label.split(" ")[0]}</span>
+
                                         </span>
                                         <span className="mx-1">|</span>
                                         {window.range}
@@ -82,18 +83,18 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                     </header>
 
                     <div className="overflow-x-auto">
-                        <table className="min-w-[900px] border-collapse text-sm">
-                            <thead className="bg-transparent text-left text-gray-500">
-                                <tr>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Name</th>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">City</th>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Skill Set</th>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Credits</th>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Referrals</th>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Chat</th>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Release</th>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Shortlist</th>
-                                    <th className="border border-gray-200 px-4 py-3 font-medium text-gray-700">Confirm</th>
+                        <table className="min-w-[1057px] border-separate border-spacing-x-[2px] border-spacing-y-0 text-sm">
+                            <thead className="bg-[#FFFFFF] border text-left h-[55px]">
+                                <tr className="space-x-1">
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">Name</th>
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">City</th>
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">Skill Set</th>
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">Credits</th>
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">Referrals</th>
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">Chat</th>
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">Release</th>
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">Shortlist</th>
+                                    <th className="border-1 border-[#DEDEDE] px-4 py-3 font-[500] text-[#000000]">Confirm</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-transparent">
@@ -106,32 +107,31 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
 
                                     return (
                                         <tr key={rowKey} className="text-gray-800">
-                                            <td className="border border-gray-200 px-4 py-3">
+                                            <td className="border border-[#DEDEDE] w-[205px] px-4 py-3">
                                                 <div className="flex items-center gap-3">
                                                     <Image src={person.avatar} alt={person.name} width={30} height={30} className="rounded-full" />
                                                     <div>
-                                                        <p className="font-medium text-gray-900">{person.name}</p>
-                                                        <p className="text-xs text-gray-500">{gig.title}</p>
+                                                        <p className="font-[400] text-gray-900">{person.name}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="border border-gray-200 px-4 py-3 text-[#27B4BC]">{person.city}</td>
-                                            <td className="border border-gray-200 px-4 py-3">{person.skills.join(" | ")}</td>
-                                            <td className="border border-gray-200 px-4 py-3 text-[#27B4BC]">{person.credits}</td>
-                                            <td className="border border-gray-200 px-4 py-3">
+                                            <td className="border border-[#DEDEDE] w-[100px] px-4 py-3 text-[#27B4BC]">{person.city}</td>
+                                            <td className="border border-[#DEDEDE] w-[204px] px-4 py-3">{person.skills.join(" | ")}</td>
+                                            <td className="border border-[#DEDEDE] w-[105px] px-4 py-3 text-[#27B4BC]">{person.credits}</td>
+                                            <td className="border border-[#DEDEDE] w-[115px] px-4 py-3">
                                                 <div className="flex -space-x-2">
                                                     <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#27B4BC]/20 text-xs font-semibold text-[#27B4BC]">
                                                         {person.referrals}
                                                     </div>
-                                                    <div className="h-8 w-8 rounded-full border-2 border-white bg-gray-200" />
+                                                    <div className="h-8 w-8 rounded-full border-2 border-white bg-[#DEDEDE]" />
                                                 </div>
                                             </td>
-                                            <td className="border border-gray-200 px-4 py-3 text-center">
+                                            <td className="border border-[#DEDEDE] w-[80px] px-4 py-3 text-center">
                                                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full  text-gray-600">
                                                     <MessageCircle className="h-5 w-5" />
                                                 </span>
                                             </td>
-                                            <td className="border border-gray-200 px-4 py-3 text-center">
+                                            <td className="border border-[#DEDEDE] w-[80px] px-4 py-3 text-center">
                                                 <button
                                                     className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#FFE9ED] text-[#FA6E80]"
                                                     aria-label="Release via email"
@@ -144,7 +144,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                                                     )}
                                                 </button>
                                             </td>
-                                            <td className="border border-gray-200 bg-[#27B4BC] px-4 py-3 text-center">
+                                            <td className="border border-[#DEDEDE] w-[80px] bg-[#27B4BC] px-4 py-3 text-center">
                                                 <button
                                                     className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[#ffffff]"
                                                     aria-label="Shortlist via email"
@@ -157,7 +157,7 @@ export function ApplicationTab({ selectedGigIds }: ApplicationTabProps) {
                                                     )}
                                                 </button>
                                             </td>
-                                            <td className="border border-gray-200 bg-[#27B4BC] px-4 py-3 text-center">
+                                            <td className="border border-[#DEDEDE] w-[80px] bg-[#27B4BC] px-4 py-3 text-center">
                                                 <button
                                                     className="inline-flex h-8 w-8 items-center justify-center rounded-full  text-white"
                                                     aria-label="Confirm via email"
