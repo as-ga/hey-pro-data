@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
+import { createServerClient, validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
 
 /**
  * GET /api/skills
@@ -17,13 +17,29 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Fetch from applicant_skills table ordered by sort_order
+    const supabase = createServerClient();
+
+    // Fetch skills ordered by sort_order
+    const { data: skills, error } = await supabase
+      .from('applicant_skills')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      console.error('Skills fetch error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to fetch skills', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse([], 'Skills retrieved successfully'),
+      successResponse(skills || [], 'Skills retrieved successfully'),
       { status: 200 }
     );
   } catch (error: any) {
+    console.error('Error in GET /api/skills:', error);
     return NextResponse.json(
       errorResponse('Internal server error', error.message),
       { status: 500 }
@@ -48,14 +64,51 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { skill_name, proficiency_level, sort_order } = body;
 
-    // TODO: Insert into applicant_skills with UNIQUE(user_id, skill_name)
+    // Validate required fields
+    if (!skill_name || typeof skill_name !== 'string' || skill_name.trim().length === 0) {
+      return NextResponse.json(
+        errorResponse('Skill name is required'),
+        { status: 400 }
+      );
+    }
+
+    const supabase = createServerClient();
+
+    // Insert skill
+    const { data: skill, error } = await supabase
+      .from('applicant_skills')
+      .insert({
+        user_id: user.id,
+        skill_name: skill_name.trim(),
+        proficiency_level: proficiency_level || 'Intermediate',
+        sort_order: sort_order || 0
+      })
+      .select()
+      .single();
+
+    if (error) {
+      // Handle unique constraint violation
+      if (error.code === '23505') {
+        return NextResponse.json(
+          errorResponse('This skill already exists in your profile'),
+          { status: 409 }
+        );
+      }
+      console.error('Skill creation error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to add skill', error.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Skill added successfully'),
+      successResponse(skill, 'Skill added successfully'),
       { status: 201 }
     );
   } catch (error: any) {
+    console.error('Error in POST /api/skills:', error);
     return NextResponse.json(
       errorResponse('Internal server error', error.message),
       { status: 500 }

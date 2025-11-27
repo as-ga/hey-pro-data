@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
+import { createServerClient, validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
 
 /**
  * PATCH /api/skills/[id]
@@ -20,16 +20,53 @@ export async function PATCH(
       );
     }
 
+    const supabase = createServerClient();
     const body = await request.json();
     const skillId = params.id;
+    const { proficiency_level, sort_order } = body;
 
-    // TODO: Update applicant_skills table where id = skillId AND user_id = user.id
+    // Build update object with only provided fields
+    const updateData: any = {};
+    if (proficiency_level !== undefined) updateData.proficiency_level = proficiency_level;
+    if (sort_order !== undefined) updateData.sort_order = sort_order;
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json(
+        errorResponse('No fields to update'),
+        { status: 400 }
+      );
+    }
+
+    // Update skill
+    const { data: skill, error } = await supabase
+      .from('applicant_skills')
+      .update(updateData)
+      .eq('id', skillId)
+      .eq('user_id', user.id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Skill update error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to update skill', error.message),
+        { status: 500 }
+      );
+    }
+
+    if (!skill) {
+      return NextResponse.json(
+        errorResponse('Skill not found or unauthorized'),
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse(null, 'Skill updated successfully'),
+      successResponse(skill, 'Skill updated successfully'),
       { status: 200 }
     );
   } catch (error: any) {
+    console.error('Error in PATCH /api/skills/[id]:', error);
     return NextResponse.json(
       errorResponse('Internal server error', error.message),
       { status: 500 }
@@ -56,15 +93,39 @@ export async function DELETE(
       );
     }
 
+    const supabase = createServerClient();
     const skillId = params.id;
 
-    // TODO: Delete from applicant_skills where id = skillId AND user_id = user.id
+    // Delete skill
+    const { data, error } = await supabase
+      .from('applicant_skills')
+      .delete()
+      .eq('id', skillId)
+      .eq('user_id', user.id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Skill deletion error:', error);
+      return NextResponse.json(
+        errorResponse('Failed to delete skill', error.message),
+        { status: 500 }
+      );
+    }
+
+    if (!data) {
+      return NextResponse.json(
+        errorResponse('Skill not found or unauthorized'),
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json(
       successResponse(null, 'Skill deleted successfully'),
       { status: 200 }
     );
   } catch (error: any) {
+    console.error('Error in DELETE /api/skills/[id]:', error);
     return NextResponse.json(
       errorResponse('Internal server error', error.message),
       { status: 500 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
+import { createServerClient, validateAuthToken, successResponse, errorResponse } from '@/lib/supabase/server';
 
 /**
  * GET /api/contacts/gig/[gigId]
@@ -20,16 +20,59 @@ export async function GET(
       );
     }
 
+    const supabase = createServerClient();
     const gigId = params.gigId;
 
-    // TODO: Fetch from crew_contacts where gig_id = gigId
     // Verify user is the gig creator
+    const { data: gig, error: gigError } = await supabase
+      .from('gigs')
+      .select('creator_user_id')
+      .eq('id', gigId)
+      .maybeSingle();
+
+    if (gigError) {
+      console.error('Gig fetch error:', gigError);
+      return NextResponse.json(
+        errorResponse('Failed to fetch gig', gigError.message),
+        { status: 500 }
+      );
+    }
+
+    if (!gig) {
+      return NextResponse.json(
+        errorResponse('Gig not found'),
+        { status: 404 }
+      );
+    }
+
+    if (gig.creator_user_id !== user.id) {
+      return NextResponse.json(
+        errorResponse('Only the gig creator can view contacts'),
+        { status: 403 }
+      );
+    }
+
+    // Fetch contacts for the gig
+    const { data: contacts, error: contactsError } = await supabase
+      .from('crew_contacts')
+      .select('*')
+      .eq('gig_id', gigId)
+      .order('created_at', { ascending: false });
+
+    if (contactsError) {
+      console.error('Contacts fetch error:', contactsError);
+      return NextResponse.json(
+        errorResponse('Failed to fetch contacts', contactsError.message),
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      successResponse([], 'Contacts retrieved'),
+      successResponse(contacts || [], 'Contacts retrieved successfully'),
       { status: 200 }
     );
   } catch (error: any) {
+    console.error('Error in GET /api/contacts/gig/[gigId]:', error);
     return NextResponse.json(
       errorResponse('Internal server error', error.message),
       { status: 500 }
