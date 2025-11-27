@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Calendar as CalendarPicker } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { Calendar as CalendarIcon, FileText, MapPin, Minus, Plus, UploadCloud, X, Zap } from "lucide-react"
+import { Calendar, Calendar as CalendarIcon, FileText, MapPin, Minus, Plus, UploadCloud, X, Zap } from "lucide-react"
 import Image from "next/image"
 
 type GigFormValues = {
@@ -280,16 +280,15 @@ export default function AddGigPage() {
     }, [])
 
     return (
-        <div className="flex justify-center  px-4 py-8">
+        <div className="flex justify-center  px-4 py-8 bg-[#F8F8F8]">
             <div className="grid w-full max-w-[1100px] gap-8 lg:grid-cols-[1.2fr_0.8fr]">
                 <form
                     onSubmit={handleSubmit}
-                    className="w-full max-w-[640px]"
+                    className="w-full max-w-[589px] mb-10"
                 >
                     <div className="flex items-start justify-between">
                         <div>
-                            <h1 className="text-2xl font-semibold text-[#1D1D1F]">Create GIG</h1>
-                            <p className="text-sm text-[#8F8F8F]">Share the essentials so the right talent can reach out.</p>
+                            <h1 className="text-[20px] font-[400] text-[#1D1D1F]">Create GIG</h1>
                         </div>
                         <button
                             type="button"
@@ -302,32 +301,32 @@ export default function AddGigPage() {
                     </div>
 
                     <section className="mt-8 space-y-6">
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium text-[#1D1D1F]">Number of crew</Label>
+                        <div className="space-y-2 flex flex-row gap-[30px] ml-5">
+                            <Label className="text-[18px] font-[400] text-[#1D1D1F]">Number of crew</Label>
                             <div className="flex items-center gap-3">
-                                <div className="inline-flex items-center rounded-full border border-[#E4E7EC] bg-[#F5F5F7] px-3 py-1">
+                                <div className="inline-flex items-center rounded-[15px] h-[50px] w-[125px] border border-[#DEDEDE] bg-[#FFFFFF] px-3 py-1">
                                     <button
                                         type="button"
                                         onClick={() => handleCrewChange("decrement")}
-                                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FFD1D8] text-[#FF5470]"
+                                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FA6E80] text-[#FFFFFF]"
                                     >
-                                        <Minus className="h-4 w-4" />
+                                        <Minus className="h-5 w-5 font-bold" />
                                     </button>
-                                    <span className="px-4 text-lg font-semibold text-[#1D1D1F]">{crewCount}</span>
+                                    <span className="px-4 text-lg font-[400] text-[#1D1D1F]">{crewCount}</span>
                                     <button
                                         type="button"
                                         onClick={() => handleCrewChange("increment")}
-                                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#CFEFED] text-[#0F8C86]"
+                                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#31A7AC] text-[#FFFFFF]"
                                     >
-                                        <Plus className="h-4 w-4" />
+                                        <Plus className="h-5 w-5 font-bold " />
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="flex flex-col sm:flex-row justify-between items-center w-full">
                             <Select onValueChange={(value) => handleFieldChange("role", value)} value={formValues.role}>
-                                <SelectTrigger className="h-12 rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]">
+                                <SelectTrigger className="h-[54px]  border-[#646464] bg-[#ffffff] text-[#000000] w-[243px]  rounded-[15px] ">
                                     <SelectValue placeholder="Enter GIG role" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -337,7 +336,7 @@ export default function AddGigPage() {
                                 </SelectContent>
                             </Select>
                             <Select onValueChange={(value) => handleFieldChange("type", value)} value={formValues.type}>
-                                <SelectTrigger className="h-12 rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]">
+                                <SelectTrigger className="h-[54px]  border-[#646464] bg-[#ffffff] text-[#000000] w-[243px]  rounded-[15px] ">
                                     <SelectValue placeholder="Enter GIG type" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -352,19 +351,19 @@ export default function AddGigPage() {
                             placeholder="Select GIG department"
                             value={formValues.department}
                             onChange={(event) => handleFieldChange("department", event.target.value)}
-                            className="h-12 rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]"
+                            className="h-12 rounded-2xl border-[#E4E7EC] bg-[#ffffff] text-[#515151]"
                         />
                         <Input
                             placeholder="Enter GIG location(s)"
                             value={formValues.location}
                             onChange={(event) => handleFieldChange("location", event.target.value)}
-                            className="h-12 rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]"
+                            className="h-12 rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
                         />
                         <Input
                             placeholder="Enter production company name (optional)"
                             value={formValues.company}
                             onChange={(event) => handleFieldChange("company", event.target.value)}
-                            className="h-12 rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]"
+                            className="h-12 rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
                         />
 
                         <div className="space-y-2">
@@ -373,35 +372,36 @@ export default function AddGigPage() {
                                 placeholder="I am looking for..."
                                 value={formValues.description}
                                 onChange={(event) => handleFieldChange("description", event.target.value)}
-                                className="min-h-[120px] rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]"
+                                className="min-h-[120px] rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
                             />
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <Label className="text-sm font-medium text-[#1D1D1F]">Choose date(s)</Label>
                             </div>
-                            <div className="rounded-[24px] bg-[#F8F8F8] p-4">
-                                <div className="mb-3 flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-[#1D1D1F]">
-                                        <span className="text-base font-semibold">{format(currentMonth, "MMM, yyyy")}</span>
+                            <div className="rounded-[24px]  p-4">
+                                <div className="">
+                                    <div className="flex flex-row justify-between items-center p-[10px] rounded-[10px] gap-2 text-[#1D1D1F] bg-[#ffffff] w-[425px] h-[56px]">
+                                        <span className="text-[24px] font-[400] text-[#FA596E]">{format(currentMonth, "MMM, yyyy")}</span>
+                                        <div className="flex gap-2">
+                                            <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, -1))}>
+                                                -
+                                            </Button>
+                                            <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, 1))}>
+                                                +
+                                            </Button>
+                                        </div>
                                         <CalendarIcon className="h-5 w-5 text-[#FF5470]" />
                                     </div>
-                                    <div className="flex gap-2">
-                                        <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, -1))}>
-                                            -
-                                        </Button>
-                                        <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, 1))}>
-                                            +
-                                        </Button>
-                                    </div>
+
                                 </div>
-                                <div className="grid grid-cols-7 gap-2 text-center text-sm font-semibold text-[#FF8FA5]">
+                                <div className="grid grid-cols-7 gap-2 text-center text-[25px] font-[400] bg-[#ffffff] text-[#FF8FA5] w-[425px] h-[60px] rounded-t-[10px]">
                                     {["M", "T", "W", "T", "F", "S", "S"].map((day) => (
                                         <span key={day}>{day}</span>
                                     ))}
                                 </div>
-                                <ScrollArea className="mt-3 max-h-[260px]">
+                                <ScrollArea className=" max-h-[260px] w-[425px] rounded-b-[10px] bg-[#ffffff]">
                                     <div className="grid grid-cols-7 gap-x-0 gap-y-2">
                                         {calendarDays.map((day, index) => {
                                             const dayNumber = day.getDate()
@@ -443,7 +443,7 @@ export default function AddGigPage() {
                                                     disabled={!isCurrentMonthDay}
                                                     onClick={() => toggleDate(day)}
                                                     className={cn(
-                                                        "flex h-12 w-full items-center justify-center text-sm font-semibold transition",
+                                                        "flex h-12 w-full items-center justify-center text-[26px] font-[400] transition",
                                                         shapeClass,
                                                         !isCurrentMonthDay && "text-[#D7E3E5]",
                                                         isCurrentMonthDay && !isSelected && "text-[#199490]",
@@ -459,9 +459,9 @@ export default function AddGigPage() {
                                 </ScrollArea>
                             </div>
 
-                            <div className="flex items-center gap-3">
-                                <Checkbox id="tbc" checked={isTbc} onCheckedChange={() => setIsTbc((prev) => !prev)} />
-                                <Label htmlFor="tbc" className="text-sm font-medium text-[#1D1D1F]">
+                            <div className="flex items-center gap-3 ml-10">
+                                <Checkbox id="tbc" checked={isTbc} onCheckedChange={() => setIsTbc((prev) => !prev)} className="h-[27px] w-[27px]" />
+                                <Label htmlFor="tbc" className="text-[18px] font-[400] text-[#1D1D1F]">
                                     TBC
                                 </Label>
                             </div>
@@ -476,7 +476,7 @@ export default function AddGigPage() {
                                     placeholder="Enter URL"
                                     value={formValues.referenceUrl}
                                     onChange={(event) => handleFieldChange("referenceUrl", event.target.value)}
-                                    className="h-12 rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]"
+                                    className="h-12 rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
                                 />
                                 <div className="space-y-3">
                                     <input
@@ -495,9 +495,9 @@ export default function AddGigPage() {
                                         Upload file
                                     </Button>
                                     {referenceFile && (
-                                        <div className="flex items-center gap-3 rounded-2xl border border-[#E4E7EC] bg-[#F8F8F8] px-4 py-2 text-sm text-[#515151]">
+                                        <div className="flex items-center gap-3 rounded-2xl border border-[#646464] bg-[#ffffff] px-4 py-2 text-sm text-[#515151]">
                                             <div className="flex-1">
-                                                <p className="font-semibold">{referenceFile.name}</p>
+                                                <p className="font-[400]">{referenceFile.name}</p>
                                                 <p className="text-xs text-[#8F8F8F]">{(referenceFile.size / 1024).toFixed(1)} KB</p>
                                             </div>
                                             <button
@@ -522,15 +522,19 @@ export default function AddGigPage() {
                                 placeholder="Describe your qualifying criteria"
                                 value={formValues.qualifyingCriteria}
                                 onChange={(event) => handleFieldChange("qualifyingCriteria", event.target.value)}
-                                className="min-h-[120px] rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]"
+                                className="min-h-[120px] rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
                             />
                         </div>
 
                         <div className="space-y-3">
                             <Label className="text-sm font-medium text-[#1D1D1F]">GIG rate</Label>
-                            <div className="flex items-center gap-3">
-                                <div className="flex flex-1 items-center rounded-2xl border border-[#E4E7EC] bg-[#F8F8F8] text-[#515151]">
-                                    <span className="px-4 text-sm font-semibold text-[#7B7B7B]">AED</span>
+                            <div className="flex flex-col w-full items-start gap-3">
+                                <div className="flex flex-1 items-center rounded-[15px] w-full border border-[#646464] bg-[#ffffff] text-[#515151]">
+                                    <div>
+                                        <span className="px-4 text-sm font-[400] text-[#7B7B7B]">AED</span>
+                                        <span className="w-px h-full border border-[#646464]" />
+                                    </div>
+
                                     <Input
                                         type="number"
                                         placeholder="$ 000.00"
@@ -540,13 +544,14 @@ export default function AddGigPage() {
                                         className="h-12 border-0 bg-transparent focus-visible:ring-0"
                                     />
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 ml-[18px]">
                                     <Checkbox
+                                        className="h-[27px] w-[27px]"
                                         id="request-quote"
                                         checked={requestQuote}
                                         onCheckedChange={() => setRequestQuote((prev) => !prev)}
                                     />
-                                    <Label htmlFor="request-quote" className="text-sm font-medium text-[#1D1D1F]">
+                                    <Label htmlFor="request-quote" className="text-[18px] font-[400] text-[#1D1D1F]">
                                         Request quote
                                     </Label>
                                 </div>
@@ -554,20 +559,23 @@ export default function AddGigPage() {
                         </div>
 
                         <div className="space-y-1">
-                            <Label className="text-sm font-medium text-[#1D1D1F]">GIG expiry date</Label>
-                            <p className="text-xs text-[#8F8F8F]">The GIG will expire after 3 days if a date is not selected</p>
+                            <Label className="text-[18px] font-[400] text-[#444444]">GIG expiry date</Label>
+                            <p className="text-[14px] font-[400] text-[#444444]">The GIG will expire after 3 days if a date is not selected</p>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
                                         type="button"
                                         variant="outline"
                                         className={cn(
-                                            "flex w-full items-center justify-between rounded-2xl border-[#E4E7EC] bg-[#F8F8F8] px-4 text-left text-[#515151]",
+                                            "flex items-center justify-between rounded-[10px] w-[403px] h-[56px] border-[#646464] bg-[#ffffff]  text-left text-[#515151]",
                                             !expiryDate && "text-[#A3A3A3]"
                                         )}
                                     >
-                                        {expiryDate ? format(expiryDate, "dd MMM, yyyy") : "Select expiry date"}
-                                        <CalendarIcon className="h-4 w-4 text-[#FF5470]" />
+                                        <span className="font-[400] text-[24px] text-[#FF5470]">
+                                            {expiryDate ? format(expiryDate, "dd MMM, yyyy") : "Select expiry date"}
+
+                                        </span>
+                                        <Calendar className=" text-[#FF5470]" size={30} />
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent align="start" className="w-auto border-0 p-0 shadow-none">
@@ -590,15 +598,15 @@ export default function AddGigPage() {
                     <div className="mt-8 flex flex-col gap-3 border-t border-[#F0F0F0] pt-6 md:flex-row md:items-center md:justify-between">
                         <button
                             type="button"
-                            className="flex items-center gap-2 text-sm font-semibold text-[#F8C028]"
+                            className="flex items-center gap-2 text-sm font-[400] text-[#F8C028]"
                         >
                             <Zap className="h-4 w-4" /> Return to Quick GIG
                         </button>
                         <div className="flex flex-1 justify-end gap-3">
-                            <Button type="button" variant="outline" className="rounded-full border-[#2AA9A7] text-[#2AA9A7]">
+                            <Button type="button" variant="outline" className="rounded-[10px] border-[#2AA9A7] text-[#2AA9A7] h-[47px] w-[102px]">
                                 Publish
                             </Button>
-                            <Button type="submit" className="rounded-full bg-[#2AA9A7] px-6 text-white">
+                            <Button type="submit" className="rounded-[10px] bg-[#2AA9A7] px-6 text-white h-[47px] w-[102px]">
                                 Save to draft
                             </Button>
                         </div>
@@ -606,7 +614,7 @@ export default function AddGigPage() {
                 </form>
 
                 <aside className="rounded-[32px]">
-                    <h2 className="text-lg font-semibold text-[#1D1D1F]">Preview</h2>
+                    <h2 className="text-lg font-[400] text-[#1D1D1F]">Preview</h2>
                     <div className="mt-4 rounded-[28px] p-6">
                         {hasActivePreview ? (
                             <>
@@ -620,11 +628,11 @@ export default function AddGigPage() {
                                         unoptimized={Boolean(referencePreview)}
                                     />
                                     <div>
-                                        <p className="text-sm font-semibold text-[#1D1D1F]">Michael Molar</p>
+                                        <p className="text-sm font-[400] text-[#1D1D1F]">Michael Molar</p>
                                         <p className="text-xs text-[#8F8F8F]">Project owner</p>
                                     </div>
                                 </div>
-                                <p className="mt-4 text-lg font-semibold text-[#1D1D1F]">
+                                <p className="mt-4 text-lg font-[400] text-[#1D1D1F]">
                                     {crewCount} {capitalizeLabel(formValues.role) || "Crew"} for {capitalizeLabel(formValues.type) || "Gig"}
                                 </p>
                                 <div className="mt-3 flex items-center gap-2 text-sm text-[#6F6F6F]">
@@ -640,12 +648,12 @@ export default function AddGigPage() {
                                     <div className="flex gap-3">
                                         <CalendarIcon className="mt-1 h-4 w-4 text-[#6F6F6F]" />
                                         <div className="space-y-1">
-                                            <p className="text-xs font-semibold uppercase tracking-wide text-[#8F8F8F]">Selected dates</p>
+                                            <p className="text-xs font-[400] uppercase tracking-wide text-[#8F8F8F]">Selected dates</p>
                                             {monthDateSummaries.length ? (
                                                 <div className="space-y-1">
                                                     {monthDateSummaries.map((entry) => (
                                                         <p key={`${entry.label}-${entry.ranges}`} className="text-sm text-[#4F4F4F]">
-                                                            <span className="font-semibold text-[#1D1D1F]">{entry.label}</span>
+                                                            <span className="font-[400] text-[#1D1D1F]">{entry.label}</span>
                                                             <span className="px-2 text-[#A3A3A3]">|</span>
                                                             {entry.ranges}
                                                         </p>
@@ -656,10 +664,10 @@ export default function AddGigPage() {
                                             )}
                                         </div>
                                     </div>
-                                    <p className="text-base font-semibold">
+                                    <p className="text-base font-[400]">
                                         {requestQuote ? "Requesting quote" : `AED ${formValues.gigRate || "0"}`}
                                     </p>
-                                    <p className="text-sm font-semibold text-[#1D1D1F]">
+                                    <p className="text-sm font-[400] text-[#1D1D1F]">
                                         Qualifying criteria:
                                         <span className="pl-1 font-normal text-[#6F6F6F]">
                                             {formValues.qualifyingCriteria || "This is where the qualifying criteria value comes"}
@@ -674,14 +682,14 @@ export default function AddGigPage() {
                                 </div>
 
                                 {/* <div className="mt-6">
-                                    <p className="text-xs font-semibold uppercase tracking-wide text-[#199490]">Form summary</p>
+                                    <p className="text-xs font-[400] uppercase tracking-wide text-[#199490]">Form summary</p>
                                     <dl className="mt-3 grid gap-3 text-sm text-[#1D1D1F]">
                                         {previewDetailRows.map((row) => (
                                             <div
                                                 key={row.label}
                                                 className="rounded-xl px-3 py-2"
                                             >
-                                                <dt className="text-xs font-semibold uppercase tracking-wide text-[#8F8F8F]">
+                                                <dt className="text-xs font-[400] uppercase tracking-wide text-[#8F8F8F]">
                                                     {row.label}
                                                 </dt>
                                                 <dd className="text-sm text-[#1D1D1F]">{row.value}</dd>
@@ -691,7 +699,7 @@ export default function AddGigPage() {
                                 </div> */}
 
                                 <p className="mt-4 text-xs text-[#8F8F8F]">Posted on {format(new Date(), "d MMM, yyyy")}</p>
-                                <p className="mt-1 text-xs font-semibold text-[#FF5470]">
+                                <p className="mt-1 text-xs font-[400] text-[#FF5470]">
                                     Apply before {formValues.expiryDate || formattedMonthLabel}
                                 </p>
                             </>
