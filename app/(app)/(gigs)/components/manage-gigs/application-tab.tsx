@@ -43,7 +43,7 @@ export function ApplicationTab({ selectedGigIds, actionIndicators, onActionChang
             <div className="sm:px-4 mx-auto">
                 <div className="flex flex-wrap gap-3 mt-3 sm:w-full justify-between items-center sm:justify-start bg-white rounded-[10px]">
                     <SeeAllReferralsDialog />
-                    <SendRecommendationDialog />
+                    <SendRecommendationDialog className="h-[30px]" />
                 </div>
             </div>
             {selectedGigs.map((gig) => (
