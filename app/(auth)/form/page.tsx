@@ -142,9 +142,16 @@ export default function FormPage() {
 
       // Step 3: Handle response
       if (data.success) {
+        console.log('Profile created successfully:', data);
         toast.success('Profile created successfully!');
+        
+        // Small delay to ensure database transaction is committed
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Navigate to slate page
         router.push('/slate');
       } else {
+        console.error('Profile creation failed:', data);
         setError(data.error || 'Failed to create profile');
       }
     } catch (err: any) {

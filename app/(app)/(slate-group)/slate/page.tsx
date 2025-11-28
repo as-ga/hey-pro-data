@@ -2,8 +2,52 @@
 import { Separator } from "@/components/ui/separator";
 import { Ellipsis, Heart, MessageCircle, Send } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+
 export default function SlatePage() {
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            console.log('Slate page: Checking authentication...');
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                console.log('Slate page: No session found, redirecting to login');
+                router.push('/login');
+                return;
+            }
+            
+            console.log('Slate page: Session found, checking profile...');
+            const token = session.access_token;
+            
+            try {
+                const response = await fetch('/api/profile', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                console.log('Slate page: Profile check result:', data);
+                
+                if (!data.success || !data.data) {
+                    console.log('Slate page: No profile found, redirecting to form');
+                    router.push('/form');
+                    return;
+                }
+                
+                console.log('Slate page: All checks passed, showing page');
+                setLoading(false);
+            } catch (error) {
+                console.error('Slate page: Profile check error:', error);
+                router.push('/login');
+            }
+        };
+        
+        checkAuth();
+    }, [router]);
     interface Slate {
         id: string,
         profileAvtar: string,
@@ -63,6 +107,18 @@ export default function SlatePage() {
         }
 
     ]
+    
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FA6E80] mx-auto"></div>
+                    <p className="text-gray-900 text-lg">Loading slate...</p>
+                </div>
+            </div>
+        );
+    }
+    
     return (
         <div className="mt-3">
             <div>
