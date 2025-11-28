@@ -4,6 +4,7 @@ import { Heart, MessageCircle, Share2, } from "lucide-react";
 import React from "react";
 
 import { Header } from "../components/Header";
+import Comment from "@/components/comment/comment";
 
 type CollabPost = {
     id: number;
@@ -127,7 +128,7 @@ export default function Collab() {
                                             <Share2 className="h-5 w-5" />
                                         </button>
                                         <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FAFAFA]  text-black ">
-                                            <MessageCircle className="h-5 w-5" />
+                                            <Comment />
                                         </button>
                                         <StatusButton status={post.status} />
                                     </div>
