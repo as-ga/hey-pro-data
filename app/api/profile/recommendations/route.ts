@@ -31,8 +31,8 @@ export async function GET(request: NextRequest) {
         created_at,
         user_profiles!user_recommendations_recommended_user_id_fkey(
           user_id,
-          legal_first_name,
-          legal_surname,
+          firstname,
+          surname,
           profile_photo_url
         )
       `)

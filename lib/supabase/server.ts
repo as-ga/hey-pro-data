@@ -86,7 +86,7 @@ export const hasCompleteProfile = async (userId: string): Promise<boolean> => {
   
   const { data, error } = await supabase
     .from('user_profiles')
-    .select('legal_first_name, legal_surname, country, city')
+    .select('firstname, surname, country, city')
     .eq('user_id', userId)
     .single();
 
@@ -95,5 +95,5 @@ export const hasCompleteProfile = async (userId: string): Promise<boolean> => {
   }
 
   // Check if required fields are filled
-  return !!(data.legal_first_name && data.legal_surname && data.country && data.city);
+  return !!(data.firstname && data.surname && data.country && data.city);
 };

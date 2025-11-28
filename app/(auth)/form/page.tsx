@@ -116,8 +116,8 @@ export default function FormPage() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          legal_first_name: formData.firstName.trim(),
-          legal_surname: formData.surname.trim(),
+          firstname: formData.firstName.trim(),
+          surname: formData.surname.trim(),
           alias_first_name: formData.aliasFirstName.trim() || null,
           alias_surname: formData.aliasSurname.trim() || null,
           country: formData.country,

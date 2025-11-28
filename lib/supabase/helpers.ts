@@ -82,7 +82,7 @@ export const checkProfileComplete = async (
 
   const { data, error } = await supabase
     .from('user_profiles')
-    .select('legal_first_name, legal_surname, country, city')
+    .select('firstname, surname, country, city')
     .eq('user_id', userId)
     .single();
 
@@ -91,16 +91,16 @@ export const checkProfileComplete = async (
   }
 
   const profile = data as {
-    legal_first_name?: string;
-    legal_surname?: string;
+    firstname?: string;
+    surname?: string;
     country?: string;
     city?: string;
   };
 
   // Check if required fields are filled
   return !!(
-    profile.legal_first_name &&
-    profile.legal_surname &&
+    profile.firstname &&
+    profile.surname &&
     profile.country &&
     profile.city
   );
