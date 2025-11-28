@@ -3,7 +3,7 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { Calendar as CalendarIcon, Camera, Edit2, LinkIcon, MapPin } from "lucide-react"
+import { Calendar as CalendarIcon, Edit2, LinkIcon, MapPin } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ProfileProgress } from "@/app/(app)/profile/components/profileProgress"
@@ -17,7 +17,6 @@ import { CalendarDialog } from "./calendar"
 
 export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes }) {
     const [coverImageHovered, setCoverImageHovered] = useState(false)
-    const [profileImageHovered, setProfileImageHovered] = useState(false)
     const filterScrollRef = useRef<HTMLDivElement>(null)
 
     const nationality = countries.find((country) => country.code === Profile.countryCode)?.name ?? Profile.countryCode ?? "Unknown"
@@ -94,24 +93,14 @@ export default function ShortProfile({ Profile }: { Profile: ProfileDataTypes })
             <div className="absolute inset-x-0 top-[38px] sm:top-[108px] left-[9px] sm:left-[58px] flex justify-start">
                 <div
                     className="relative flex h-[112px] w-[112px] items-center justify-center"
-                    onMouseEnter={() => setProfileImageHovered(true)}
-                    onMouseLeave={() => setProfileImageHovered(false)}
                 >
-                    <div className={`absolute inset-0  rounded-full border-[3px]  border-white bg-white`} />
+
                     <ProfileProgress value={Profile.profileCompletion} imageUrl={Profile.avtar} className="rounded-full" />
-                    <div
-                        className={`absolute inset-1 flex items-center justify-center rounded-full transition-opacity ${profileImageHovered ? "bg-black/60 text-white" : "bg-transparent text-transparent"}`}
-                    >
-                        <Camera className="h-6 w-6" />
-                    </div>
+
                 </div>
 
             </div>
-            <div className="absolute top-[129px] left-[48px]  sm:top-[199px] sm:left-[88px] ">
-                <span className="inline-flex justify-center items-center rounded-[10px] bg-white px-4 py-1 text-[10px] shadow font-[500] text-[#FA6E80] w-[41px] h-[25px]">
-                    {Profile.profileCompletion}%
-                </span>
-            </div>
+
             <div className="absolute right-4 top-[98px]  sm:top-[200px] flex items-center gap-3">
                 <ProfileEditor
                     initialProfile={Profile.persionalDetails}
