@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Check, Mail, MessageCircle, Plus, X } from "lucide-react";
+import { CalendarDays, Check, Mail, MessageCircle, Plus, Send, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import { gigsData } from "@/data/gigs";
 import { sampleApplicants } from "./sample-data";
 import { SeeAllReferralsDialog } from "./see-all-referrals";
 import Image from "next/image";
+import { SendRecommendationDialog } from "../recommend-gigs";
 
 type ApplicationTabProps = {
     selectedGigIds: string[];
@@ -42,9 +43,7 @@ export function ApplicationTab({ selectedGigIds, actionIndicators, onActionChang
             <div className="sm:px-4 mx-auto">
                 <div className="flex flex-wrap gap-3 mt-3 sm:w-full justify-between items-center sm:justify-start bg-white rounded-[10px]">
                     <SeeAllReferralsDialog />
-                    <Button className="bg-[#FA6E80] rounded-[10px] text-white hover:bg-[#f9586d]">
-                        Invite crew for this Gig
-                    </Button>
+                    <SendRecommendationDialog />
                 </div>
             </div>
             {selectedGigs.map((gig) => (

@@ -81,11 +81,11 @@ export default function ManageGigsPage() {
                     />
                 </TabsContent>
 
-                <TabsContent value="availability" className="bg-[#F8F8F8] -mt-10">
+                <TabsContent value="availability" className="bg-[#F8F8F8] -mt-10 sm:w-[1060px]">
                     <AvailabilityTab selectedGigIds={selectedGigIds} />
                 </TabsContent>
 
-                <TabsContent value="contacts" className="bg-[#F8F8F8] -mt-10">
+                <TabsContent value="contacts" className="bg-[#F8F8F8] -mt-10 sm:w-[1060px]">
                     <ContactListTab
                         selectedGigIds={selectedGigIds}
                         actionIndicators={actionIndicators}
