@@ -101,7 +101,7 @@ export default function AddLanguageSection({ languages: initialLanguages }: { la
                     <DialogHeader>
                         <DialogTitle className="text-[22px] font-[400] flex items-start justify-start">Languages</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 -mt-15">
+                    <div className="space-y-4 ">
                         <div className="relative flex flex-row gap-2  items-center">
                             <Input
                                 placeholder="Enter a language (e.g., English, Spanish)"
@@ -143,11 +143,11 @@ export default function AddLanguageSection({ languages: initialLanguages }: { la
                                                 {/* Speak Icon */}
                                                 <Button
                                                     size="icon"
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     onClick={() => handleToggleSkill(language.name, 'speak')}
-                                                    className={`h-[40px] w-[40px] rounded-xl ${language.canSpeak
-                                                        ? 'bg-[#FA6E80] hover:bg-[#31A7AC]/90 text-white'
-                                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-400'
+                                                    className={`h-[40px] w-[40px] rounded-xl border-[#6D6D6D] ${language.canSpeak
+                                                        ? 'bg-[#FA6E80]  text-white'
+                                                        : 'bg-gray-100  text-[#6D6D6D]'
                                                         }`}
                                                     aria-label={`Toggle speaking ${language.name}`}
                                                     title="Can Speak"
@@ -158,11 +158,11 @@ export default function AddLanguageSection({ languages: initialLanguages }: { la
                                                 {/* Write Icon */}
                                                 <Button
                                                     size="icon"
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     onClick={() => handleToggleSkill(language.name, 'write')}
-                                                    className={`h-[40px] w-[40px] rounded-xl ${language.canWrite
-                                                        ? 'bg-[#31A7AC] hover:bg-[#31A7AC]/90 text-white'
-                                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-400'
+                                                    className={`h-[40px] w-[40px] rounded-xl border-[#6D6D6D] ${language.canWrite
+                                                        ? 'bg-[#31A7AC]  text-white'
+                                                        : 'bg-gray-100  text-[#6D6D6D]'
                                                         }`}
                                                     aria-label={`Toggle writing ${language.name}`}
                                                     title="Can Write"
@@ -175,7 +175,7 @@ export default function AddLanguageSection({ languages: initialLanguages }: { la
                                                     size="icon"
                                                     variant="ghost"
                                                     onClick={() => handleRemoveLanguage(language.name)}
-                                                    className="h-[40px] w-[40px] rounded-xl text-black"
+                                                    className="h-[40px] w-[40px] rounded-xl text-black "
                                                     aria-label={`Remove ${language.name}`}
                                                     title="Delete Language"
                                                 >
