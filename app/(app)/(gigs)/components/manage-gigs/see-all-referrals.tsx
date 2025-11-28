@@ -50,15 +50,15 @@ export function SeeAllReferralsDialog() {
                         See referrals
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[560px] rounded-[28px] border-0 bg-[#F8F8F8] p-0 shadow-2xl">
-                    <div className="space-y-6 p-6">
+                <DialogContent className=" rounded-[28px] w-[532px]">
+                    <div className="space-y-6 p-1 mt-10">
                         <DialogHeader className="space-y-1 text-left">
                             <DialogTitle className="text-2xl font-semibold text-[#1D1D1F]">
                                 Referred people for your Gig
                             </DialogTitle>
                         </DialogHeader>
 
-                        <div>
+                        <div className="">
                             <div className="relative">
                                 <Input
                                     id="user-search"
@@ -76,8 +76,11 @@ export function SeeAllReferralsDialog() {
                                 </button>
                             </div>
                         </div>
+                        <div>
 
-                        <ScrollArea className="max-h-[460px] pr-2">
+                        </div>
+
+                        <ScrollArea className="max-h-[460px]">
                             {filteredUsers.length === 0 ? (
                                 <p className="rounded-2xl bg-white px-4 py-10 text-center text-sm text-muted-foreground">
                                     No users match your search.
@@ -89,7 +92,7 @@ export function SeeAllReferralsDialog() {
                                             <p className="text-sm font-semibold text-[#E05082]">
                                                 {category}
                                             </p>
-                                            <div className="rounded-[22px] bg-white p-4 shadow-[0_18px_60px_rgba(16,24,40,0.08)]">
+                                            <div className="rounded-[22px]">
                                                 {users.map((user, index) => (
                                                     <div
                                                         key={user.id}
