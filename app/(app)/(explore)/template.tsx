@@ -344,7 +344,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
 
                 </div>
                 <div className="flex w-full flex-col gap-6 lg:flex-row">
-                    <div className={`${isFilterOpen ? 'flex' : 'hidden lg:flex'} w-full flex-col gap-4 rounded-2xl bg-white/50 p-4 lg:max-w-[280px] lg:overflow-y-auto`}>
+                    <div className={`${isFilterOpen ? 'sm:flex hidden' : 'hidden lg:flex'} w-full flex-col gap-4 rounded-2xl bg-white/50 p-4 lg:max-w-[280px] lg:overflow-y-auto`}>
 
                         {filterOptions.map(opt => (
                             <details key={opt.label} className="group  rounded-[10px]  border-[1px] border-[#989898]/10 rotate-[5px]  bg-whit">
