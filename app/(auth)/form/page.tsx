@@ -49,8 +49,8 @@ export default function FormPage() {
         const data = await response.json();
         
         if (data.success && data.data) {
-          // Profile already exists, redirect to home
-          router.push('/home');
+          // Profile already exists, redirect to slate
+          router.push('/slate');
         }
         // Otherwise, show form
       } catch (error) {
@@ -125,17 +125,31 @@ export default function FormPage() {
         })
       });
 
+      // Check if response is ok and has JSON content
+      if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          setError(errorData.error || 'Failed to create profile');
+        } else {
+          setError(`Server error: ${response.status} ${response.statusText}`);
+        }
+        setLoading(false);
+        return;
+      }
+
       const data = await response.json();
 
       // Step 3: Handle response
       if (data.success) {
         toast.success('Profile created successfully!');
-        router.push('/home');
+        router.push('/slate');
       } else {
         setError(data.error || 'Failed to create profile');
       }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+    } catch (err: any) {
+      console.error('Form submission error:', err);
+      setError(err.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

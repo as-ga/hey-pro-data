@@ -4,6 +4,15 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+// Log if env variables are missing
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('Missing Supabase environment variables!', {
+    hasUrl: !!supabaseUrl,
+    hasKey: !!supabaseServiceKey
+  });
+}
+
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 /**
@@ -74,7 +83,16 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      return NextResponse.json(
+        errorResponse('Invalid request body'),
+        { status: 400 }
+      );
+    }
 
     // Check if profile exists
     const { data: existingProfile } = await supabase

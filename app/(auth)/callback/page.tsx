@@ -58,8 +58,8 @@ export default function AuthCallback() {
         // No profile, redirect to form
         router.push('/form');
       } else {
-        // Profile exists, redirect to home
-        router.push('/home');
+        // Profile exists, redirect to slate
+        router.push('/slate');
       }
     } catch (err) {
       // Profile check errors treated as "no profile"

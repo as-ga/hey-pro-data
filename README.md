@@ -643,10 +643,11 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
    # Edit .env.local with your Supabase credentials
    ```
 
-4. **Run database migrations**
+4. **Set up database schema**
    ```bash
-   # Run migrations in your Supabase project
-   # SQL schema files should be in /documentation/ or /database/
+   # Run the SQL schema in your Supabase SQL Editor
+   # File: /app/supabase_schema.sql
+   # Or follow instructions in SETUP_INSTRUCTIONS.md
    ```
 
 5. **Start development server**

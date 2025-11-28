@@ -39,6 +39,9 @@ const protectedRoutes = [
   '/whatson',
   '/notifications',
   '/settings',
+  '/slate',
+  '/jobs',
+  '/create',
 ];
 
 export async function middleware(request: NextRequest) {
@@ -91,7 +94,7 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages (login/signup)
   if (isAuthenticated && isAuthRoute) {
-    return NextResponse.redirect(new URL('/home', request.url));
+    return NextResponse.redirect(new URL('/slate', request.url));
   }
 
   // Redirect unauthenticated users to login for protected routes

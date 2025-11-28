@@ -132,8 +132,8 @@ function OTPContent() {
         toast.success('Email verified successfully!');
 
         if (profileData.success && profileData.data) {
-          // Profile exists, go to home
-          router.push('/home');
+          // Profile exists, go to slate
+          router.push('/slate');
         } else {
           // No profile, go to profile creation form
           router.push('/form');

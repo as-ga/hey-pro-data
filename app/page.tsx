@@ -37,9 +37,9 @@ export default function RootPage() {
         
         // Step 4: Route based on profile existence
         if (profileData.success && profileData.data) {
-          router.push('/home');  // Profile exists
+          router.push('/slate');  // Profile exists → redirect to slate feed
         } else {
-          router.push('/form');  // No profile
+          router.push('/form');  // No profile → redirect to form
         }
       } catch (error) {
         console.error('Root routing error:', error);

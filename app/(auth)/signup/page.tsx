@@ -42,7 +42,7 @@ export default function SignUpPage() {
         const data = await response.json();
         
         if (data.success && data.data) {
-          router.replace('/home');
+          router.replace('/slate');
         } else {
           router.replace('/form');
         }

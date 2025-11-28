@@ -41,7 +41,7 @@ export default function LoginPage() {
         
         // Route based on profile
         if (data.success && data.data) {
-          router.replace('/home');
+          router.replace('/slate');
         } else {
           router.replace('/form');
         }
@@ -110,7 +110,7 @@ export default function LoginPage() {
       // Step 6: Route based on profile
       if (profileData.success && profileData.data) {
         toast.success('Login successful!');
-        router.push('/home');
+        router.push('/slate');
       } else {
         router.push('/form');
       }
