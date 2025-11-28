@@ -108,6 +108,8 @@ export default function FormPage() {
         return;
       }
 
+      console.log('[Form] Submitting profile creation...');
+
       // Step 2: Submit to API
       const response = await fetch('/api/profile', {
         method: 'PATCH',
@@ -142,22 +144,49 @@ export default function FormPage() {
 
       // Step 3: Handle response
       if (data.success) {
-        console.log('Profile created successfully:', data);
+        console.log('[Form] Profile created successfully:', data);
         toast.success('Profile created successfully!');
         
-        // Small delay to ensure database transaction is committed
+        // Step 4: Refresh the session to ensure latest state
+        console.log('[Form] Refreshing session...');
+        await supabase.auth.refreshSession();
+        
+        // Step 5: Wait for database transaction to commit
         await new Promise(resolve => setTimeout(resolve, 500));
         
-        // Navigate to slate page
-        router.push('/slate');
+        // Step 6: Verify profile exists before redirecting
+        console.log('[Form] Verifying profile exists...');
+        const { data: { session: refreshedSession } } = await supabase.auth.getSession();
+        const refreshedToken = refreshedSession?.access_token;
+        
+        if (refreshedToken) {
+          const verifyResponse = await fetch('/api/profile', {
+            headers: { 'Authorization': `Bearer ${refreshedToken}` }
+          });
+          const verifyData = await verifyResponse.json();
+          
+          if (verifyData.success && verifyData.data) {
+            console.log('[Form] Profile verified, redirecting to /slate');
+            // Profile confirmed, safe to redirect
+            router.push('/slate');
+          } else {
+            console.error('[Form] Profile verification failed:', verifyData);
+            setError('Profile created but verification failed. Please refresh the page.');
+            setLoading(false);
+          }
+        } else {
+          console.error('[Form] No token after refresh');
+          setError('Session error. Please try logging in again.');
+          setLoading(false);
+        }
       } else {
-        console.error('Profile creation failed:', data);
+        console.error('[Form] Profile creation failed:', data);
         setError(data.error || 'Failed to create profile');
+        setLoading(false);
       }
     } catch (err: any) {
-      console.error('Form submission error:', err);
+      console.error('[Form] Submission error:', err);
       setError(err.message || 'An unexpected error occurred. Please try again.');
-    } finally {
       setLoading(false);
     }
   };

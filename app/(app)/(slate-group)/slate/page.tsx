@@ -12,36 +12,66 @@ export default function SlatePage() {
 
     useEffect(() => {
         const checkAuth = async () => {
-            console.log('Slate page: Checking authentication...');
+            console.log('[Slate] Checking authentication...');
             const { data: { session } } = await supabase.auth.getSession();
             
             if (!session) {
-                console.log('Slate page: No session found, redirecting to login');
+                console.log('[Slate] No session found, redirecting to login');
                 router.push('/login');
                 return;
             }
             
-            console.log('Slate page: Session found, checking profile...');
+            console.log('[Slate] Session found, checking profile with retry mechanism...');
             const token = session.access_token;
             
+            // Retry mechanism for profile check (handles race conditions)
+            const checkProfileWithRetry = async (retries = 3, delay = 1000): Promise<boolean> => {
+                for (let attempt = 1; attempt <= retries; attempt++) {
+                    try {
+                        console.log(`[Slate] Profile check attempt ${attempt}/${retries}`);
+                        
+                        const response = await fetch('/api/profile', {
+                            headers: { 'Authorization': `Bearer ${token}` },
+                            cache: 'no-store' // Prevent caching
+                        });
+                        
+                        const data = await response.json();
+                        console.log(`[Slate] Profile check result (attempt ${attempt}):`, data);
+                        
+                        if (data.success && data.data) {
+                            console.log('[Slate] Profile found!');
+                            return true;
+                        }
+                        
+                        // Profile not found, wait before retry (except on last attempt)
+                        if (attempt < retries) {
+                            console.log(`[Slate] Profile not found, waiting ${delay}ms before retry...`);
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        }
+                    } catch (error) {
+                        console.error(`[Slate] Profile check error (attempt ${attempt}):`, error);
+                        if (attempt < retries) {
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        }
+                    }
+                }
+                
+                return false;
+            };
+            
             try {
-                const response = await fetch('/api/profile', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const profileExists = await checkProfileWithRetry();
                 
-                const data = await response.json();
-                console.log('Slate page: Profile check result:', data);
-                
-                if (!data.success || !data.data) {
-                    console.log('Slate page: No profile found, redirecting to form');
+                if (!profileExists) {
+                    console.log('[Slate] No profile found after retries, redirecting to form');
                     router.push('/form');
                     return;
                 }
                 
-                console.log('Slate page: All checks passed, showing page');
+                console.log('[Slate] All checks passed, showing page');
                 setLoading(false);
             } catch (error) {
-                console.error('Slate page: Profile check error:', error);
+                console.error('[Slate] Fatal profile check error:', error);
                 router.push('/login');
             }
         };

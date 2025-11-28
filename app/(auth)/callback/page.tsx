@@ -15,6 +15,38 @@ export default function AuthCallback() {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
+    const checkProfileAndRedirect = async (token: string) => {
+      try {
+        console.log('[Callback] Checking profile...');
+        
+        const response = await fetch('/api/profile', {
+          headers: { 'Authorization': `Bearer ${token}` },
+          cache: 'no-store' // Prevent caching
+        });
+
+        const data = await response.json();
+        console.log('[Callback] Profile check result:', data);
+
+        setIsRedirecting(true);
+
+        // Non-blocking error handling
+        if (!data.success || !data.data) {
+          // No profile, redirect to form
+          console.log('[Callback] No profile found, redirecting to form');
+          router.push('/form');
+        } else {
+          // Profile exists, redirect to slate
+          console.log('[Callback] Profile found, redirecting to slate');
+          router.push('/slate');
+        }
+      } catch (err) {
+        // Profile check errors treated as "no profile"
+        console.error('[Callback] Profile check error (non-blocking):', err);
+        setIsRedirecting(true);
+        router.push('/form');
+      }
+    };
+
     const handleCallback = async () => {
       try {
         // Step 1: Get session from URL (OAuth callback)
@@ -42,32 +74,6 @@ export default function AuthCallback() {
 
     handleCallback();
   }, [router]);
-
-  const checkProfileAndRedirect = async (token: string) => {
-    try {
-      const response = await fetch('/api/profile', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      const data = await response.json();
-
-      setIsRedirecting(true);
-
-      // Non-blocking error handling
-      if (!data.success || !data.data) {
-        // No profile, redirect to form
-        router.push('/form');
-      } else {
-        // Profile exists, redirect to slate
-        router.push('/slate');
-      }
-    } catch (err) {
-      // Profile check errors treated as "no profile"
-      console.log('[Callback] Profile check error (non-blocking):', err);
-      setIsRedirecting(true);
-      router.push('/form');
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
