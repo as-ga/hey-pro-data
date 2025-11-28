@@ -65,11 +65,11 @@ export function RoleDialog() {
                         Role
                     </div>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[420px] rounded-[24px]">
+                <DialogContent className="rounded-[24px]">
                     <DialogHeader>
-                        <DialogTitle className="flex items-start mt-10">Roles</DialogTitle>
+                        <DialogTitle className="">Roles</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 -mt-15">
+                    <div className="space-y-4">
                         <p className="text-sm font[400] text-slate-500">Let people know what all language you speak.</p>
                         <div className="flex justify-center items-center gap-2 w-full border border-[#31A7AC] h-[41px] rounded-[15px]">
                             <Input
