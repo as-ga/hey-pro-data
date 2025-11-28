@@ -12,7 +12,7 @@ import { whatsOnEvents } from "@/data/whatsOnEvents";
 
 export default function EventListingPage({ isFilterOpen }: { isFilterOpen?: boolean }) {
     return (
-        <div className={`min-h-screen bg-white flex justify-center items-center py-1 ${poppins.variable} font-poppins`}>
+        <div className={`min-h-screen  flex justify-center items-center sm:-mt-30 py-1 ${poppins.variable} font-poppins`}>
             <div className="w-full max-w-[360px] md:max-w-[960px] px-2 md:px-0">
                 <div className={`grid ${isFilterOpen ? "sm:grid-cols-3 grid-cols-2" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"} auto-rows-fr gap-[7.46px] md:gap-[10px]`}>
                     {whatsOnEvents.map((event, index) => (
@@ -28,7 +28,7 @@ const EventCard = ({ event }: { event: typeof whatsOnEvents[number] }) => {
     const dateLabel = event.dateRangeLabel;
     return (
         <Link href={`/whats-on/${event.slug}`}>
-            <div className="flex flex-col items-start bg-[#FAFAFA] rounded-[18px] md:rounded-[24px] p-[6.4px] md:p-[8.6px] gap-[7.46px] md:gap-[10px] w-full shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div className="flex flex-col items-start bg-[#FAFAFA] rounded-[18px] md:rounded-[24px] p-[6.4px] md:p-[8.6px] gap-[7.46px] md:gap-[10px] w-full transition-shadow duration-300">
                 <div className="relative w-full aspect-[160/105] md:aspect-[214/140]">
                     <Image
                         src={event.heroImage}

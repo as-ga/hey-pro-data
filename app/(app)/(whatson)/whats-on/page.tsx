@@ -109,7 +109,7 @@ export default function WhatsOnHeader() {
                     <Link href="/whats-on/manage-whats-on" className="ml-2 text-white bg-[#31A7AC] border rounded-[10px] sm:w-auto w-[192px] px-4 py-2 "> <span className="text-[16px] font-[400]">Manage What’s On</span></Link>
                 </div>
 
-                <div className="flex flex-row mx-auto  justify-center w-[354px] items-center gap-0.5 space-x-4 mt-4 mb-6 sm:w-full">
+                <div className="flex flex-row mx-auto  justify-center w-[354px] items-center gap-0.5 space-x-4 mt-4 sm:w-full">
                     <div
                         className={`sm:flex items-center hidden justify-center space-x-2 h-[48px] w-[111px] border rounded-full px-4 py-2 cursor-pointer transition-all ${isFilterOpen ? 'w-[300px] bg-[#FA6E80]' : 'w-[150px] bg-[#f7f7f700] border-[#FA6E80] '}`}
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
