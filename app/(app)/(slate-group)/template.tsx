@@ -120,7 +120,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                 <span className="font-bold bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent">SLATE</span>
                 <span className="h-[1px] w-full bg-gradient-to-r from-[#31A7AC] via-[#6A89BE] to-[#FA6E80]" />
             </div>
-            <div className="flex flex-col md:flex-row justify-center mx-auto max-w-[962px] w-full gap-3.5">
+            <div className="flex flex-col md:flex-row justify-center mx-auto max-w-7xl w-full gap-3.5">
                 {/* Sidebar Profile */}
                 <div className="w-full md:w-80 md:h-screen mt-3 md:block flex-shrink-0 order-2 md:order-1 mb-4 md:mb-0 hidden ">
                     <div>
@@ -175,7 +175,9 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                     </div>
                 </div>
                 {/* Main Content */}
-                <div className="w-full md:flex-1 h-auto md:h-screen overflow-x-auto order-1 md:order-2 mb-4 md:mb-0">
+                <div
+                    className="w-full md:flex-1 md:h-screen order-1 md:order-2 mb-4 md:mb-0 overflow-y-auto overflow-x-hidden no-scrollbar"
+                >
                     {children}
                 </div>
                 {/* Similar Accounts Sidebar */}

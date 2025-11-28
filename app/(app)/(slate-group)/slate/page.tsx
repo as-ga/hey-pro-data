@@ -105,7 +105,7 @@ function SlateCard({ profileAvtar,
     slateSrc?: string
 }) {
     return (
-        <div className=" max-w-[377px] border-gray-300 rounded-lg p-4 bg-white">
+        <div className=" border-gray-300 rounded-lg p-4 md:p-7 bg-white">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center mb-4">
                     <Image
@@ -121,7 +121,7 @@ function SlateCard({ profileAvtar,
                     </div>
                 </div>
                 <div>
-                    {<Ellipsis className="h-6 w-6" />}
+                    {<Ellipsis className="h-6 w-6 md:h-7 md:w-7" />}
                 </div>
             </div>
             <div>
@@ -131,14 +131,14 @@ function SlateCard({ profileAvtar,
                         alt={profileName}
                         height={377}
                         width={377}
-                        className="w-[377px] h-[377px] object-cover rounded-lg mb-4"
+                        className="w-[377px] h-[377px] md:w-[520px] md:h-[520px] object-cover rounded-lg mb-4"
                     />
                 )}
             </div>
-            <div className=" flex flex-row gap-3.5 justify-start">
-                <span><Heart className="h-6 w-6" /></span>
-                <span><MessageCircle className="h-6 w-6" /></span>
-                <span><Send className="h-6 w-6" /></span>
+            <div className="flex flex-row gap-3.5 justify-start">
+                <span><Heart className="h-6 w-6 md:h-7 md:w-7" /></span>
+                <span><MessageCircle className="h-6 w-6 md:h-7 md:w-7" /></span>
+                <span><Send className="h-6 w-6 md:h-7 md:w-7" /></span>
             </div>
             <DescriptionWithShowMore description={description} />
             <Separator className="" />
@@ -161,11 +161,11 @@ function DescriptionWithShowMore({ description }: { description: string }) {
 
     return (
         <div className="mb-4">
-            <p className="text-gray-700 mb-1 text-[12px]">{displayedDescription}</p>
+            <p className="text-gray-700 mb-1 text-[12px] md:text-[15px]">{displayedDescription}</p>
             {shouldTruncate && (
                 <button
                     onClick={toggleExpand}
-                    className="text-[12px]"
+                    className="text-[12px] md:text-[15px]"
                 >
                     {isExpanded ? 'Show Less' : 'Show More'}
                 </button>
