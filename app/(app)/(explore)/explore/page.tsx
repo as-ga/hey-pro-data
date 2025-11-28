@@ -54,7 +54,7 @@ export default function ExplorePage() {
                             />
                         )}
 
-                        <div className="absolute left-1/2 top-[21px] flex h-[63px] w-[63px] -translate-x-1/2 items-center justify-center overflow-hidden rounded-full border border-white bg-[#D9D9D9] text-xs font-semibold text-gray-700">
+                        <div className="absolute left-1/2 top-[21px] flex h-[55px] sm:h-[63px] w-[55px] sm:w-[63px] -translate-x-1/2 items-center justify-center overflow-hidden rounded-full border border-white bg-[#D9D9D9] text-xs font-semibold text-gray-700">
                             {profile.avatar ? (
                                 <Image
                                     src={profile.avatar}
@@ -68,7 +68,7 @@ export default function ExplorePage() {
                             )}
                         </div>
 
-                        <div className="absolute left-1/2 top-[86px] flex w-[120px] -translate-x-1/2 flex-col items-center text-center">
+                        <div className="absolute left-1/2 sm:top-[86px] top-[74px] flex w-[120px] -translate-x-1/2 flex-col items-center text-center">
                             <p className="text-[12px] font-medium text-black">{profile.name}</p>
                             <div className="mt-1 flex items-center gap-1 text-[8.5px] text-[#444444]">
                                 <MapPin className="h-[10px] w-[10px] stroke-[1.2px] text-[#444444]" />
@@ -76,15 +76,15 @@ export default function ExplorePage() {
                             </div>
                         </div>
 
-                        <p className="absolute left-3 top-[126px] w-[173px] text-[7.7px] leading-[11px] text-[#444444] line-clamp-3">
+                        <p className="absolute left-3 sm:top-[126px] top-[108px] text-[6px] sm:text-[7.7px] leading-[11px] text-[#444444] line-clamp-3">
                             {profile.summary}
                         </p>
 
-                        <div className="absolute left-3 top-[167px] flex w-[173px] flex-wrap gap-1.5">
+                        <div className="absolute left-3 sm:top-[167px] top-[144px] flex h-[37px]  flex-wrap gap-1">
                             {profile.roles.slice(0, 3).map((role) => (
                                 <span
                                     key={`${profile.id}-${role}`}
-                                    className="rounded-[2px] border border-[#31A7AC] bg-white px-[5px] py-[2.5px] text-[7.7px] text-[#31A7AC]"
+                                    className="rounded-[2px] border border-[#31A7AC] bg-white px-[5px] py-[2.5px] h-[16px] text-[7.7px] text-[#31A7AC]"
                                 >
                                     {role}
                                 </span>

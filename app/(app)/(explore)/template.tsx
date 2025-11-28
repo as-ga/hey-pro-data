@@ -212,7 +212,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
     };
     return (
         <>
-            <div className="max-w-[960px]">
+            <div className="max-w-7xl">
                 <span className="hidden p-2 md:inline-block bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent text-3xl font-semibold">Crew Directory</span>
                 <div className="sticky top-0 z-20 flex w-full flex-row gap-3 bg-white/90 p-4 backdrop-blur sm:flex-row sm:items-center">
 
