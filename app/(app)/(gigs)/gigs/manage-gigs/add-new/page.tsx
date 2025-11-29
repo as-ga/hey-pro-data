@@ -18,9 +18,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Calendar as CalendarPicker } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { Calendar, Calendar as CalendarIcon, FileText, MapPin, Minus, Plus, Sparkles, UploadCloud, X, Zap } from "lucide-react"
+import { Calendar, Calendar as CalendarIcon, FileText, MapPin, Minus, Plus, UploadCloud, X, Zap } from "lucide-react"
 import Image from "next/image"
-import { Separator } from "@/components/ui/separator"
 
 type GigFormValues = {
     role: string
@@ -136,6 +135,36 @@ export default function AddGigPage() {
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const previewUrlRef = useRef<string | null>(null)
     const [oscarAiSuggestion, setOscarAiSuggestion] = useState(false)
+
+    // Sample data for Oscar AI
+    const fillSampleGigData = () => {
+        setCrewCount(5)
+        setFormValues({
+            role: "cinematographer",
+            type: "contract",
+            department: "Camera",
+            location: "Dubai, UAE",
+            company: "Oscar Films",
+            description: "Looking for a skilled cinematographer for a 2-week commercial shoot. Experience with RED cameras preferred.",
+            referenceUrl: "https://oscarfilms.com/sample-reel",
+            qualifyingCriteria: "5+ years experience, portfolio required",
+            gigRate: "12000",
+            expiryDate: format(new Date(2025, 8, 10), "dd MMM, yyyy"),
+        })
+        setSelectedDates([
+            buildDateKey(2025, 8, 3),
+            buildDateKey(2025, 8, 4),
+            buildDateKey(2025, 8, 5),
+            buildDateKey(2025, 8, 6),
+            buildDateKey(2025, 8, 7),
+        ])
+        setIsTbc(true)
+        setRequestQuote(false)
+        setExpiryDate(new Date(2025, 8, 10))
+        setReferenceFile(null)
+        setReferencePreview(null)
+        if (fileInputRef.current) fileInputRef.current.value = ""
+    }
     const calendarDays = useMemo(() => {
         const start = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 })
         const end = endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 1 })
@@ -276,6 +305,7 @@ export default function AddGigPage() {
     return (
         <div className="flex justify-center  px-4 py-8 bg-[#F8F8F8]">
             <div className={`grid w-full  max-w-[1100px] gap-8 lg:grid-cols-[1.2fr_0.8fr] ${oscarAiSuggestion ? 'grid' : 'hidden'}  `}>
+                {/** create gig form  */}
                 <form
                     onSubmit={handleSubmit}
                     className="w-full mb-10"
@@ -345,19 +375,19 @@ export default function AddGigPage() {
                             placeholder="Select GIG department"
                             value={formValues.department}
                             onChange={(event) => handleFieldChange("department", event.target.value)}
-                            className="h-12 rounded-2xl border-[#E4E7EC] bg-[#ffffff] text-[#515151]"
+                            className="h-[54px] rounded-2xl border-[#E4E7EC] bg-[#ffffff] text-[#515151]"
                         />
                         <Input
                             placeholder="Enter GIG location(s)"
                             value={formValues.location}
                             onChange={(event) => handleFieldChange("location", event.target.value)}
-                            className="h-12 rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
+                            className="h-[54px] rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
                         />
                         <Input
                             placeholder="Enter production company name (optional)"
                             value={formValues.company}
                             onChange={(event) => handleFieldChange("company", event.target.value)}
-                            className="h-12 rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
+                            className="h-[54px] rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
                         />
 
                         <div className="space-y-2">
@@ -395,7 +425,7 @@ export default function AddGigPage() {
                                         <span key={day}>{day}</span>
                                     ))}
                                 </div>
-                                <ScrollArea className="mx-auto sm:mx-0 max-h-[260px] w-full max-w-[425px] rounded-b-[10px] bg-[#ffffff]">
+                                <ScrollArea className="mx-auto sm:mx-0 max-h-[333px] w-full max-w-[425px] rounded-b-[10px] bg-[#ffffff]">
                                     <div className="grid grid-cols-7 gap-x-0 gap-y-2">
                                         {calendarDays.map((day, index) => {
                                             const dayNumber = day.getDate()
@@ -437,7 +467,7 @@ export default function AddGigPage() {
                                                     disabled={!isCurrentMonthDay}
                                                     onClick={() => toggleDate(day)}
                                                     className={cn(
-                                                        "flex h-12 w-full items-center justify-center text-[26px] font-[400] transition",
+                                                        "flex h-[54px] w-full items-center justify-center text-[26px] font-[400] transition",
                                                         shapeClass,
                                                         !isCurrentMonthDay && "text-[#D7E3E5]",
                                                         isCurrentMonthDay && !isSelected && "text-[#199490]",
@@ -470,7 +500,7 @@ export default function AddGigPage() {
                                     placeholder="Enter URL"
                                     value={formValues.referenceUrl}
                                     onChange={(event) => handleFieldChange("referenceUrl", event.target.value)}
-                                    className="h-12 rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
+                                    className="h-[54px] rounded-2xl border-[#646464] bg-[#ffffff] text-[#515151]"
                                 />
                                 <div className="space-y-3">
                                     <input
@@ -482,7 +512,7 @@ export default function AddGigPage() {
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border-[#E4E7EC] text-[#1D1D1F]"
+                                        className="flex h-[54px] w-full items-center justify-center gap-2 rounded-2xl border-[#E4E7EC] text-[#1D1D1F]"
                                         onClick={() => fileInputRef.current?.click()}
                                     >
                                         <UploadCloud className="h-4 w-4" />
@@ -535,7 +565,7 @@ export default function AddGigPage() {
                                         value={formValues.gigRate}
                                         onChange={(event) => handleFieldChange("gigRate", event.target.value)}
                                         disabled={requestQuote}
-                                        className="h-12 border-0 bg-transparent focus-visible:ring-0"
+                                        className="h-[54px] border-0 bg-transparent focus-visible:ring-0"
                                     />
                                 </div>
                                 <div className="flex items-center gap-2 ml-0 sm:ml-[18px]">
@@ -720,6 +750,7 @@ export default function AddGigPage() {
                     </div>
                 </aside>
             </div>
+            {/** create gig form with ai */}
             <div className={`grid w-full  max-w-[1200px] gap-8 lg:grid-cols-[1.2fr_0.8fr] ${oscarAiSuggestion ? 'hidden' : 'grid'}  `}>
                 <form
                     onSubmit={handleSubmit}
@@ -780,7 +811,7 @@ export default function AddGigPage() {
                                         <span key={day}>{day}</span>
                                     ))}
                                 </div>
-                                <ScrollArea className="mx-auto sm:mx-0 max-h-[260px] w-full max-w-[425px] rounded-b-[10px] bg-[#ffffff]">
+                                <ScrollArea className="mx-auto sm:mx-0 max-h-[333px] w-full max-w-[425px] rounded-b-[10px] bg-[#ffffff]">
                                     <div className="grid grid-cols-7 gap-x-0 gap-y-2">
                                         {calendarDays.map((day, index) => {
                                             const dayNumber = day.getDate()
@@ -822,7 +853,7 @@ export default function AddGigPage() {
                                                     disabled={!isCurrentMonthDay}
                                                     onClick={() => toggleDate(day)}
                                                     className={cn(
-                                                        "flex h-12 w-full items-center justify-center text-[26px] font-[400] transition",
+                                                        "flex h-[54px] w-full items-center justify-center text-[26px] font-[400] transition",
                                                         shapeClass,
                                                         !isCurrentMonthDay && "text-[#D7E3E5]",
                                                         isCurrentMonthDay && !isSelected && "text-[#199490]",
@@ -955,8 +986,11 @@ export default function AddGigPage() {
                             <Button
                                 type="button"
                                 variant="outline"
-                                className="flex h-12  items-center justify-center gap-2  border-[#FA596E] text-[14px] font-[600] text-[#FA596E] w-[158px] rounded-[10px] mt-4"
-                                onClick={() => setOscarAiSuggestion(true)}
+                                className="flex h-[54px]  items-center justify-center gap-2  border-[#FA596E] text-[14px] font-[600] text-[#FA596E] w-[158px] rounded-[10px] mt-4"
+                                onClick={() => {
+                                    setOscarAiSuggestion(true)
+                                    fillSampleGigData()
+                                }}
                             >
                                 <Image src="/assets/icons/ai-gig.png" alt="Sparkles Icon" width={31} height={31} />
                                 Try Oscar AI
