@@ -29,18 +29,24 @@ export default function MessageInbox({ params }: { params: paramsType }) {
     // Send message handler
     const handleSend = () => {
         if (message.trim().length === 0 || !chatUser) return;
-        setMessages([
-            ...messages,
-            {
-                id: `messageId-${messages.length + 1}`,
-                senderId: currentUser.messageId,
-                receiverId: chatUser.messageId,
-                timestamp: new Date().toISOString(),
-                content: message,
-                status: "sent",
-            },
-        ]);
+        const newMsg = {
+            id: `messageId-${messages.length + 1}`,
+            senderId: currentUser.messageId,
+            receiverId: chatUser.messageId,
+            timestamp: new Date().toISOString(),
+            content: message,
+            status: "sending",
+        };
+        setMessages([...messages, newMsg]);
         setMessage("");
+        // Simulate sending delay
+        setTimeout(() => {
+            setMessages((msgs) =>
+                msgs.map((msg) =>
+                    msg.id === newMsg.id ? { ...msg, status: "sent" } : msg
+                )
+            );
+        }, 800);
     };
 
     return (
@@ -113,6 +119,9 @@ export default function MessageInbox({ params }: { params: paramsType }) {
                                         className={`max-w-[50%] px-5 py-3 text-[14px] leading-relaxed ${borderRadiusClass} ${isSender ? 'bg-[#F2F2F2] text-[#181818] font-[500] text-[12px]' : 'bg-[#31A7AC] text-white font-[500] text-[12px]'}`}
                                     >
                                         {msg.content}
+                                        {isSender && msg.status === "sending" && (
+                                            <span className="ml-2 text-xs text-gray-400">Sending...</span>
+                                        )}
                                     </div>
                                     {showTime && (
                                         <span className={`text-xs text-gray-400 mt-1 ${isSender ? 'text-right' : 'text-left'}`}>{formattedTime}</span>
