@@ -50,8 +50,8 @@ export function SeeAllReferralsDialog() {
                         See referrals
                     </Button>
                 </DialogTrigger>
-                <DialogContent className=" rounded-[28px] px-10 ">
-                    <div className="space-y-6 p-2 mt-10">
+                <DialogContent className="p-0 px-1 ">
+                    <div className="space-y-6">
                         <DialogHeader className="space-y-1 text-left">
                             <DialogTitle className="text-2xl font-semibold text-[#1D1D1F]">
                                 Referred people for your Gig
@@ -80,13 +80,13 @@ export function SeeAllReferralsDialog() {
 
                         </div>
 
-                        <ScrollArea className="max-h-[460px]">
+                        <ScrollArea className="  sm:h-full h-[400px]  ">
                             {filteredUsers.length === 0 ? (
                                 <p className="rounded-2xl bg-white px-4 py-10 text-center text-sm text-muted-foreground">
                                     No users match your search.
                                 </p>
                             ) : (
-                                <div className="space-y-8 p-6">
+                                <div className="space-y-8 flex mx-auto w-full flex-col">
                                     {Object.entries(groupedUsers).map(([category, users]) => (
                                         <section key={category} className="space-y-3">
                                             <p className="text-sm font-semibold text-[#E05082]">
@@ -96,43 +96,46 @@ export function SeeAllReferralsDialog() {
                                                 {users.map((user) => (
                                                     <div
                                                         key={user.id}
-                                                        className="flex flex-wrap items-center gap-4 py-4"
+                                                        className="flex flex-row items-center gap-4 py-4 justify-between"
                                                     >
-                                                        <div className="flex flex-1 items-center gap-3 min-w-[220px]">
-                                                            <Image
-                                                                src={user.avatar}
-                                                                alt={user.name}
-                                                                width={48}
-                                                                height={48}
-                                                                className="h-12 w-12 rounded-full object-cover"
-                                                            />
-                                                            <div>
-                                                                <p className="text-base font-semibold text-[#1D1D1F]">
-                                                                    {user.name}
-                                                                </p>
-                                                                <div className="flex items-center gap-1 text-sm text-[#6F6F6F]">
-                                                                    <MapPin className="h-4 w-4 text-[#8F8F8F]" />
-                                                                    <span>{user.location}</span>
+                                                        <div className="flex flex-row  justify-between items-center">
+                                                            <div className="flex flex-1 items-center gap-3  ">
+                                                                <Image
+                                                                    src={user.avatar}
+                                                                    alt={user.name}
+                                                                    width={48}
+                                                                    height={48}
+                                                                    className="h-12 w-12 rounded-full object-cover "
+                                                                />
+                                                                <div>
+                                                                    <p className="text-base font-semibold text-[#1D1D1F]">
+                                                                        {user.name}
+                                                                    </p>
+                                                                    <div className="flex items-center gap-1 text-sm text-[#6F6F6F]">
+                                                                        <MapPin className="h-4 w-4 text-[#8F8F8F]" />
+                                                                        <span>{user.location}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center gap-2 ">
+                                                                <div className="flex items-center -space-x-4">
+                                                                    {user.mutualAvatars.map((avatar, index) => (
+                                                                        <Image
+                                                                            key={`${user.id}-mutual-${index}`}
+                                                                            src={avatar}
+                                                                            alt="mutual connection"
+                                                                            width={24}
+                                                                            height={24}
+                                                                            className="h-8 w-8 rounded-full border-2 border-white object-cover"
+                                                                        />
+                                                                    ))}
+                                                                    <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#15B5B0] text-xs font-bold text-white">
+                                                                        {user.mutualCount}
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="flex items-center -space-x-3">
-                                                                {user.mutualAvatars.map((avatar, index) => (
-                                                                    <Image
-                                                                        key={`${user.id}-mutual-${index}`}
-                                                                        src={avatar}
-                                                                        alt="mutual connection"
-                                                                        width={32}
-                                                                        height={32}
-                                                                        className="h-8 w-8 rounded-full border-2 border-white object-cover"
-                                                                    />
-                                                                ))}
-                                                                <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#15B5B0] text-xs font-bold text-white">
-                                                                    {user.mutualCount}
-                                                                </span>
-                                                            </div>
-                                                        </div>
+
                                                         <Button
                                                             type="button"
                                                             className="h-[44px] rounded-2xl bg-[#2AA9A7] px-5 text-sm font-semibold capitalize text-white shadow-md hover:bg-[#249694]"
