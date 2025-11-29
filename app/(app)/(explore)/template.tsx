@@ -355,8 +355,8 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                                 <summary className="cursor-pointer select-none flex items-center justify-between px-3 py-2 text-sm font-[400px]">
                                     <span>{opt.label}</span>
                                     <span>
-                                        <span className="group-open:hidden"><ChevronUp className="h-4 w-4 text-[#FA6E80]" /></span>
-                                        <span className="hidden group-open:inline"><ChevronDown className="h-4 w-4 text-[#FA6E80]" /></span>
+                                        <span className="group-open:hidden"><ChevronDown className="h-4 w-4 text-[#FA6E80]" /></span>
+                                        <span className="hidden group-open:inline"><ChevronUp className="h-4 w-4 text-[#FA6E80]" /></span>
                                     </span>
                                 </summary>
                                 <ul className="px-3 pb-2 space-y-1 bg-[#FAFAFA]">
