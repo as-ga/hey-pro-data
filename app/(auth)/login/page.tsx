@@ -232,7 +232,7 @@ const Login: React.FC = () => {
               type="button"
               onClick={handleGoogleAuth}
               disabled={isLoading}
-              className="w-1/2 h-[45px] md:h-[40px] bg-white border border-gray-300 rounded-[12px] md:rounded-[15px] hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center p-3 md:p-6"
+              className="w-full h-[45px] md:h-[40px] bg-white border border-gray-300 rounded-[12px] md:rounded-[15px] hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center p-3 md:p-6"
             >
               <Image
                 src="/assets/icons/google.svg"
@@ -243,20 +243,7 @@ const Login: React.FC = () => {
               />
             </Button>
 
-            <Button
-              type="button"
-              onClick={handleAppleAuth}
-              disabled={isLoading}
-              className="w-1/2 h-[45px] md:h-[40px] bg-white border border-gray-300 rounded-[12px] md:rounded-[15px] hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center p-3 md:p-6"
-            >
-              <Image
-                src="/assets/icons/apple.svg"
-                alt="Apple Logo"
-                width={24}
-                height={24}
-                className="h-6 w-6"
-              />
-            </Button>
+
           </div>
 
           {/* Sign in Link */}
