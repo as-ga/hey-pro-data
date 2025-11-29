@@ -67,24 +67,24 @@ const notifications = [
 ]
 const components: { title: string; href: string; category: string }[] = [
   // Pre Production
-  { title: "screenwriter", href: "/explore/screenwriter", category: "Pre Production" },
-  { title: "casting", href: "/explore/casting", category: "Pre Production" },
-  { title: "location manager", href: "/explore/location manager", category: "Pre Production" },
-  { title: "director", href: "/explore/director", category: "Pre Production" },
-  { title: "camera operator", href: "/explore/camera-operator", category: "Pre Production" },
-  { title: "cinematographer", href: "/explore/cinematographer", category: "Pre Production" },
+  { title: "Casting", href: "/explore/casting", category: "Pre Production" },
+  { title: "Camera Operator", href: "/explore/camera-operator", category: "Pre Production" },
+  { title: "Cinematographer", href: "/explore/cinematographer", category: "Pre Production" },
+  { title: "Director", href: "/explore/director", category: "Pre Production" },
+  { title: "Location Manager", href: "/explore/location manager", category: "Pre Production" },
+  { title: "Screenwriter", href: "/explore/screenwriter", category: "Pre Production" },
 
   // Post Production
-  { title: "editor", href: "/explore/editor", category: "Post Production" },
-  { title: "sound technician", href: "/explore/sound-technician", category: "Post Production" },
-  { title: "animator", href: "/explore/animator", category: "Post Production" },
+  { title: "Animator", href: "/explore/animator", category: "Post Production" },
+  { title: "Editor", href: "/explore/editor", category: "Post Production" },
+  { title: "Sound Technician", href: "/explore/sound-technician", category: "Post Production" },
   { title: "VFX / SFX", href: "/explore/vfx-sfx", category: "Post Production" },
 
 
   // Craft Services
-  { title: "makeup artist", href: "/explore/makeup-artist", category: "Craft Services" },
-  { title: "hairstylist", href: "/explore/hairstylist", category: "Craft Services" },
-  { title: "set designer", href: "/explore/set-designer", category: "Craft Services" },
+  { title: "Hairstylist", href: "/explore/hairstylist", category: "Craft Services" },
+  { title: "Makeup Artist", href: "/explore/makeup-artist", category: "Craft Services" },
+  { title: "Set Designer", href: "/explore/set-designer", category: "Craft Services" },
 
 ]
 
@@ -170,7 +170,7 @@ export default function Header() {
                         )}
                       </ul>
                       <div className=" text-sm flex flex-row justify-center items-center mx-auto gap-3.5">
-                        <p>Discover on more field, jobs, events, etc,. </p> <Link href={"#"} className="text-[#31A7AC] font-semibold"> Discover</Link>
+                        <p>Discover on more field, jobs, events, etc,. </p> <Link href={"#"} className="text-[#31A7AC] font-[400]"> See More</Link>
                       </div>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
