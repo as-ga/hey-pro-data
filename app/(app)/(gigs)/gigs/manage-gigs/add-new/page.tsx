@@ -19,9 +19,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Calendar as CalendarPicker } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { ArrowLeft, ArrowRight, Calendar, Calendar as CalendarIcon, FileText, MapPin, Minus, Plus, UploadCloud, X, Zap } from "lucide-react"
+import { ArrowLeft, ArrowRight, Calendar, Calendar as CalendarIcon, FileText, LeafIcon, MapPin, Minus, Plus, UploadCloud, X, Zap } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { Arrow } from "@radix-ui/react-popover"
 
 type GigFormValues = {
     role: string
@@ -323,7 +324,7 @@ export default function AddGigPage() {
                         </div>
                         <button
                             type="button"
-                            onClick={resetForm}
+                            onClick={redirectToManageGigs}
                             className="text-2xl leading-none text-[#CECFD2] transition hover:text-[#7B7B7B]"
                             aria-label="Close"
                         >
@@ -414,16 +415,15 @@ export default function AddGigPage() {
                             <div className="rounded-[24px] p-4">
 
                                 <div className="mx-auto sm:mx-0 mb-5 flex w-full max-w-[425px] flex-row items-center justify-between gap-2 rounded-[10px] p-[10px] text-[#1D1D1F] bg-[#ffffff] min-h-[56px]">
+
+
+                                    <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, -1))}>
+                                        <ArrowLeft className="h-5 w-5 text-[#FF5470]" />
+                                    </Button>
                                     <span className="text-[24px] font-[400] text-[#FA596E]">{format(currentMonth, "MMM, yyyy")}</span>
-                                    <div className="flex gap-2">
-                                        <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, -1))}>
-                                            -
-                                        </Button>
-                                        <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, 1))}>
-                                            +
-                                        </Button>
-                                    </div>
-                                    <CalendarIcon className="h-5 w-5 text-[#FF5470]" />
+                                    <Button type="button" variant="ghost" size="icon" className="h-10 rounded-full" onClick={() => setCurrentMonth((prev) => addMonths(prev, 1))}>
+                                        <ArrowRight className="h-5 w-5 text-[#FF5470]" />
+                                    </Button>
                                 </div>
 
 
