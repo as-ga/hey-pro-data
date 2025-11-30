@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
+
 import {
     Select,
     SelectContent,
@@ -20,6 +21,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { Calendar, Calendar as CalendarIcon, FileText, MapPin, Minus, Plus, UploadCloud, X, Zap } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 type GigFormValues = {
     role: string
@@ -123,6 +125,7 @@ const buildMonthSummaries = (dateKeys: number[]) => {
 }
 
 export default function AddGigPage() {
+    const router = useRouter()
     const [crewCount, setCrewCount] = useState(1)
     const [formValues, setFormValues] = useState<GigFormValues>(initialFormValues)
     const [currentMonth, setCurrentMonth] = useState(new Date(2025, 8, 1))
@@ -302,6 +305,10 @@ export default function AddGigPage() {
             }
         }
     }, [])
+    const redirectToManageGigs = () => {
+        router.push("/gigs/manage-gigs")
+    }
+
     return (
         <div className="flex justify-center  px-4 py-8 bg-[#F8F8F8]">
             <div className={`grid w-full  max-w-[1100px] gap-8 lg:grid-cols-[1.2fr_0.8fr] ${oscarAiSuggestion ? 'grid' : 'hidden'}  `}>
@@ -762,7 +769,7 @@ export default function AddGigPage() {
                         </div>
                         <button
                             type="button"
-                            onClick={resetForm}
+                            onClick={redirectToManageGigs}
                             className="text-2xl leading-none text-[#CECFD2] transition hover:text-[#7B7B7B]"
                             aria-label="Close"
                         >
@@ -875,7 +882,8 @@ export default function AddGigPage() {
                     <div className="mt-8 flex flex-col gap-3 border-t-[2px] border-[#F0F0F0] pt-6 md:flex-row md:items-center md:justify-between">
                         <button
                             type="button"
-                            className="flex items-center gap-2 text-sm font-[400] "
+                            onClick={resetForm}
+                            className="flex items-center gap-2 text-center text-sm font-[400] "
                         >
                             Discard
                         </button>
