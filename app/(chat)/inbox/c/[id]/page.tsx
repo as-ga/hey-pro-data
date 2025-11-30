@@ -37,7 +37,10 @@ export default function MessageInbox({ params }: { params: paramsType }) {
     // Auto-scroll to bottom when messages change
     useEffect(() => {
         if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+            scrollRef.current.scrollTo({
+                top: scrollRef.current.scrollHeight,
+                behavior: "smooth",
+            });
         }
     }, [messages]);
 
@@ -64,10 +67,10 @@ export default function MessageInbox({ params }: { params: paramsType }) {
     };
 
     return (
-        <div className="w-full overflow-y-auto mb-20 flex flex-col bg-white">
+        <div className="w-full h-full flex flex-col bg-white overflow-hidden relative">
 
             {/* Header - Fixed Height */}
-            <div className="shrink-0 w-full flex flex-row justify-between items-center px-4 sm:px-6 bg-[#F8F8F8] border-b border-gray-100 h-[80px]">
+            <div className="shrink-0 w-full flex flex-row justify-between items-center px-4 sm:px-6 bg-[#F8F8F8] border-b border-gray-100 h-[80px] z-10 relative">
                 <div className="flex items-center gap-3 relative">
                     {/* Back Button only visible on Mobile */}
                     <Link href={"/inbox"} className="md:hidden flex p-2 -ml-2 rounded-full hover:bg-gray-200">
@@ -102,11 +105,12 @@ export default function MessageInbox({ params }: { params: paramsType }) {
             </div>
 
             {/* Messages Area - Grow to fill space */}
+            {/* Added min-h-0 to allow flex child to scroll properly */}
             <div
                 ref={scrollRef}
-                className="flex-1 w-full overflow-y-auto px-4 py-6 bg-white no-scrollbar"
+                className="flex-1 min-h-0 w-full overflow-y-auto px-2 sm:px-4 py-6 bg-white no-scrollbar"
             >
-                <div className="mx-auto h-[calc(100vh-80px] w-full flex flex-col">
+                <div className="mx-auto w-full max-w-3xl flex flex-col">
                     {messages.map((msg, index) => {
                         const isSender = msg.senderId === currentUser.messageId;
                         const prevMsg = messages[index - 1];
@@ -159,17 +163,17 @@ export default function MessageInbox({ params }: { params: paramsType }) {
                 </div>
             </div>
 
-            {/* Input Bar - Pinned Bottom */}
-            <div className="shrink-0  w-full fixed bottom-0  sm:left-60 flex mx-auto px-4 pb-1 pt-2">
-                <div className="mx-auto w-full max-w-5xl bg-[#F0F0F0]  border border-[#FA596E] rounded-full flex items-center gap-2 p-1 pl-4 h-[56px] shadow-sm">
+            {/* Input Bar - Fixed at Bottom */}
+            <div className="shrink-0 w-full bg-white px-4 pb-4 pt-2 z-10 relative">
+                <div className="mx-auto w-full max-w-3xl bg-[#F0F0F0] border border-[#FA596E] rounded-full flex items-center gap-2 p-1 pl-4 h-[56px] shadow-sm">
                     <Input
                         placeholder="Message ..."
-                        className="border-none shadow-none text-[15px] font-normal flex-1 focus-visible:ring-0 px-0 bg-transparent"
+                        className="border-none shadow-none text-[15px] font-normal flex-1 focus-visible:ring-0 px-0 bg-transparent placeholder:text-gray-500"
                         value={message}
                         onChange={e => setMessage(e.target.value)}
                         onKeyDown={e => { if (e.key === "Enter") handleSend(); }}
                     />
-                    <div className="flex items-center gap-1 pr-1">
+                    <div className="flex items-center gap-1 pr-1 shrink-0">
                         <Button
                             className="h-10 w-10 rounded-full flex items-center justify-center bg-[#FA596E] hover:bg-[#fa4059] transition-colors p-0"
                             type="button"
@@ -186,6 +190,7 @@ export default function MessageInbox({ params }: { params: paramsType }) {
                     </div>
                 </div>
             </div>
+
         </div>
     );
 }
