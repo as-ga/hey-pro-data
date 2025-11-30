@@ -104,43 +104,85 @@ export default function WhatsOnHeader() {
     return (
         <>
             <div className=" w-full overflow-x-hidden overflow-hidden">
-                <div className="flex flex-row mx-auto px-1 gap-2 sm:gap-0 sm:items-center sm:justify-between justify-center">
+                <div className="flex flex-row mx-auto px-1 gap-2 sm:gap-0 sm:items-center sm:justify-between justify-between">
                     <span className="bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent text-[26px] font-semibold">{"What's On"}</span>
                     <Link href="/whats-on/manage-whats-on" className="ml-2 text-white bg-[#31A7AC] border rounded-[10px] sm:w-auto w-[192px] px-4 py-2 "> <span className="text-[16px] font-[400]">Manage What’s On</span></Link>
                 </div>
 
-                <div className="flex flex-row mx-auto  justify-center w-full items-center gap-0.5 space-x-4 mt-4 sm:w-full">
+                <div className="w-full flex flex-row items-center justify-between gap-3 mt-4">
                     <div
-                        className={`sm:flex items-center hidden justify-center space-x-2 h-[48px] w-[111px] border rounded-full px-4 py-2 cursor-pointer transition-all ${isFilterOpen ? 'w-[300px] bg-[#FA6E80]' : 'w-[150px] bg-[#f7f7f700] border-[#FA6E80] '}`}
+                        className={`
+            hidden sm:flex items-center justify-center space-x-2 
+            h-[48px] rounded-full border px-4 py-2 cursor-pointer 
+            transition-all duration-300 ease-in-out shrink-0
+            ${isFilterOpen
+                                ? 'w-[140px] bg-[#FA6E80] border-[#FA6E80]'
+                                : 'w-[111px] bg-transparent border-[#FA6E80]'
+                            }
+        `}
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
                     >
-                        <button className={`text-sm font-medium ${isFilterOpen ? 'text-white' : 'text-[#FA6E80]'}`}>Filter (<span>{"3"}</span>)</button>
+                        <button className={`text-sm font-medium whitespace-nowrap ${isFilterOpen ? 'text-white' : 'text-[#FA6E80]'}`}>
+                            Filter (<span>3</span>)
+                        </button>
                         <Filter className={`h-5 w-5 ${isFilterOpen ? 'text-white' : 'text-[#FA6E80]'}`} />
                     </div>
-                    <div className="flex flex-row border rounded-full px-1 py-2 justify-between items-center h-[48px] w-[240px] sm:w-[960px]">
-                        <input
-                            placeholder="Search by name, role, or department..."
-                            className=" px-2 border-none outline-none focus:ring-0 text-sm bg-transparent"
-                            onChange={(e) => console.log(e.target.value)}
-                        />
-                        <span className="relative flex items-center justify-center border rounded-full h-[34px] w-[34px] bg-[#FA6E80]">
-                            <Search className="h-5 w-5 text-white" />
-                        </span>
-                    </div>
-                    <MobileFilter
-                        filterForm={filterForm}
-                        calendarCells={calendarCells}
-                        monthLabel={monthLabel}
-                        goToMonth={goToMonth}
-                        gradientDivider={gradientDivider}
-                        getHighlightClasses={getHighlightClasses}
-                        toggleSingleDay={toggleSingleDay}
-                        isFilterOpen={isFilterOpen}
-                        handleFilterChange={handleFilterChange}
-                        handleFilterSubmit={handleFilterSubmit}
-                        resetForm={resetForm}
-                    />
 
+                    {/* 2. Search Bar (Flexible Width) */}
+                    <div className="flex-1 flex justify-center w-full min-w-0">
+                        <div className="
+            flex flex-row items-center justify-between 
+            w-full max-w-[600px]
+            h-[48px] px-1.5 rounded-full 
+            border border-gray-300 bg-white 
+            shadow-sm transition-all 
+            focus-within:border-[#FA6E80] focus-within:ring-1 focus-within:ring-[#FA6E80]
+        ">
+                            <input
+                                type="text"
+                                placeholder="Search by name, role..."
+                                className="
+                    flex-1 bg-transparent 
+                    px-4 py-2 
+                    text-sm text-gray-700 placeholder:text-gray-400 
+                    border-none outline-none focus:ring-0
+                    min-w-0
+                "
+                                onChange={(e) => console.log(e.target.value)}
+                            />
+
+                            <button
+                                className="
+                    flex items-center justify-center 
+                    h-[36px] w-[36px] shrink-0 
+                    bg-[#FA6E80] rounded-full 
+                    hover:bg-[#f85d72] active:scale-95 transition-all
+                    cursor-pointer
+                "
+                                aria-label="Search"
+                            >
+                                <Search className="h-4 w-4 text-white" strokeWidth={2.5} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 3. Mobile Filter Trigger (Visible on Mobile) */}
+                    {/* Assuming MobileFilter renders a trigger button on mobile */}
+                    <div className="sm:hidden shrink-0">
+                        <MobileFilter
+                            filterForm={filterForm}
+                            calendarCells={calendarCells}
+                            monthLabel={monthLabel}
+                            goToMonth={goToMonth}
+                            gradientDivider={gradientDivider}
+                            getHighlightClasses={getHighlightClasses}
+                            toggleSingleDay={toggleSingleDay}
+                            isFilterOpen={isFilterOpen}
+                            handleFilterChange={handleFilterChange}
+                            handleFilterSubmit={handleFilterSubmit}
+                            resetForm={resetForm}
+                        />
+                    </div>
 
                 </div>
                 <div className=" flex flex-row mx-auto justify-center ">

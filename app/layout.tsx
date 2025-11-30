@@ -75,7 +75,7 @@ function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
         </Script>
       </head>
 
-      <body className={`${poppins.variable} overflow-y-hidden font-poppins bg-white text-black`}>
+      <body className={`${poppins.variable} font-poppins bg-white text-black`}>
         <Providers>
 
           <div className="sm:mb-0 mb-15">
