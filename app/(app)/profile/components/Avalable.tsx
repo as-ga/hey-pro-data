@@ -31,10 +31,10 @@ export default function AvalableDilog({ initialProfile, triggerClassName }: Edit
         }
     }
 
-    const handleCancel = () => {
-        setDraftAvailability(availability)
-        setOpen(false)
-    }
+    // const handleCancel = () => {
+    //     setDraftAvailability(availability)
+    //     setOpen(false)
+    // }
 
     const handleSave = () => {
         setAvailability(draftAvailability)
