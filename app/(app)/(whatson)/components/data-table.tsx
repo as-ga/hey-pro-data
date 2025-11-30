@@ -1,7 +1,6 @@
 "use client"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { set } from "date-fns";
-import { DollarSign, Download, MessageCircle, MessageCircleMore } from "lucide-react";
+import { DollarSign, Download, MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 export default function DataTable({ rsvpEntries }: {
