@@ -6,7 +6,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import Image from "next/image"
-import { MessageCircle, X } from "lucide-react"
+import { MessageCircle } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 
 type CommentThread = {
