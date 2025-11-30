@@ -64,7 +64,7 @@ export default function MessageInbox({ params }: { params: paramsType }) {
     };
 
     return (
-        <div className="w-full h-[calc(100vh-100px)] sm:h-full flex flex-col bg-white">
+        <div className="w-full overflow-y-auto mb-20 flex flex-col bg-white">
 
             {/* Header - Fixed Height */}
             <div className="shrink-0 w-full flex flex-row justify-between items-center px-4 sm:px-6 bg-[#F8F8F8] border-b border-gray-100 h-[80px]">
@@ -106,7 +106,7 @@ export default function MessageInbox({ params }: { params: paramsType }) {
                 ref={scrollRef}
                 className="flex-1 w-full overflow-y-auto px-4 py-6 bg-white no-scrollbar"
             >
-                <div className="mx-auto w-full flex flex-col">
+                <div className="mx-auto h-[calc(100vh-80px] w-full flex flex-col">
                     {messages.map((msg, index) => {
                         const isSender = msg.senderId === currentUser.messageId;
                         const prevMsg = messages[index - 1];
@@ -160,8 +160,8 @@ export default function MessageInbox({ params }: { params: paramsType }) {
             </div>
 
             {/* Input Bar - Pinned Bottom */}
-            <div className="shrink-0 w-full bg-white px-4 pb-4 pt-2">
-                <div className="mx-auto w-full max-w-3xl border border-[#FA596E] rounded-full flex items-center gap-2 p-1 pl-4 h-[56px] shadow-sm">
+            <div className="shrink-0  w-full fixed bottom-0  sm:left-60 flex mx-auto px-4 pb-1 pt-2">
+                <div className="mx-auto w-full max-w-5xl bg-[#F0F0F0]  border border-[#FA596E] rounded-full flex items-center gap-2 p-1 pl-4 h-[56px] shadow-sm">
                     <Input
                         placeholder="Message ..."
                         className="border-none shadow-none text-[15px] font-normal flex-1 focus-visible:ring-0 px-0 bg-transparent"

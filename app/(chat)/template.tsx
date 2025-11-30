@@ -14,6 +14,8 @@ import { usePathname } from "next/navigation";
 
 export default function AppLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     const pathname = usePathname();
+
+    // Logic to determine if a specific chat is open
     const isChatOpen = pathname?.includes('/inbox/c/') || pathname?.includes('/inbox/g/');
 
     return (
@@ -24,7 +26,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
               - Always Block/Flex on Desktop (md:flex)
             */}
             <div
-                className={`${isChatOpen ? 'hidden' : 'flex'} md:flex flex-col w-full md:w-[400px] lg:w-[450px] shrink-0 h-full`}
+                className={`${isChatOpen ? 'hidden' : 'flex'} md:flex flex-col w-full md:w-[400px] lg:w-[450px] shrink-0 h-full sm:h-[calc(100vh-100px)]`}
             >
                 <div
                     className="flex flex-col gap-6 border w-full h-full bg-white/70 md:bg-white/40 md:backdrop-blur-[10px] rounded-none md:rounded-[25px] p-[1px] shadow-lg"
@@ -35,11 +37,11 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                     }}
                 >
                     <div className="flex flex-col h-full w-full bg-white rounded-none md:rounded-[24px] shadow-md overflow-hidden">
-                        <Tabs defaultValue="chat" className="w-full h-full flex flex-col">
+                        <Tabs defaultValue="chat" className="w-full h-full sm:w-[] flex flex-col">
 
                             {/* Tabs Header */}
                             <div className="p-4 shrink-0">
-                                <TabsList className="flex flex-row sm:w-96 gap-2 mx-auto">
+                                <TabsList className="flex flex-row w-full gap-2 mx-auto sm:w-96">
                                     <TabsTrigger
                                         value="chat"
                                         className="flex-1 flex justify-center items-center px-[25px] py-[10px] h-[47px] rounded-[20px] cursor-pointer border-none relative bg-white data-[state=active]:bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC]"
@@ -81,7 +83,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                             </div>
 
                             {/* Chat List Scrollable Area */}
-                            <div className="flex-1 overflow-y-auto no-scrollbar px-2 pb-4">
+                            <div className="flex-1 overflow-y-auto no-scrollbar px-2 pb-4 sm:mb-0 mb-30">
                                 <TabsContent value="chat" className="mt-0">
                                     <div className="flex flex-col items-start gap-[5px] w-full">
                                         {chatData.map((chat, index) => (
@@ -176,18 +178,23 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                     </div>
                 </div>
             </div>
+
+            {/* MAIN CONTENT SECTION 
+              - Hidden on Mobile if NO chat is open (root /inbox)
+              - Always Flex on Desktop
+            */}
             <div
-                className={`${!isChatOpen ? 'hidden' : 'flex'} md:flex flex-1 w-full h-full`}
+                className={`${!isChatOpen ? 'hidden' : 'flex'} md:flex flex-1 w-full sm:h-[calc(100vh-100px)] h-full`}
             >
                 <div
-                    className="w-full h-full p-[1px] overflow-y-hidden rounded-none md:rounded-[25px] shadow-xl flex flex-col"
+                    className="w-full h-full p-[1px] overflow-hidden rounded-none md:rounded-[25px] shadow-xl flex flex-col"
                     style={{
                         background: "linear-gradient(90deg, #FA6E80 0%, #6A89BE 41.52%, #85AAB7 62.27%, #31A7AC 103.79%)",
                         WebkitMaskComposite: "xor",
                         maskComposite: "exclude",
                     }}
                 >
-                    <div className="flex-1 w-full h-full bg-[#F8F8F8] rounded-none md:rounded-[24px] overflow-y-hidden flex flex-col relative">
+                    <div className="flex-1 w-full h-full bg-[#F8F8F8] rounded-none md:rounded-[24px] overflow-hidden flex flex-col relative">
                         {children}
                     </div>
                 </div>

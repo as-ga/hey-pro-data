@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, EllipsisVertical, Paperclip, Send } from "lucide-react";
-import { getChatUser, Groups, getGroupChatMessages, chatData, getGroupChat } from "@/data/chatMessage";
+import { Groups, getGroupChatMessages, chatData, getGroupChat } from "@/data/chatMessage";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -122,7 +122,7 @@ export default function GroupMessageInbox({ params }: { params: paramsType }) {
                 ref={scrollRef}
                 className="flex-1 w-full overflow-y-auto px-2 sm:px-4 py-6 bg-white no-scrollbar"
             >
-                <div className="mx-auto w-full  flex flex-col">
+                <div className="mx-auto h-[calc(100vh-80px] flex flex-col">
                     {messages.map((msg, index) => {
                         const isSender = msg.senderId === currentUser.messageId;
                         const prevMsg = messages[index - 1];
@@ -209,8 +209,8 @@ export default function GroupMessageInbox({ params }: { params: paramsType }) {
             </div>
 
             {/* Input Bar */}
-            <div className="shrink-0 w-full bg-white px-2 sm:px-4 pb-4 pt-2">
-                <div className="mx-auto w-full max-w-3xl border border-[#FA596E] rounded-full flex items-center gap-2 p-1 pl-4 h-[56px] shadow-sm">
+            <div className="shrink-0 w-full fixed bottom-0  sm:left-60 flex mx-auto px-4 pb-1 pt-2">
+                <div className="mx-auto w-full max-w-5xl bg-[#F0F0F0] border border-[#FA596E] rounded-full flex items-center gap-2 p-1 pl-4 h-[56px] shadow-sm">
                     <Input
                         placeholder="Message ..."
                         className="border-none shadow-none text-[15px] font-normal flex-1 focus-visible:ring-0 px-0 bg-transparent"
@@ -218,7 +218,7 @@ export default function GroupMessageInbox({ params }: { params: paramsType }) {
                         onChange={e => setMessage(e.target.value)}
                         onKeyDown={e => { if (e.key === "Enter") handleSend(); }}
                     />
-                    <div className="flex items-center gap-1 pr-1 shrink-0">
+                    <div className="flex items-center gap-1 pr-1">
                         <Button
                             className="h-10 w-10 rounded-full flex items-center justify-center bg-[#FA596E] hover:bg-[#fa4059] transition-colors p-0"
                             type="button"

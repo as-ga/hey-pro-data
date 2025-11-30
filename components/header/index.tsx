@@ -28,6 +28,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import Logo from "../logo"
+import { usePathname } from "next/navigation"
 const notifications = [
   {
     id: 1,
@@ -103,7 +104,8 @@ export default function Header() {
   const [chatOpen, setChatOpen] = useState(false)
 
   const unreadCount = notifications.filter((n) => !n.read).length
-
+  const pathname = usePathname();
+  const isChatOpen = pathname?.includes('/inbox/c/') || pathname?.includes('/inbox/g/');
   return (
     <>
       <nav className="fixed top-0  h-[80px] z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -388,7 +390,7 @@ export default function Header() {
         </div>
       </nav>
 
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className={isChatOpen ? "hidden" : "md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"}>
         <div className="flex items-center justify-around px-6 py-3">
           <Link
             href="/explore"
