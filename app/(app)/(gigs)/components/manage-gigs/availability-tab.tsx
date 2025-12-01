@@ -124,7 +124,7 @@ export function AvailabilityTab({ selectedGigIds }: AvailabilityTabProps) {
                                 <tbody className="divide-y divide-gray-100 bg-white">
                                     {sampleApplicants.map((person) => (
                                         <tr key={`${gig.id}-availability-${person.id}`}>
-                                            <td className="sticky left-0 flex w-[160px] items-center justify-center gap-2 bg-white px-4 py-2">
+                                            <td className="sticky left-0 flex w-[165px] items-center justify-center gap-2 bg-white px-4 py-2">
                                                 <Image
                                                     src={person.avatar}
                                                     alt={person.name}
