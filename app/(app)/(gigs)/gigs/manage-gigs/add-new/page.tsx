@@ -19,10 +19,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Calendar as CalendarPicker } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { ArrowLeft, ArrowRight, Calendar, Calendar as CalendarIcon, FileText, LeafIcon, MapPin, Minus, Plus, UploadCloud, X, Zap } from "lucide-react"
+import { ArrowLeft, ArrowRight, Calendar, Calendar as CalendarIcon, FileText, MapPin, Minus, Plus, UploadCloud, X, Zap } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { Arrow } from "@radix-ui/react-popover"
 
 type GigFormValues = {
     role: string
