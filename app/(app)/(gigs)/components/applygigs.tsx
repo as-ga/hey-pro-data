@@ -32,11 +32,11 @@ type ApplicantFormState = {
 const WEEKDAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"]
 const WEEK_START_OPTIONS = { weekStartsOn: 1 as const }
 
-const STATUS_OPTIONS: { label: DayStatus; color: string }[] = [
-    { label: "N/A", color: "bg-[#6B7280]" },
-    { label: "P1", color: "bg-[#FFB347]" },
-    { label: "P2", color: "bg-[#8BCBFF]" },
-    { label: "A", color: "bg-[#31A7AC]" },
+const STATUS_OPTIONS: { label: DayStatus; color: string, radius?: string }[] = [
+    { label: "N/A", color: "bg-[#6B7280]", radius: "rounded-t-[5px]" },
+    { label: "P1", color: "bg-[#FFB347]", radius: "rounded-none" },
+    { label: "P2", color: "bg-[#8BCBFF]", radius: "rounded-none" },
+    { label: "A", color: "bg-[#31A7AC]", radius: "rounded-b-[5px]" },
 ]
 
 const STATUS_COLOR_MAP: Record<DayStatus, string> = {
@@ -270,7 +270,7 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                                     <p className="text-[14px] font-[400] text-[#444444]">Click on date to select</p>
                                     {STATUS_OPTIONS.map((status) => (
                                         <div key={status.label} className="flex items-center gap-1">
-                                            <span className={`flex h-[24px] w-[35px]  ${status.color} px-[7px] py-[3px] items-center justify-center  gap-[10px]`} ><span className="font-[600] text-[12px] text-white">{status.label}</span></span>
+                                            <span className={`flex h-[24px] min-w-[35px] w-full  ${status.color} px-[7px] py-[3px] items-center justify-center  gap-[10px]`} ><span className="font-[600] text-[12px] text-white">{status.label}</span></span>
 
                                         </div>
                                     ))}
@@ -343,12 +343,12 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                                                                                     {dayNumber}
                                                                                 </button>
                                                                             </DropdownMenuTrigger>
-                                                                            <DropdownMenuContent className="w-2" align="start">
+                                                                            <DropdownMenuContent className="w-2 border-none" align="center">
                                                                                 <DropdownMenuGroup>
                                                                                     {STATUS_OPTIONS.map((option, index) => (
                                                                                         <div key={option.label}>
                                                                                             <DropdownMenuItem
-                                                                                                className={`${STATUS_COLOR_MAP[option.label]} text-white text-center`}
+                                                                                                className={`${STATUS_COLOR_MAP[option.label]} rounded-none justify-center flex text-white text-center ${option.radius}`}
                                                                                                 onSelect={() => handleStatusChange(dateKey, option.label)}
                                                                                             >
                                                                                                 {option.label}
