@@ -370,7 +370,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                         ))
                         }
                     </div>
-                    <div className="w-full flex-1 overflow-x-hidden  p-2 sm:p-4 mx-auto">{children}</div>
+                    <div className="w-full flex-1 overflow-x-hidden  overflow-y-auto no-scrollbar p-2 sm:p-4 mx-auto">{children}</div>
                 </div>
 
             </div>

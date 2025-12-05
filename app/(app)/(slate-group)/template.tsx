@@ -115,14 +115,14 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
     };
 
     return (
-        <div className="mt-22 px-2 sm:px-4">
-            <div className="max-w-[962px] mx-auto flex flex-row justify-between items-center mt-[50px] gap-2 w-full">
+        <div className=" px-2 sm:px-4">
+            <div className="max-w-[962px] mx-auto flex flex-row justify-between items-center gap-2 w-full">
                 <span className="font-bold bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent">SLATE</span>
                 <span className="h-[1px] w-full bg-gradient-to-r from-[#31A7AC] via-[#6A89BE] to-[#FA6E80]" />
             </div>
             <div className="flex flex-col md:flex-row justify-center mx-auto max-w-7xl w-full gap-3.5">
                 {/* Sidebar Profile */}
-                <div className="w-full md:w-80 md:h-screen mt-3 md:block flex-shrink-0 order-2 md:order-1 mb-4 md:mb-0 hidden ">
+                <div className="w-full md:w-80  mt-3 md:block flex-shrink-0 order-2 md:order-1 mb-4 md:mb-0 hidden ">
                     <div>
                         <div>
                             <Image src={profile.backgroundImage} alt={profile.name} width={284} height={72} className="w-full h-[72px] object-cover rounded-t-[13px]" />

@@ -82,12 +82,12 @@ function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
         </Script>
       </head>
 
-      <body className={`${poppins.variable} font-poppins bg-white min-h-screen text-black`}>
+      <body className={`${poppins.variable} font-poppins bg-white min-h-screen text-black no-scrollbar overflow-y-auto`}>
         {/* This component handles the body class modification safely on the client */}
         <ScrollHandler />
 
         <Providers>
-          <div className=" overflow-y-auto">
+          <div className="">
             {children}
           </div>
         </Providers>
