@@ -49,6 +49,20 @@ const collabPosts: CollabPost[] = [
         avatar: "/image (2).png",
         cover: "/bg.jpg",
     },
+    {
+        id: 3,
+        title: "Echoes of the Forgotten",
+        summary:
+            "Dive into a haunting narrative that explores the echoes of past traumas and the shadows they cast on the present. This project seeks to blend surreal imagery with a gripping storyline to create a film that is as thought-provoking as it is visually stunning.",
+        tags: ["film writing", "screenplay", "creativity", "collaboration", "movie launch"],
+        status: "interested",
+        interests: 22,
+        interestAvatars: ["/image (1).png", "/image (2).png", "/image (3).png"],
+        postedOn: "10 Oct, 2025",
+        author: "Michael Molar",
+        avatar: "/image (2).png",
+        cover: "/bg.jpg",
+    },
 ];
 
 
@@ -58,14 +72,15 @@ const TagPill = ({ label }: { label: string }) => (
 
 const StatusButton = ({ status }: { status: CollabPost["status"] }) => {
     if (status === "waitlisted") {
-        return <button className="rounded-[33px] w-[103px] bg-[#2FD3D8] px-6 py-2 text-sm font-[600] text-black">Waitlisted</button>;
+        return <button className="rounded-[33px] w-[103px] text-center flex items-center justify-center bg-[#2FD3D8] px-6 py-2 text-sm font-[600] text-black">Waitlisted</button>;
     }
-    return <button className="rounded-[33px] w-[129px] border flex items-center justify-center border-[#2FD3D8] px-2 py-2 text-[14px] font-[600] text-[#2FD3D8]">I&apos;m interested</button>;
+    return <button className="rounded-[33px] w-[120px] border flex items-center justify-center border-[#2FD3D8] px-2 py-2 text-[12px] font-[600] text-[#2FD3D8]">I&apos;m interested</button>;
 };
 
 export default function Collab() {
+
     return (
-        <div className=" flex flex-col items-center h-screen overflow-x-auto">
+        <div className=" flex flex-col items-center">
             <Header />
 
             <div className="mt-16 sm:max-w-[960px] max-w-[393px] w-full h-full max-h-[537px] space-y-10 text-black bg-transparent">
@@ -103,7 +118,7 @@ export default function Collab() {
                                     ))}
                                 </div>
                                 <div className="mt-6 flex sm:flex-wrap flex-row items-center gap-4 text-sm text-white/70">
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
                                         <div className="flex items-center">
                                             {post.interestAvatars.map((avatar, index) => (
                                                 <Image
@@ -113,14 +128,19 @@ export default function Collab() {
                                                     width={25}
                                                     height={25}
                                                     className="rounded-full object-cover"
-                                                    style={{ marginLeft: index === 0 ? 0 : -10 }}
+                                                    style={{
+                                                        marginLeft: index === 0 ? 0 : -12,
+                                                        zIndex: post.interestAvatars.length - index,
+                                                        border: "2px solid #fff",
+                                                        boxShadow: "0 0 2px rgba(0,0,0,0.05)"
+                                                    }}
                                                     unoptimized
                                                 />
                                             ))}
                                         </div>
                                         <span className="text-xs hidden sm:flex text-black/70">{post.interests} interested</span>
                                     </div>
-                                    <div className="ml-auto flex items-center gap-3">
+                                    <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
                                         <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FAFAFA] text-[#FA6E80] ">
                                             <Heart className="h-5 w-5" />
                                         </button>
