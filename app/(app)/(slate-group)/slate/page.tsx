@@ -124,7 +124,7 @@ function SlateCard({ profileAvtar,
                     {<Ellipsis className="h-6 w-6 md:h-7 md:w-7" />}
                 </div>
             </div>
-            <div>
+            <div className="flex justify-center items-center ">
                 {slateSrc && (
                     <Image
                         src={slateSrc}

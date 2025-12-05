@@ -122,7 +122,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
             </div>
             <div className="flex flex-col md:flex-row justify-center mx-auto max-w-7xl w-full gap-3.5">
                 {/* Sidebar Profile */}
-                <div className="w-full md:w-80  mt-3 md:block flex-shrink-0 order-2 md:order-1 mb-4 md:mb-0 hidden ">
+                <div className="w-full md:w-80  mt-3 md:block  max-h-[calc(70vh)] flex-shrink-0 order-2 md:order-1 mb-4 md:mb-0 hidden ">
                     <div>
                         <div>
                             <Image src={profile.backgroundImage} alt={profile.name} width={284} height={72} className="w-full h-[72px] object-cover rounded-t-[13px]" />
@@ -181,7 +181,7 @@ export default function AppLayout({ children }: Readonly<{ children: React.React
                     {children}
                 </div>
                 {/* Similar Accounts Sidebar */}
-                <div className="w-full max-w-72 flex-col md:block flex-shrink-0 order-3 hidden">
+                <div className="w-full max-w-72 flex-col md:block   max-h-[calc(70vh)] flex-shrink-0 order-3 hidden">
                     <div>
                         <h1 className="mt-3 font-bold bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent">
                             View Profiles
