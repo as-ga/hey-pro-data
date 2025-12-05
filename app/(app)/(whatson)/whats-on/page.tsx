@@ -103,7 +103,7 @@ export default function WhatsOnHeader() {
     };
     return (
         <>
-            <div className=" w-full overflow-x-hidden overflow-hidden">
+            <div className=" w-full overflow-x-hidden overflow-hidden mb-10">
                 <div className="flex flex-row mx-auto sm:px-1 gap-2 sm:gap-0 sm:items-center sm:justify-between justify-between px-3">
                     <span className="bg-gradient-to-r from-[#FA6E80] via-[#6A89BE] to-[#31A7AC] bg-clip-text text-transparent text-[26px] font-semibold">{"What's On"}</span>
                     <Link href="/whats-on/manage-whats-on" className="ml-2 text-white bg-[#31A7AC] border rounded-[10px] sm:w-auto w-[192px] px-4 py-2 "> <span className="text-[16px] font-[400]">Manage What’s On</span></Link>

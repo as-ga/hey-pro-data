@@ -2,9 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Heart, Share2 } from "lucide-react";
-
+import { TermsList } from "@/app/(app)/(whatson)/components/TermsList";
 import { getWhatsOnEventBySlug, whatsOnEvents } from "@/data/whatsOnEvents";
 import { RSVP } from "../../components/rsvp";
+
+const TERMS_CHUNK_SIZE = 3;
 
 type WhatsOnPageProps = {
     params: Promise<{ slug: string }>;
@@ -21,6 +23,9 @@ export default async function WhatsOnPage({ params }: WhatsOnPageProps) {
     if (!event) {
         notFound();
     }
+
+    const totalTerms = event.terms.length;
+    const chunksCount = Math.ceil(totalTerms / TERMS_CHUNK_SIZE);
 
     return (
         <section className="mx-auto flex w-full max-w-6xl flex-col gap-10 bg-white px-5 py-6 text-[#000000] sm:px-4">
@@ -147,14 +152,7 @@ export default async function WhatsOnPage({ params }: WhatsOnPageProps) {
                             </div>
                         </section>
 
-                        <section className="space-y-3 mb-5">
-                            <h3 className="text-lg font-semibold text-[#000000]">T&amp;Cs</h3>
-                            <ol className="list-decimal space-y-2 pl-6 text-sm text-[#000000]">
-                                {event.terms.map((term, index) => (
-                                    <li key={index}>{term}</li>
-                                ))}
-                            </ol>
-                        </section>
+                        <TermsList terms={event.terms} />
                     </div>
 
                     <div className="hidden w-full max-w-sm flex-col gap-6 sm:flex">
