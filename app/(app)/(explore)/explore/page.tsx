@@ -32,7 +32,7 @@ export default function ExplorePage() {
     const profiles = buildMixedProfiles()
 
     return (
-        <section className="flex flex-wrap gap-3 xl:gap-4 mx-auto justify-center items-center">
+        <section className="flex flex-wrap sm:mb-1 mb-10 gap-3 xl:gap-4 mx-auto justify-center items-center">
             {profiles.map((profile) => {
                 const initials = profile.name
                     .split(" ")
