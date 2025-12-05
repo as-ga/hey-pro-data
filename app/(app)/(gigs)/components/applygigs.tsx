@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { GigsDataType } from "@/data/gigs"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
@@ -222,11 +222,14 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                     <Mail className="h-5 w-5" /> Apply
                 </Button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="h-[100vh] max-h-[100vh] overflow-y-auto border-none px-0">
-                <div className="mx-auto w-full sm:max-w-[921px] px-6 py-8">
+            <SheetContent side="bottom" className="h-[100vh] max-h-[100vh]  overflow-y-auto border-none px-0">
+                <div className="mx-auto w-full sm:max-w-[921px] px-6 py-8 sm:mt-2 mt-20">
                     <div className="flex items-start justify-between gap-1">
                         <div className="w-full">
-                            <p className="text-sm font-[400] uppercase tracking-wide text-[#27A4A7]">Your Application</p>
+                            <div>
+                                <p className="text-sm font-[400] uppercase tracking-wide text-[#27A4A7]">Your Application</p>
+
+                            </div>
                             <div className="flex flex-row justify-between items-center w-full">
                                 <div className="mt-4 flex items-center gap-3">
                                     <Image src={gig.postedBy.avatar} alt={gig.postedBy.name} width={24} height={24} className="rounded-full" />
@@ -523,7 +526,7 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                         </div>
 
                     </section>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-1">
                         <Button
                             type="button"
                             onClick={handleSubmit}
@@ -541,6 +544,7 @@ export default function ApplyGigs({ gig }: ApplyGigsProps) {
                                 </>
                             )}
                         </Button>
+
                     </div>
                 </div>
                 {showSuccessDialog && (
